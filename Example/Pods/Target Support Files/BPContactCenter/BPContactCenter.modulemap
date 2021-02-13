@@ -1,0 +1,6 @@
+framework module BPContactCenter {
+  umbrella header "BPContactCenter-umbrella.h"
+
+  export *
+  module * { export * }
+}

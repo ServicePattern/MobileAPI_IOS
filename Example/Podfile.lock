@@ -1,0 +1,16 @@
+PODS:
+  - BPContactCenter (0.1.0)
+
+DEPENDENCIES:
+  - BPContactCenter (from `../`)
+
+EXTERNAL SOURCES:
+  BPContactCenter:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  BPContactCenter: 54c20436cb3fc65baf289a32b251518a4895d00b
+
+PODFILE CHECKSUM: ccd0b116ec619b95a48ca25bb0d5fc192dfeab21
+
+COCOAPODS: 1.7.5
