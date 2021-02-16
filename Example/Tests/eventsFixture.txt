@@ -1,0 +1,63 @@
+{
+    "events": [
+        {
+            "event": "chat_session_status",
+            "state": "queued",
+            "ewt": "10"
+        },
+        {
+            "event": "chat_session_status",
+            "state": "connecting",
+            "ewt": "20"
+        },
+        {
+            "event": "chat_session_status",
+            "state": "connected",
+            "ewt": "30"
+        },
+        {
+            "event": "chat_session_message",
+            "msg_id": "<message id>1",
+            "msg": "<chat message>1"
+        },
+        {
+            "event": "chat_session_message",
+            "msg_id": "<message id>3",
+            "msg": "<chat message>3"
+        },
+        {
+            "event": "chat_session_message",
+            "party_id": "<party id>",
+            "msg_id": "<message id>",
+            "msg": "<chat message>",
+            "timestamp": "1613472342"
+        },
+        {
+            "event": "chat_session_party_joined",
+            "party_id": "<party id>",
+            "first_name": "<party first name>",
+            "last_name": "<party last name>",
+            "display_name": "<party display name>",
+            "type": "internal",
+            "timestamp": "1613472503"
+        },
+        {
+            "event": "chat_session_party_joined",
+            "party_id": "<party id>2",
+            "first_name": "<party first name>2",
+            "last_name": "<party last name>2",
+            "display_name": "<party display name>2",
+            "type": "scenario",
+            "timestamp": "1613472504"
+        },
+        {
+            "event": "chat_session_party_joined",
+            "party_id": "<party id>3",
+            "first_name": "<party first name>3",
+            "last_name": "<party last name>3",
+            "display_name": "<party display name>3",
+            "type": "external",
+            "timestamp": "1613472505"
+        }
+    ]
+}

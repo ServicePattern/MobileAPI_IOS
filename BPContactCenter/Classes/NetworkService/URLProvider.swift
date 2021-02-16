@@ -39,7 +39,6 @@ class URLProvider {
 }
 
 extension String {
-
     func appendingPathComponents(_ pathComponent: String) -> String {
         guard pathComponent.count > 0 else {
             return self

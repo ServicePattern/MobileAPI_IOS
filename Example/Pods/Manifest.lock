@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  BPContactCenter: 54c20436cb3fc65baf289a32b251518a4895d00b
+  BPContactCenter: 6a8420c7abd4085092f87a972f20dc0cbf82f90a
 
 PODFILE CHECKSUM: ccd0b116ec619b95a48ca25bb0d5fc192dfeab21
 

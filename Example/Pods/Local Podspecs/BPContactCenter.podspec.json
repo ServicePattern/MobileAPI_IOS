@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "summary": "Contact Center Mobile/Web RESTful API for chat and voice interactions",
   "description": "The Bright Pattern Contact Center Mobile/Web API is a RESTful API that allows developers to integrate chat and voice interactions with mobile devices or third-party applications. This API can be used for development of rich contact applications, such as customer-facing mobile and web applications for advanced chat, voice, and video communications with Bright Pattern Contact Center-based contact centers",
-  "homepage": "https://github.com/ServicePattern/mobile",
+  "homepage": "https://github.com/ServicePattern/MobileAPI_IOS",
   "license": {
     "type": "MIT",
     "file": "LICENSE"
@@ -12,7 +12,7 @@
     "https://www.brightpattern.com": "https://www.brightpattern.com"
   },
   "source": {
-    "git": "https://github.com/ServicePattern/mobile.git",
+    "git": "https://github.com/ServicePattern/MobileAPI_IOS.git",
     "tag": "0.1.0"
   },
   "platforms": {

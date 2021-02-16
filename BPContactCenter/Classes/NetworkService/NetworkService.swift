@@ -14,11 +14,13 @@ class NetworkService {
     }
     /// Might be used to switch between live and Mock Data
     private let networkSessionService: NetworkSessionServiceable
-    private let jsonEncoder = JSONEncoder()
-    private let decoder = JSONDecoder()
+    private let encoder: JSONEncoder
+    private let decoder: JSONDecoder
     /// A parameter networkSessionService parameter might be used to mock networking functionality for unit testing
-    init(networkSessionService: NetworkSessionServiceable = URLSession.shared) {
+    init(networkSessionService: NetworkSessionServiceable = URLSession.shared, encoder: JSONEncoder = JSONEncoder(), decoder: JSONDecoder = JSONDecoder()) {
         self.networkSessionService = networkSessionService
+        self.encoder = encoder
+        self.decoder = decoder
     }
 
     /// Create a request given requestMethod  (get, post, create, etc...),  a URL,  and header fields
@@ -60,18 +62,18 @@ class NetworkService {
             return try decoder.decode(T.self, from: data)
         } catch {
             log.error("Failed to decode: \(error)")
-            throw ContactCenterError.failedToCodeJCON(error)
+            throw ContactCenterError.failedToCodeJCON(nestedErrors: [error])
         }
     }
 
     func encode<T: Encodable>(from instance: T, request: URLRequest) throws -> URLRequest {
         var request = request
         do {
-            request.httpBody = try jsonEncoder.encode(instance)
+            request.httpBody = try encoder.encode(instance)
             return request
         } catch {
             log.error("Failed to encode: \(error)")
-            throw ContactCenterError.failedToCodeJCON(error)
+            throw ContactCenterError.failedToCodeJCON(nestedErrors: [error])
         }
 
     }

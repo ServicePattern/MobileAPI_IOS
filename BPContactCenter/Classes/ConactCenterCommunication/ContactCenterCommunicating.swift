@@ -28,4 +28,8 @@ public protocol ContactCenterCommunicating {
     /// - Parameters:
     ///   - completion: Current status [ContactCenterServiceAvailability](x-source-tag://ContactCenterServiceAvailability) of configured services if successful or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
     func checkAvailability(with completion: @escaping ((Result<ContactCenterServiceAvailability, Error>) -> Void))
+    /// Returns all client events and all server events for the current session. Multiple event objects can be returned; each event's timestamp attribute can be used to restore the correct message order.
+    /// - Parameters:
+    ///   - completion: Chat client and server events [ContactCenterEvents](x-source-tag://ContactCenterEvents)or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    func getChatHistory(with completion: @escaping ((Result<ContactCenterEventContainer, Error>) -> Void))
 }

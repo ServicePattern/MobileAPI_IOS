@@ -4,18 +4,14 @@
 
 import Foundation
 
+/// - Tag: ContactCenterServiceChatAvailability
+public enum ContactCenterServiceChatAvailability: String, Decodable {
+    case available
+    case unavailable
+}
+
 /// Service status
 /// - Tag: ContactCenterServiceAvailability
 public struct ContactCenterServiceAvailability: Decodable {
-    public let chat: Bool
-
-    enum CodingKeys: String, CodingKey {
-        case chat
-    }
-
-    public init(from decoder: Decoder) throws {
-        let values = try decoder.container(keyedBy: CodingKeys.self)
-        let chatAvailableString = try values.decode(String.self, forKey: .chat)
-        chat = chatAvailableString == "available"
-    }
+    public let chat: ContactCenterServiceChatAvailability
 }

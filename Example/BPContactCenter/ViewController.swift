@@ -29,7 +29,7 @@ class ViewController: UIViewController {
         contactCenterService?.checkAvailability { serviceAvailabilityResult in
             switch serviceAvailabilityResult {
             case .success(let serviceAvailability):
-                print("Chat is \(serviceAvailability.chat ? "available" : "not available")")
+                print("Chat is \(serviceAvailability.chat)")
             case .failure(let error):
                 print("Failed to check availability: \(error)")
             }

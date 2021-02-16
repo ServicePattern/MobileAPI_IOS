@@ -12,9 +12,10 @@
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
-		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
+		607FACEC1AFB9204008FA782 /* ContactCenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* ContactCenterTests.swift */; };
 		8729710E0FD0DD6FBE468D0A /* Pods_BPContactCenter_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3AD6BBEF622A29C4CFDE65D /* Pods_BPContactCenter_Tests.framework */; };
 		A81B471DE62BDFC3937D2F4C /* Pods_BPContactCenter_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BFB77F350367830558C3DA9 /* Pods_BPContactCenter_Example.framework */; };
+		F151455F25DBB78400D4AF7E /* eventsFixture.txt in Resources */ = {isa = PBXBuildFile; fileRef = F151455E25DBB78400D4AF7E /* eventsFixture.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,10 +43,11 @@
 		607FACDF1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		607FACE51AFB9204008FA782 /* BPContactCenter_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BPContactCenter_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
+		607FACEB1AFB9204008FA782 /* ContactCenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactCenterTests.swift; sourceTree = "<group>"; };
 		715D3021182EAF5BBF64ABEB /* Pods-BPContactCenter_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BPContactCenter_Tests.release.xcconfig"; path = "Target Support Files/Pods-BPContactCenter_Tests/Pods-BPContactCenter_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		81D2A75A9B91F57A53F2E4AF /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		A3AD6BBEF622A29C4CFDE65D /* Pods_BPContactCenter_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BPContactCenter_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F151455E25DBB78400D4AF7E /* eventsFixture.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = eventsFixture.txt; sourceTree = "<group>"; };
 		F681B50D64B48541F780AC7E /* Pods-BPContactCenter_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BPContactCenter_Example.debug.xcconfig"; path = "Target Support Files/Pods-BPContactCenter_Example/Pods-BPContactCenter_Example.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -135,7 +137,8 @@
 		607FACE81AFB9204008FA782 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				607FACEB1AFB9204008FA782 /* Tests.swift */,
+				F151455E25DBB78400D4AF7E /* eventsFixture.txt */,
+				607FACEB1AFB9204008FA782 /* ContactCenterTests.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 			);
 			path = Tests;
@@ -258,6 +261,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F151455F25DBB78400D4AF7E /* eventsFixture.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -342,7 +346,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				607FACEC1AFB9204008FA782 /* Tests.swift in Sources */,
+				607FACEC1AFB9204008FA782 /* ContactCenterTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

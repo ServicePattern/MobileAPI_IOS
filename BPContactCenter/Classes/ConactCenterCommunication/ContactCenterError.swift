@@ -8,9 +8,10 @@ import Foundation
 /// - Tag: ContactCenterError
 public enum ContactCenterError: Error {
     case failedToBuildBaseURL
-    case failedToCodeJCON(Error)
+    case failedToCodeJCON(nestedErrors: [Error])
     case failedToCreateURLRequest
     case badStatusCode(statusCode: Int, ContactCenterErrorResponse?)
     case unexpectedResponse(URLResponse?)
     case dataEmpty
+    case failedToCast(String)
 }

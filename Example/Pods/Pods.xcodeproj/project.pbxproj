@@ -8,30 +8,39 @@
 
 /* Begin PBXBuildFile section */
 		00359C7655ECC3E5FAD5BBD5BED00A7D /* Pods-BPContactCenter_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = D7711638E640BFD7D6EF11BCFA9FD93D /* Pods-BPContactCenter_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		15B690F2419606565FCC9D8DAD2B6139 /* URLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8818B057DD9CDF25325D13114178EF /* URLProvider.swift */; };
-		1F9A9624C1DE63F68A5B6D5F2B1CA178 /* URLSession+NetworkSessionServiceable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D225F31E1363D3D520AAB1BFDFB774CC /* URLSession+NetworkSessionServiceable.swift */; };
+		13350ED2B7A45C1C44CB9F22D5240A10 /* ContactCenterError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA1552ABDD9AFBD1F39F6A0C3F4A8D2 /* ContactCenterError.swift */; };
+		14B8C7A5B7102DFFAEF8E404E9F1069F /* ContactCenterErrorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070CDD9E037057045D509A1B940BFC81 /* ContactCenterErrorResponse.swift */; };
+		158E6C5A4F67DE24B49EBB12561DEBF3 /* URLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8818B057DD9CDF25325D13114178EF /* URLProvider.swift */; };
 		239B8D53AEAF2BFFF4DE96027AE7E48D /* Pods-BPContactCenter_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A227D0087135E5E9E2F2F00AD0CAAD7 /* Pods-BPContactCenter_Example-dummy.m */; };
-		286BE2CE157D5AC8E540B042ED8DF1BA /* ContactCenterCommunicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04673BA4940EA958F072188581289F91 /* ContactCenterCommunicator.swift */; };
-		3E7F22ABD909228306906C3B90950A82 /* BPContactCenter-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B00553978A45D37175F614138432D5 /* BPContactCenter-dummy.m */; };
-		426FDAA0E50779BC021E413C96DED675 /* Encodable+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A227FD4D5539DBBCFF6CD94B7B44C909 /* Encodable+Extension.swift */; };
-		4753476FE18005C9BBFA608196F176BD /* ContactCenterClientEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E12EDDB590650694D2169C75070DD5 /* ContactCenterClientEvent.swift */; };
-		4BCC03364A3AACD535BF5058592AF958 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483299CB30436788F68CAB5C6B5ECA6F /* Logger.swift */; };
+		27D59E656075F7218B1A15088C5696A3 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA0BF26B611BE33DDC4720C28C68A85 /* String+Extension.swift */; };
 		5D9DB6FA2D23DAD9C7163F24CC58F796 /* BPContactCenter.h in Headers */ = {isa = PBXBuildFile; fileRef = E875A7571399478ED36AF5948139B984 /* BPContactCenter.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		6CB949E72133947C7236249646CB28F1 /* ContactCenterErrorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070CDD9E037057045D509A1B940BFC81 /* ContactCenterErrorResponse.swift */; };
-		6E8890D8EC9ACD85A70C829AEB7E6BF0 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542364928992A3580C1ACDF844BA57EB /* NetworkService.swift */; };
-		73FEDF9BCFF5A53CBBF66FD2B06887E4 /* HttpRequestParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC089EFA6FDC8951B92A44098743F50C /* HttpRequestParameters.swift */; };
+		67E754FC2882E8E1EEBD8CC496A4E52C /* ContactCenterCommunicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C012EA1E634FCF586795E3C0163079B7 /* ContactCenterCommunicator.swift */; };
 		74A7C888044BD60E90F9236331AB6C76 /* Pods-BPContactCenter_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = DFCE9A5424B553D4C1D5CA229E511B8B /* Pods-BPContactCenter_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7DD9E40BAF3BA991B41CF9170DCA0FDA /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542364928992A3580C1ACDF844BA57EB /* NetworkService.swift */; };
+		7ECBD89F05E0F4576D6467CA6C2411ED /* ContactCenterServiceAvailability.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A0900290CE8013C7AE315288071C7F /* ContactCenterServiceAvailability.swift */; };
+		807A419112C67FC88BB2B24B73F77AE5 /* URLSession+NetworkSessionServiceable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D225F31E1363D3D520AAB1BFDFB774CC /* URLSession+NetworkSessionServiceable.swift */; };
+		8611052046DD81D4334153B0FA3A0F28 /* HttpRequestParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC089EFA6FDC8951B92A44098743F50C /* HttpRequestParameters.swift */; };
 		87A2F27F0E37D4E001FAD627B3058A69 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */; };
+		8CB39A85507FE539107CF13D393387A8 /* ContactCenterClientEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B387E78333B045B91FB03962F5F2C85 /* ContactCenterClientEvent.swift */; };
 		90248FA1647C6DAFF4BB0628A5724A7F /* Pods-BPContactCenter_Tests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 595945ADFB6E4FDC2137513218D1EDE6 /* Pods-BPContactCenter_Tests-dummy.m */; };
-		932C200969E9925A8DA62E4660B323C4 /* ContactCenterError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E099DB38897353CC843126234D9E5289 /* ContactCenterError.swift */; };
-		982874A5DAC2D1A467A78071A50C3CED /* ContactCenterServiceAvailability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05C8ED3F139AF2823A67A45BECF6F5B4 /* ContactCenterServiceAvailability.swift */; };
-		A72C740C5C2A666B80E96F6A39DBB0D5 /* HttpHeaderFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA81FAC9A4D2F631CCB9FC1850B74CE /* HttpHeaderFields.swift */; };
-		AD9CF77BDE22D247638C6906EC395739 /* ContactCenterCommunicating.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA4A82D7963C344E6DC2886A5C704DC /* ContactCenterCommunicating.swift */; };
+		96FBCCCEFEED59DB0896AA74D69CEF6F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483299CB30436788F68CAB5C6B5ECA6F /* Logger.swift */; };
+		ABE3E7930D3994ED136BA824ADD58D20 /* URLRequest+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFAC56FFA2A4CE1E6B18584FF137226 /* URLRequest+Extension.swift */; };
+		AC68505DD176BFD6E7CCA76DA3CD0DA4 /* HttpHeaderFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA81FAC9A4D2F631CCB9FC1850B74CE /* HttpHeaderFields.swift */; };
+		B112EE4164B647A9A0B677E76E4CACA0 /* BPContactCenter-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B00553978A45D37175F614138432D5 /* BPContactCenter-dummy.m */; };
 		C38566BB9BD6839C589A83B2527E607D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */; };
 		CDF05A7F2DEBB84A130627ECB7E08DC1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */; };
-		DA516193DE7931246F630D76B194FCCC /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA0BF26B611BE33DDC4720C28C68A85 /* String+Extension.swift */; };
+		DE7D3173F5EBC40270D9AE6279F87696 /* Encodable+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A227FD4D5539DBBCFF6CD94B7B44C909 /* Encodable+Extension.swift */; };
 		E0C71A5D7C1E1AF2C84D9722CDD6ACB4 /* BPContactCenter-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 0C3E8B0559A0D946FA546580F20A9B92 /* BPContactCenter-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		EEA1119CD62C79439E2899A57BE6A314 /* URLRequest+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFAC56FFA2A4CE1E6B18584FF137226 /* URLRequest+Extension.swift */; };
+		F15144E525DB15F600D4AF7E /* ChatSessionStatusDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = F15144E425DB15F600D4AF7E /* ChatSessionStatusDto.swift */; };
+		F15144EA25DB16F900D4AF7E /* ContactCenterEventsContainerDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = F15144E925DB16F900D4AF7E /* ContactCenterEventsContainerDto.swift */; };
+		F151450D25DB2A7200D4AF7E /* ChatSessionMessageDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = F151450C25DB2A7200D4AF7E /* ChatSessionMessageDto.swift */; };
+		F151451225DB2F1C00D4AF7E /* ChatSessionPartyJoinedDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = F151451125DB2F1C00D4AF7E /* ChatSessionPartyJoinedDto.swift */; };
+		F151451725DB2FAB00D4AF7E /* ChatSessionEndedDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = F151451625DB2FAB00D4AF7E /* ChatSessionEndedDto.swift */; };
+		F151453925DBA1FD00D4AF7E /* ContactCenterEventProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F151453825DBA1FD00D4AF7E /* ContactCenterEventProtocol.swift */; };
+		F151454125DBA67A00D4AF7E /* ContactCenterEventContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F151454025DBA67A00D4AF7E /* ContactCenterEventContainer.swift */; };
+		F151454625DBA6EB00D4AF7E /* ContactCenterServerEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = F151454525DBA6EB00D4AF7E /* ContactCenterServerEvent.swift */; };
+		F151454E25DBB2D900D4AF7E /* ContactCenterEventTypeDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = F151454D25DBB2D900D4AF7E /* ContactCenterEventTypeDto.swift */; };
+		F3B1AE40B02392B4D49DB3A56690DE8B /* ContactCenterCommunicating.swift in Sources */ = {isa = PBXBuildFile; fileRef = C04FB88AD43FAB1138724CD5F89EE8F8 /* ContactCenterCommunicating.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,53 +61,62 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		04673BA4940EA958F072188581289F91 /* ContactCenterCommunicator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContactCenterCommunicator.swift; sourceTree = "<group>"; };
-		05C8ED3F139AF2823A67A45BECF6F5B4 /* ContactCenterServiceAvailability.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContactCenterServiceAvailability.swift; sourceTree = "<group>"; };
 		070CDD9E037057045D509A1B940BFC81 /* ContactCenterErrorResponse.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContactCenterErrorResponse.swift; sourceTree = "<group>"; };
-		09E12EDDB590650694D2169C75070DD5 /* ContactCenterClientEvent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContactCenterClientEvent.swift; sourceTree = "<group>"; };
+		0BA1552ABDD9AFBD1F39F6A0C3F4A8D2 /* ContactCenterError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContactCenterError.swift; sourceTree = "<group>"; };
 		0C3E8B0559A0D946FA546580F20A9B92 /* BPContactCenter-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "BPContactCenter-umbrella.h"; sourceTree = "<group>"; };
 		0D8818B057DD9CDF25325D13114178EF /* URLProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = URLProvider.swift; sourceTree = "<group>"; };
 		173B8672E429C94D388C9A56D0BBE8BB /* Pods-BPContactCenter_Tests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-BPContactCenter_Tests-acknowledgements.plist"; sourceTree = "<group>"; };
-		24FC81BAF2D5BCCD1F7E42DC64C2AB7A /* BPContactCenter.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = BPContactCenter.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		1B387E78333B045B91FB03962F5F2C85 /* ContactCenterClientEvent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContactCenterClientEvent.swift; sourceTree = "<group>"; };
+		24FC81BAF2D5BCCD1F7E42DC64C2AB7A /* BPContactCenter.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; path = BPContactCenter.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		2BA0BF26B611BE33DDC4720C28C68A85 /* String+Extension.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		321DAC1D37FF26E02CFDB12BAA17FAA2 /* BPContactCenter.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = BPContactCenter.xcconfig; sourceTree = "<group>"; };
 		3AFAC56FFA2A4CE1E6B18584FF137226 /* URLRequest+Extension.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "URLRequest+Extension.swift"; sourceTree = "<group>"; };
 		3CF5A0093721900B9F3BE126AA180053 /* Pods-BPContactCenter_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-BPContactCenter_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		42A4DFD4A628BD53B283985C21C0D30E /* Pods-BPContactCenter_Tests-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-BPContactCenter_Tests-Info.plist"; sourceTree = "<group>"; };
-		47BFBE7A487AF031FF21E7903E990704 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
+		47BFBE7A487AF031FF21E7903E990704 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		483299CB30436788F68CAB5C6B5ECA6F /* Logger.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
-		4D91B3FE7EE7B34244F7B18D3AB11806 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
+		4D91B3FE7EE7B34244F7B18D3AB11806 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		520A9943A1EB39777ABC36C58C2539F5 /* Pods-BPContactCenter_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-BPContactCenter_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
 		542364928992A3580C1ACDF844BA57EB /* NetworkService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		595945ADFB6E4FDC2137513218D1EDE6 /* Pods-BPContactCenter_Tests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-BPContactCenter_Tests-dummy.m"; sourceTree = "<group>"; };
-		5C3140D427E786F98E0BBFB6A8DEC6B5 /* Pods_BPContactCenter_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_BPContactCenter_Example.framework; path = "Pods-BPContactCenter_Example.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5C3140D427E786F98E0BBFB6A8DEC6B5 /* Pods_BPContactCenter_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BPContactCenter_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D1545EC877F4A7A951F383CA120D464 /* Pods-BPContactCenter_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-BPContactCenter_Example-Info.plist"; sourceTree = "<group>"; };
-		5D8EED3E74269779F82A44CF26AF98F4 /* BPContactCenter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = BPContactCenter.framework; path = BPContactCenter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5D8EED3E74269779F82A44CF26AF98F4 /* BPContactCenter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BPContactCenter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		68B00553978A45D37175F614138432D5 /* BPContactCenter-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "BPContactCenter-dummy.m"; sourceTree = "<group>"; };
 		6A227D0087135E5E9E2F2F00AD0CAAD7 /* Pods-BPContactCenter_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-BPContactCenter_Example-dummy.m"; sourceTree = "<group>"; };
 		6D5199901F8D5AD70A766E8B73B88925 /* BPContactCenter-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "BPContactCenter-prefix.pch"; sourceTree = "<group>"; };
 		77B5F02E95AE76E0511828A12D73AB7F /* Pods-BPContactCenter_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-BPContactCenter_Example-frameworks.sh"; sourceTree = "<group>"; };
 		86ABE674909F8D98258AA19CE35EB4A5 /* Pods-BPContactCenter_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-BPContactCenter_Tests.release.xcconfig"; sourceTree = "<group>"; };
-		8AC8AFC656025061E05F1D99B06DFDBF /* Pods_BPContactCenter_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_BPContactCenter_Tests.framework; path = "Pods-BPContactCenter_Tests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8AC8AFC656025061E05F1D99B06DFDBF /* Pods_BPContactCenter_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BPContactCenter_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CBFA0630BAD9F539C8943C0EEB5F109 /* Pods-BPContactCenter_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-BPContactCenter_Example.release.xcconfig"; sourceTree = "<group>"; };
 		994113D202DA3CF04DEBFD50F638BF25 /* BPContactCenter-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "BPContactCenter-Info.plist"; sourceTree = "<group>"; };
 		99DC664A580A8F0A8D8B42B35545EA48 /* Pods-BPContactCenter_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-BPContactCenter_Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		9FF0BDC76AC6BF479BB365CB71559EB8 /* Pods-BPContactCenter_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-BPContactCenter_Example-acknowledgements.plist"; sourceTree = "<group>"; };
 		A227FD4D5539DBBCFF6CD94B7B44C909 /* Encodable+Extension.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "Encodable+Extension.swift"; sourceTree = "<group>"; };
 		ADA8A251370DA3ED49C1DC9FAA95503A /* Pods-BPContactCenter_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-BPContactCenter_Tests.modulemap"; sourceTree = "<group>"; };
 		B1C3800EB4567976EEC3D046CF6B8516 /* Pods-BPContactCenter_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-BPContactCenter_Example.modulemap"; sourceTree = "<group>"; };
 		BA3E52848465D5693B154648772D72DD /* Pods-BPContactCenter_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-BPContactCenter_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
+		C012EA1E634FCF586795E3C0163079B7 /* ContactCenterCommunicator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContactCenterCommunicator.swift; sourceTree = "<group>"; };
+		C04FB88AD43FAB1138724CD5F89EE8F8 /* ContactCenterCommunicating.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContactCenterCommunicating.swift; sourceTree = "<group>"; };
 		CC089EFA6FDC8951B92A44098743F50C /* HttpRequestParameters.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HttpRequestParameters.swift; sourceTree = "<group>"; };
-		CCA4A82D7963C344E6DC2886A5C704DC /* ContactCenterCommunicating.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContactCenterCommunicating.swift; sourceTree = "<group>"; };
 		CF325FD3B5234915EE6A849FC7471232 /* BPContactCenter.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = BPContactCenter.modulemap; sourceTree = "<group>"; };
 		D225F31E1363D3D520AAB1BFDFB774CC /* URLSession+NetworkSessionServiceable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "URLSession+NetworkSessionServiceable.swift"; sourceTree = "<group>"; };
 		D7711638E640BFD7D6EF11BCFA9FD93D /* Pods-BPContactCenter_Tests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-BPContactCenter_Tests-umbrella.h"; sourceTree = "<group>"; };
 		DFCE9A5424B553D4C1D5CA229E511B8B /* Pods-BPContactCenter_Example-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-BPContactCenter_Example-umbrella.h"; sourceTree = "<group>"; };
-		E099DB38897353CC843126234D9E5289 /* ContactCenterError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContactCenterError.swift; sourceTree = "<group>"; };
 		E875A7571399478ED36AF5948139B984 /* BPContactCenter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = BPContactCenter.h; path = BPContactCenter/Classes/BPContactCenter.h; sourceTree = "<group>"; };
 		EEA81FAC9A4D2F631CCB9FC1850B74CE /* HttpHeaderFields.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HttpHeaderFields.swift; sourceTree = "<group>"; };
+		F15144E425DB15F600D4AF7E /* ChatSessionStatusDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSessionStatusDto.swift; sourceTree = "<group>"; };
+		F15144E925DB16F900D4AF7E /* ContactCenterEventsContainerDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactCenterEventsContainerDto.swift; sourceTree = "<group>"; };
+		F151450C25DB2A7200D4AF7E /* ChatSessionMessageDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSessionMessageDto.swift; sourceTree = "<group>"; };
+		F151451125DB2F1C00D4AF7E /* ChatSessionPartyJoinedDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSessionPartyJoinedDto.swift; sourceTree = "<group>"; };
+		F151451625DB2FAB00D4AF7E /* ChatSessionEndedDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSessionEndedDto.swift; sourceTree = "<group>"; };
+		F151453825DBA1FD00D4AF7E /* ContactCenterEventProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactCenterEventProtocol.swift; sourceTree = "<group>"; };
+		F151454025DBA67A00D4AF7E /* ContactCenterEventContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactCenterEventContainer.swift; sourceTree = "<group>"; };
+		F151454525DBA6EB00D4AF7E /* ContactCenterServerEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactCenterServerEvent.swift; sourceTree = "<group>"; };
+		F151454D25DBB2D900D4AF7E /* ContactCenterEventTypeDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactCenterEventTypeDto.swift; sourceTree = "<group>"; };
+		F2A0900290CE8013C7AE315288071C7F /* ContactCenterServiceAvailability.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContactCenterServiceAvailability.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,6 +170,19 @@
 				20C5BC047BAE3C21DE527A9159DA789A /* Pods-BPContactCenter_Tests */,
 			);
 			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
+		3C16F1E8D1A773A8DC7174F7939AEAF1 /* ConactCenterCommunication */ = {
+			isa = PBXGroup;
+			children = (
+				F15144E225DB14C200D4AF7E /* ContactCenterEvent */,
+				C04FB88AD43FAB1138724CD5F89EE8F8 /* ContactCenterCommunicating.swift */,
+				C012EA1E634FCF586795E3C0163079B7 /* ContactCenterCommunicator.swift */,
+				0BA1552ABDD9AFBD1F39F6A0C3F4A8D2 /* ContactCenterError.swift */,
+				F2A0900290CE8013C7AE315288071C7F /* ContactCenterServiceAvailability.swift */,
+			);
+			name = ConactCenterCommunication;
+			path = BPContactCenter/Classes/ConactCenterCommunication;
 			sourceTree = "<group>";
 		};
 		48A85F216480EC65B5BC5F2DE9DC195D /* Support Files */ = {
@@ -242,7 +273,7 @@
 			isa = PBXGroup;
 			children = (
 				E875A7571399478ED36AF5948139B984 /* BPContactCenter.h */,
-				C6FB295B1786DD40AA04D5FBB5E8ADA5 /* ConactCenterCommunication */,
+				3C16F1E8D1A773A8DC7174F7939AEAF1 /* ConactCenterCommunication */,
 				B5F1AA7C923D1E10013E16D50971E1B3 /* Extensions */,
 				F51AAB3B14D9C7FFE535C87A4D6F8831 /* Logger */,
 				BA7E728085AF144C277FDF107625E244 /* NetworkService */,
@@ -251,19 +282,6 @@
 			);
 			name = BPContactCenter;
 			path = ../..;
-			sourceTree = "<group>";
-		};
-		C6FB295B1786DD40AA04D5FBB5E8ADA5 /* ConactCenterCommunication */ = {
-			isa = PBXGroup;
-			children = (
-				09E12EDDB590650694D2169C75070DD5 /* ContactCenterClientEvent.swift */,
-				CCA4A82D7963C344E6DC2886A5C704DC /* ContactCenterCommunicating.swift */,
-				04673BA4940EA958F072188581289F91 /* ContactCenterCommunicator.swift */,
-				E099DB38897353CC843126234D9E5289 /* ContactCenterError.swift */,
-				05C8ED3F139AF2823A67A45BECF6F5B4 /* ContactCenterServiceAvailability.swift */,
-			);
-			name = ConactCenterCommunication;
-			path = BPContactCenter/Classes/ConactCenterCommunication;
 			sourceTree = "<group>";
 		};
 		CF1408CF629C7361332E53B88F7BD30C = {
@@ -283,6 +301,31 @@
 				C0834CEBB1379A84116EF29F93051C60 /* iOS */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F15144E225DB14C200D4AF7E /* ContactCenterEvent */ = {
+			isa = PBXGroup;
+			children = (
+				F15144E325DB14E600D4AF7E /* Dto */,
+				1B387E78333B045B91FB03962F5F2C85 /* ContactCenterClientEvent.swift */,
+				F151453825DBA1FD00D4AF7E /* ContactCenterEventProtocol.swift */,
+				F151454025DBA67A00D4AF7E /* ContactCenterEventContainer.swift */,
+				F151454525DBA6EB00D4AF7E /* ContactCenterServerEvent.swift */,
+			);
+			path = ContactCenterEvent;
+			sourceTree = "<group>";
+		};
+		F15144E325DB14E600D4AF7E /* Dto */ = {
+			isa = PBXGroup;
+			children = (
+				F15144E425DB15F600D4AF7E /* ChatSessionStatusDto.swift */,
+				F15144E925DB16F900D4AF7E /* ContactCenterEventsContainerDto.swift */,
+				F151450C25DB2A7200D4AF7E /* ChatSessionMessageDto.swift */,
+				F151451125DB2F1C00D4AF7E /* ChatSessionPartyJoinedDto.swift */,
+				F151451625DB2FAB00D4AF7E /* ChatSessionEndedDto.swift */,
+				F151454D25DBB2D900D4AF7E /* ContactCenterEventTypeDto.swift */,
+			);
+			path = Dto;
 			sourceTree = "<group>";
 		};
 		F51AAB3B14D9C7FFE535C87A4D6F8831 /* Logger */ = {
@@ -338,7 +381,7 @@
 			buildConfigurationList = 003D51AC6EE5A7378614EFC8434D457A /* Build configuration list for PBXNativeTarget "BPContactCenter" */;
 			buildPhases = (
 				7363DC1021E232C975829D2A49213AB9 /* Headers */,
-				271234C804A2D97B2EF1C10CC4A1A60A /* Sources */,
+				2010D073148DD2EF71FF0306AEE8A5EB /* Sources */,
 				2D78ECCDCDC2AD3A824D50C08012C562 /* Frameworks */,
 				CFF148C527D42FEC412B31678085D550 /* Resources */,
 			);
@@ -442,26 +485,35 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		271234C804A2D97B2EF1C10CC4A1A60A /* Sources */ = {
+		2010D073148DD2EF71FF0306AEE8A5EB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3E7F22ABD909228306906C3B90950A82 /* BPContactCenter-dummy.m in Sources */,
-				4753476FE18005C9BBFA608196F176BD /* ContactCenterClientEvent.swift in Sources */,
-				AD9CF77BDE22D247638C6906EC395739 /* ContactCenterCommunicating.swift in Sources */,
-				286BE2CE157D5AC8E540B042ED8DF1BA /* ContactCenterCommunicator.swift in Sources */,
-				932C200969E9925A8DA62E4660B323C4 /* ContactCenterError.swift in Sources */,
-				6CB949E72133947C7236249646CB28F1 /* ContactCenterErrorResponse.swift in Sources */,
-				982874A5DAC2D1A467A78071A50C3CED /* ContactCenterServiceAvailability.swift in Sources */,
-				426FDAA0E50779BC021E413C96DED675 /* Encodable+Extension.swift in Sources */,
-				A72C740C5C2A666B80E96F6A39DBB0D5 /* HttpHeaderFields.swift in Sources */,
-				73FEDF9BCFF5A53CBBF66FD2B06887E4 /* HttpRequestParameters.swift in Sources */,
-				4BCC03364A3AACD535BF5058592AF958 /* Logger.swift in Sources */,
-				6E8890D8EC9ACD85A70C829AEB7E6BF0 /* NetworkService.swift in Sources */,
-				DA516193DE7931246F630D76B194FCCC /* String+Extension.swift in Sources */,
-				15B690F2419606565FCC9D8DAD2B6139 /* URLProvider.swift in Sources */,
-				EEA1119CD62C79439E2899A57BE6A314 /* URLRequest+Extension.swift in Sources */,
-				1F9A9624C1DE63F68A5B6D5F2B1CA178 /* URLSession+NetworkSessionServiceable.swift in Sources */,
+				B112EE4164B647A9A0B677E76E4CACA0 /* BPContactCenter-dummy.m in Sources */,
+				F3B1AE40B02392B4D49DB3A56690DE8B /* ContactCenterCommunicating.swift in Sources */,
+				67E754FC2882E8E1EEBD8CC496A4E52C /* ContactCenterCommunicator.swift in Sources */,
+				F151451725DB2FAB00D4AF7E /* ChatSessionEndedDto.swift in Sources */,
+				13350ED2B7A45C1C44CB9F22D5240A10 /* ContactCenterError.swift in Sources */,
+				14B8C7A5B7102DFFAEF8E404E9F1069F /* ContactCenterErrorResponse.swift in Sources */,
+				8CB39A85507FE539107CF13D393387A8 /* ContactCenterClientEvent.swift in Sources */,
+				F151454625DBA6EB00D4AF7E /* ContactCenterServerEvent.swift in Sources */,
+				F151454E25DBB2D900D4AF7E /* ContactCenterEventTypeDto.swift in Sources */,
+				7ECBD89F05E0F4576D6467CA6C2411ED /* ContactCenterServiceAvailability.swift in Sources */,
+				DE7D3173F5EBC40270D9AE6279F87696 /* Encodable+Extension.swift in Sources */,
+				F151454125DBA67A00D4AF7E /* ContactCenterEventContainer.swift in Sources */,
+				F15144EA25DB16F900D4AF7E /* ContactCenterEventsContainerDto.swift in Sources */,
+				AC68505DD176BFD6E7CCA76DA3CD0DA4 /* HttpHeaderFields.swift in Sources */,
+				8611052046DD81D4334153B0FA3A0F28 /* HttpRequestParameters.swift in Sources */,
+				96FBCCCEFEED59DB0896AA74D69CEF6F /* Logger.swift in Sources */,
+				F151450D25DB2A7200D4AF7E /* ChatSessionMessageDto.swift in Sources */,
+				7DD9E40BAF3BA991B41CF9170DCA0FDA /* NetworkService.swift in Sources */,
+				F151451225DB2F1C00D4AF7E /* ChatSessionPartyJoinedDto.swift in Sources */,
+				27D59E656075F7218B1A15088C5696A3 /* String+Extension.swift in Sources */,
+				158E6C5A4F67DE24B49EBB12561DEBF3 /* URLProvider.swift in Sources */,
+				F15144E525DB15F600D4AF7E /* ChatSessionStatusDto.swift in Sources */,
+				ABE3E7930D3994ED136BA824ADD58D20 /* URLRequest+Extension.swift in Sources */,
+				F151453925DBA1FD00D4AF7E /* ContactCenterEventProtocol.swift in Sources */,
+				807A419112C67FC88BB2B24B73F77AE5 /* URLSession+NetworkSessionServiceable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -587,8 +639,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 5.0;
 				SYMROOT = "${SRCROOT}/../build";
 			};
