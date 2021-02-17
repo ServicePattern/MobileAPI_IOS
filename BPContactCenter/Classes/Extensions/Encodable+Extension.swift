@@ -37,4 +37,8 @@ extension Encodable {
     var queryItems: [URLQueryItem]? {
         dictionary?.map { URLQueryItem(name: $0.key, value: String(describing: $0.value)) }
     }
+
+    func encode(using encoder: JSONEncoder) -> Data? {
+        try? encoder.encode(self)
+    }
 }

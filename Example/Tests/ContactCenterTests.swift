@@ -31,9 +31,8 @@ class ContactCenterTests: XCTestCase {
     
     func testEventsDecoding() {
         do {
-            let eventsContainer = try jsonDecoder.decode(ContactCenterEventsContainerDto.self, from: eventsFixtureData()).toModel()
-            XCTAssertEqual(eventsContainer.clientEvents.count, 2)
-            XCTAssertEqual(eventsContainer.serverEvents.count, 7)
+            let eventsContainer = try jsonDecoder.decode(ContactCenterEventsContainerDto.self, from: eventsFixtureData())
+            XCTAssertEqual(eventsContainer.events.count, 9)
         } catch {
             XCTFail("\(error)")
         }

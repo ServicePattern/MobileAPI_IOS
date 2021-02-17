@@ -9,7 +9,7 @@ private struct ContactCenterEventTypeContainerDto: Decodable {
 
 /// - Tag: ContactCenterEventsContainerDto
 struct ContactCenterEventsContainerDto: Decodable {
-    let events: [ContactCenterEventProtocol]
+    let events: [ContactCenterEvent]
 
     enum CodingKeys: String, CodingKey {
         case events
@@ -18,7 +18,7 @@ struct ContactCenterEventsContainerDto: Decodable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         var eventsContainer = try container.nestedUnkeyedContainer(forKey: .events)
-        var events = [ContactCenterEventProtocol]()
+        var events = [ContactCenterEvent]()
         var eventDtoTypes = [ContactCenterEventTypeDto]()
         guard let count = eventsContainer.count else {
             self.events = []
@@ -26,6 +26,9 @@ struct ContactCenterEventsContainerDto: Decodable {
         }
         events.reserveCapacity(count)
         eventDtoTypes.reserveCapacity(count)
+        // Decoding Dto will be done in two passes
+        // On the first pass Dto types are decoded
+        // On the second pass Dto objects are decoded
         while !eventsContainer.isAtEnd {
             // The backend sends a collection of event of different types
             // To decode each item to a specific type use JSONEncoder to get data
@@ -33,23 +36,18 @@ struct ContactCenterEventsContainerDto: Decodable {
             let eventType = try eventsContainer.decode(ContactCenterEventTypeContainerDto.self).event
             eventDtoTypes.append(eventType)
         }
+        // Each decode() call changes container internal state
+        // So, reset it to decode Dto objects
         eventsContainer = try container.nestedUnkeyedContainer(forKey: .events)
-        self.events = eventDtoTypes.compactMap {
+        self.events = eventDtoTypes.compactMap { dtoType in
             do {
-                return try $0.decodeDto(from: eventsContainer.superDecoder()).toModel()
+                // 2. Based on dto type decode data to a specific Dto object
+                // superDecoder() returns a Decoder that points to the part that represents the whole object
+                return try dtoType.decodeDto(from: eventsContainer.superDecoder()).toModel()
             } catch {
                 log.error("\(error)")
                 return nil
             }
         }
-    }
-}
-
-extension ContactCenterEventsContainerDto {
-    func toModel() -> ContactCenterEventContainer {
-        let clientEvents = events.compactMap { $0 as? ContactCenterClientEvent }
-        let serverEvents = events.compactMap { $0 as? ContactCenterServerEvent }
-
-        return ContactCenterEventContainer(clientEvents: clientEvents, serverEvents: serverEvents)
     }
 }

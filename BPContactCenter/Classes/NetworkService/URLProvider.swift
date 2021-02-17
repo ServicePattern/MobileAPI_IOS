@@ -28,11 +28,17 @@ class URLProvider {
 
     enum Endpoint: CustomStringConvertible {
         case checkAvailability
+        case getChatHistory(chatID: String)
+        case requestChat
 
         var description: String {
             switch self {
             case .checkAvailability:
                 return "availability"
+            case .getChatHistory(let chatID):
+                return "chats/\(chatID)/history"
+            case .requestChat:
+                return "chats"
             }
         }
     }

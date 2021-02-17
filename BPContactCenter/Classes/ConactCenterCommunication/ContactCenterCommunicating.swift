@@ -21,8 +21,8 @@ public protocol ContactCenterCommunicating {
     var clientID: String { get }
     // MARK: - Client events delegate
     /// Chat event delegate
-    /// If successful returns an array of chat events [ContactCenterClientEvent](x-source-tag://ContactCenterClientEvent) for the current session that came from the server or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
-    var delegate: ((Result<[ContactCenterClientEvent], Error>) -> Void)? { get set }
+    /// If successful returns an array of chat events [ContactCenterEvent](x-source-tag://ContactCenterEvent) for the current session that came from the server or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    var delegate: ((Result<[ContactCenterEvent], Error>) -> Void)? { get set }
     // MARK:- Chat
     /// Checks the current status of configured services
     /// - Parameters:
@@ -30,6 +30,14 @@ public protocol ContactCenterCommunicating {
     func checkAvailability(with completion: @escaping ((Result<ContactCenterServiceAvailability, Error>) -> Void))
     /// Returns all client events and all server events for the current session. Multiple event objects can be returned; each event's timestamp attribute can be used to restore the correct message order.
     /// - Parameters:
-    ///   - completion: Chat client and server events [ContactCenterEvents](x-source-tag://ContactCenterEvents)or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
-    func getChatHistory(with completion: @escaping ((Result<ContactCenterEventContainer, Error>) -> Void))
+    ///   - chatID: The current chat ID
+    ///   - completion: Chat client and server events [ContactCenterEvent](x-source-tag://ContactCenterEvent) or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    func getChatHistory(chatID: String, with completion: @escaping ((Result<[ContactCenterEvent], Error>) -> Void))
+    /// Request Chat initiates a chat session. It provides values of all or some of the expected parameters, and it may also contain the phone number of the mobile device. Note that if the mobile scenario entry is not configured for automatic callback, the agent can still use this number to call the mobile user manually, either upon the agent's own initiative or when asked to do this via a chat message from the mobile user.
+    /// - Parameters:
+    ///   - phoneNumber: phone number for callback, if necessary
+    ///   - from: Propagated into scenario variable $(item.from). May be used to specify either the device owner’s name or phone number.
+    ///   - parameters: Additional parameters.
+    ///   - completion: Returns chat session properties [ContactCenterChatSessionProperties](x-source-tag://ContactCenterChatSessionProperties) or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    func requestChat(phoneNumber: String, from: String, parameters: [String: String], with completion: @escaping ((Result<ContactCenterChatSessionProperties, Error>) -> Void))
 }

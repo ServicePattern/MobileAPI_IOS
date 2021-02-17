@@ -24,11 +24,12 @@ class NetworkService {
     }
 
     /// Create a request given requestMethod  (get, post, create, etc...),  a URL,  and header fields
-    func createRequest(method: HttpMethod, url: URL, headerFields: HttpHeaderFields? = nil) -> URLRequest {
+    func createRequest(method: HttpMethod, url: URL, headerFields: HttpHeaderFields? = nil, body: Encodable? = nil) -> URLRequest {
 
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
         request.set(headerFields: headerFields?.stringDictionary)
+        request.httpBody = body?.encode(using: encoder)
 
         log.debug("\(request.cURL)")
 
@@ -41,12 +42,12 @@ class NetworkService {
     /// Exception might be done for requests that load data from AWS for ex.
     ///  Parameters baseURL and endpoint are used to build a complete URL
     /// - Tag: createRequest
-    func createRequest(method: HttpMethod, baseURL: URL, endpoint: URLProvider.Endpoint, headerFields: HttpHeaderFields, parameters: Encodable?) throws -> URLRequest? {
+    func createRequest(method: HttpMethod, baseURL: URL, endpoint: URLProvider.Endpoint, headerFields: HttpHeaderFields, parameters: Encodable? = nil, body: Encodable? = nil) throws -> URLRequest? {
 
         var urlComponents = URLComponents(url: baseURL, resolvingAgainstBaseURL: true)
         let basePath = urlComponents?.path ?? ""
         urlComponents?.path = basePath.appendingPathComponents("\(endpoint)")
-        urlComponents?.queryItems = method == .get ? parameters?.queryItems: nil
+        urlComponents?.queryItems = parameters?.queryItems
 
         guard let url = urlComponents?.url else {
             fatalError("Failed to build URL: method \(method) baseURL \(baseURL) endpoint \(endpoint)")
@@ -54,7 +55,8 @@ class NetworkService {
 
         return createRequest(method: method,
                              url: url,
-                             headerFields: headerFields)
+                             headerFields: headerFields,
+                             body: body)
     }
 
     func decode<T: Decodable>(to type: T.Type, data: Data) throws -> T {
@@ -99,6 +101,31 @@ extension NetworkService: NetworkSessionServiceable {
                 log.debug("Received data: \(decodedString)")
                 do {
                     let decodedObject: T = try self.decode(to: T.self, data: data)
+                    completion(.success(decodedObject))
+                } catch {
+                    completion(.failure(error))
+                }
+            case .failure(let error):
+                log.error("Request failed: \(error)")
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func dataTask<T: Decodable>(using request: URLRequest, with completion: @escaping (Result<[T], Error>) -> Void) {
+        dataTask(using: request) { [unowned self] response in
+            switch response {
+            case .success((let data, _)):
+                guard let data = data else {
+                    log.error("Data is empty for request: \(request)")
+                    completion(.failure(ContactCenterError.dataEmpty))
+                    return
+                }
+                var decodedString = String(decoding: data, as: UTF8.self)
+                decodedString = decodedString.isEmpty ? "\(data)": decodedString
+                log.debug("Received data: \(decodedString)")
+                do {
+                    let decodedObject: [T] = try self.decode(to: [T].self, data: data)
                     completion(.success(decodedObject))
                 } catch {
                     completion(.failure(error))

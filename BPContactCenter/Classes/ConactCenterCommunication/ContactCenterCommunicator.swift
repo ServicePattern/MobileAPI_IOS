@@ -8,7 +8,7 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
     public let tenantURL: URL
     public let appID: String
     public let clientID: String
-    public var delegate: ((Result<[ContactCenterClientEvent], Error>) -> Void)?
+    public var delegate: ((Result<[ContactCenterEvent], Error>) -> Void)?
 
     private let networkService: NetworkService
     private var defaultHttpHeaderFields: HttpHeaderFields
@@ -52,43 +52,70 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
         NotificationCenter.default.removeObserver(self)
     }
 
+    private func defaultHttpGetRequest(with endpoint: URLProvider.Endpoint) throws -> URLRequest {
+        guard let urlRequest = try networkService.createRequest(method: .get,
+                                                                baseURL: baseURL,
+                                                                endpoint: endpoint,
+                                                                headerFields: defaultHttpHeaderFields,
+                                                                parameters: defaultHttpRequestParameters) else {
+            log.error("Failed to create URL request")
+
+            throw ContactCenterError.failedToCreateURLRequest
+        }
+
+        return urlRequest
+    }
+
     // MARK: - Public methods
     public func checkAvailability(with completion: @escaping ((Result<ContactCenterServiceAvailability, Error>) -> Void)) {
         do {
-
-            guard let urlRequest = try networkService.createRequest(method: .get,
-                                                                    baseURL: baseURL,
-                                                                    endpoint: .checkAvailability,
-                                                                    headerFields: defaultHttpHeaderFields,
-                                                                    parameters: defaultHttpRequestParameters) else {
-                log.error("Failed to create URL request")
-                completion(.failure(ContactCenterError.failedToCreateURLRequest))
-
-                return
-            }
-            networkService.dataTask(using: urlRequest, with: completion)
+            networkService.dataTask(using: try defaultHttpGetRequest(with: .checkAvailability), with: completion)
         } catch {
             log.error("Failed to checkAvailability: \(error)")
             completion(.failure(error))
         }
     }
 
-    public func getChatHistory(with completion: @escaping ((Result<ContactCenterEventContainer, Error>) -> Void)) {
+    public func getChatHistory(chatID: String, with completion: @escaping ((Result<[ContactCenterEvent], Error>) -> Void)) {
         do {
-
-            guard let urlRequest = try networkService.createRequest(method: .get,
-                                                                    baseURL: baseURL,
-                                                                    endpoint: .checkAvailability,
-                                                                    headerFields: defaultHttpHeaderFields,
-                                                                    parameters: defaultHttpRequestParameters) else {
-                log.error("Failed to create URL request")
-                completion(.failure(ContactCenterError.failedToCreateURLRequest))
-
-                return
+            let urlRequest = try defaultHttpGetRequest(with: .getChatHistory(chatID: chatID))
+            networkService.dataTask(using: urlRequest) { (result: Result<ContactCenterEventsContainerDto, Error>) -> Void in
+                switch result {
+                case .success(let eventsContainer):
+                    completion(.success(eventsContainer.events))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
             }
-            //networkService.dataTask(using: urlRequest, with: completion)
         } catch {
-            log.error("Failed to checkAvailability: \(error)")
+            log.error("Failed to getChatHistory: \(error) chatID: \(chatID)")
+            completion(.failure(error))
+        }
+    }
+
+    public func requestChat(phoneNumber: String, from: String, parameters: [String: String], with completion: @escaping ((Result<ContactCenterChatSessionProperties, Error>) -> Void)) {
+        do {
+            let requestChatBodyParameters = RequestChatParameters(phoneNumber: phoneNumber, from: from, parameters: parameters)
+            guard let urlRequest = try networkService.createRequest(method: .post,
+                                                                    baseURL: baseURL,
+                                                                    endpoint: .requestChat,
+                                                                    headerFields: defaultHttpHeaderFields,
+                                                                    parameters: defaultHttpRequestParameters,
+                                                                    body: requestChatBodyParameters) else {
+                log.error("Failed to create URL request")
+
+                throw ContactCenterError.failedToCreateURLRequest
+            }
+            networkService.dataTask(using: urlRequest) { (result: Result<ChatSessionPropertiesDto, Error>) -> Void in
+                switch result {
+                case .success(let chatSessionProperties):
+                    completion(.success(chatSessionProperties.toModel()))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        } catch {
+            log.error("Failed to requestChat: \(error)")
             completion(.failure(error))
         }
     }

@@ -26,10 +26,28 @@ class ViewController: UIViewController {
 
         contactCenterService = ContactCenterCommunicator(baseURL: baseURL, tenantURL: tenantURL, appID: appID, clientID: clientID)
 
-        contactCenterService?.checkAvailability { serviceAvailabilityResult in
+        contactCenterService?.checkAvailability { [weak self] serviceAvailabilityResult in
             switch serviceAvailabilityResult {
             case .success(let serviceAvailability):
                 print("Chat is \(serviceAvailability.chat)")
+                if serviceAvailability.chat == .available {
+                    self?.contactCenterService?.requestChat(phoneNumber: "12345", from: "54321", parameters: [:]) { [weak self] chatPropertiesResult in
+                        switch chatPropertiesResult {
+                        case .success(let chatProperties):
+                            print("Chat properties: \(chatProperties)")
+                            self?.contactCenterService?.getChatHistory(chatID: chatProperties.chatID) { eventsResult in
+                                switch eventsResult {
+                                case .success(let events):
+                                    print("Events: \(events)")
+                                case .failure(let error):
+                                    print("Failed to getChatHistory: \(error)")
+                                }
+                            }
+                        case .failure(let error):
+                            print("\(error)")
+                        }
+                    }
+                }
             case .failure(let error):
                 print("Failed to check availability: \(error)")
             }

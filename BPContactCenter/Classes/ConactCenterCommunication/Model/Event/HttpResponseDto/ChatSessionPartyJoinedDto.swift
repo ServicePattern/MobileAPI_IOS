@@ -43,7 +43,7 @@ struct ChatSessionPartyJoinedDto: Codable {
 }
 
 extension ChatSessionPartyJoinedDto: ContactCenterEventModelConvertible {
-    func toModel() -> ContactCenterEventProtocol {
-        ContactCenterServerEvent.chatSessionPartyJoined(partyID: partyID, firstName: firstName, lastName: lastName, displayName: displayName, type: type.toModel(), timestamp: timestamp)
+    func toModel() -> ContactCenterEvent {
+        ContactCenterEvent.chatSessionPartyJoined(partyID: partyID, firstName: firstName, lastName: lastName, displayName: displayName, type: type.toModel(), timestamp: timestamp)
     }
 }

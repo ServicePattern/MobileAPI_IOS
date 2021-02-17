@@ -8,7 +8,7 @@ struct ChatSessionEndedDto: Codable {
 }
 
 extension ChatSessionEndedDto: ContactCenterEventModelConvertible {
-    func toModel() -> ContactCenterEventProtocol {
-        ContactCenterServerEvent.chatSessionEnded
+    func toModel() -> ContactCenterEvent {
+        ContactCenterEvent.chatSessionEnded
     }
 }
