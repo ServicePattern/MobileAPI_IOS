@@ -39,7 +39,8 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
 
     // MARK:- Convenience
     public convenience init(baseURL: URL, tenantURL: URL, appID: String, clientID: String, pollInterval: Double = 1.0) {
-        let networkService = NetworkService(decoder: JSONCoder.decoder())
+        let networkService = NetworkService(encoder: JSONCoder.encoder(),
+                                            decoder: JSONCoder.decoder())
         self.init(baseURL: baseURL,
                   tenantURL: tenantURL,
                   appID: appID,
@@ -194,6 +195,10 @@ extension ContactCenterCommunicator {
             }
 
             return decoder
+        }
+
+        static func encoder() -> JSONEncoder {
+            JSONEncoder()
         }
     }
 }

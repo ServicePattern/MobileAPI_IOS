@@ -8,11 +8,15 @@ private struct ContactCenterEventTypeContainerDto: Decodable {
 }
 
 /// - Tag: ContactCenterEventsContainerDto
-struct ContactCenterEventsContainerDto: Decodable {
+struct ContactCenterEventsContainerDto: Codable {
     let events: [ContactCenterEvent]
 
     enum CodingKeys: String, CodingKey {
         case events
+    }
+
+    init(events: [ContactCenterEvent]) {
+        self.events = events
     }
 
     init(from decoder: Decoder) throws {
@@ -49,5 +53,14 @@ struct ContactCenterEventsContainerDto: Decodable {
                 return nil
             }
         }
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        let e = ChatSessionStatusDto(event: .chatSessionStatus, state: .connected, ewt: "200")
+        let e1 = ChatSessionMessageDto(event: .chatSessionMessage, messageID: "1223", partyID: nil, message: "12233", timestamp: nil)
+        var eventsNestedContainer = container.nestedUnkeyedContainer(forKey: .events)
+        try eventsNestedContainer.encode(e.self)
+        try eventsNestedContainer.encode(e1.self)
     }
 }
