@@ -18,6 +18,12 @@ struct ChatSessionPartyLeftDto: Codable {
         case partyID = "party_id"
         case timestamp
     }
+
+    init(partyID: String, timestamp: Date) {
+        self.event = .chatSessionPartyLeft
+        self.partyID = partyID
+        self.timestamp = timestamp
+    }
 }
 
 extension ChatSessionPartyLeftDto: ContactCenterEventModelConvertible {

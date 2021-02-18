@@ -19,6 +19,14 @@ struct ChatSessionMessageDto: Codable {
         case message = "msg"
         case timestamp
     }
+
+    init(messageID: String, partyID: String?, message: String, timestamp: Date?) {
+        self.event = .chatSessionMessage
+        self.messageID = messageID
+        self.partyID = partyID
+        self.message = message
+        self.timestamp = timestamp
+    }
 }
 
 extension ChatSessionMessageDto: ContactCenterEventModelConvertible {

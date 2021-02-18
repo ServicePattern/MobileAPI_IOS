@@ -19,6 +19,12 @@ struct ChatSessionTimeoutWarningDto: Codable {
         case message = "msg"
         case timestamp
     }
+
+    init(message: String, timestamp: Date) {
+        self.event = .chatSessionTimeoutWarning
+        self.message = message
+        self.timestamp = timestamp
+    }
 }
 
 extension ChatSessionTimeoutWarningDto: ContactCenterEventModelConvertible {

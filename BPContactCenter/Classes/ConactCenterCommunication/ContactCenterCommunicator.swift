@@ -16,6 +16,7 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
     private var pollTimer: Timer?
     private let pollInterval: Double
     private static let timerTolerance = 0.2
+    private var messageNumber = 0
 
     /// This method is not exposed to the consumer and it might be used to inject dependencies for unit testing
     init(baseURL: URL, tenantURL: URL, appID: String, clientID: String, networkService: NetworkService, pollInterval: Double = 1.0) {
@@ -117,6 +118,40 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
             }
         } catch {
             log.error("Failed to requestChat: \(error)")
+            completion(.failure(error))
+        }
+    }
+
+    private func messageIdentifier() -> String {
+        "\(UUID()):\(messageNumber)"
+    }
+
+    public func sendChatMessage(chatID: String, message: String, completion: @escaping ((Result<String, Error>) -> Void)) {
+
+        let messageID = messageIdentifier()
+        let eventsContainer = ContactCenterEventsContainerDto(events: [.chatSessionMessage(messageID: messageID, partyID: nil, message: message, timestamp: nil)])
+        do {
+            guard var urlRequest = try networkService.createRequest(method: .post,
+                                                                    baseURL: baseURL,
+                                                                    endpoint: .sendChatMessage(chatID: chatID),
+                                                                    headerFields: defaultHttpHeaderFields,
+                                                                    parameters: defaultHttpRequestParameters) else {
+                log.error("Failed to create URL request")
+
+                throw ContactCenterError.failedToCreateURLRequest
+            }
+            urlRequest = try networkService.encode(from: eventsContainer, request: urlRequest)
+            networkService.dataTask(using: urlRequest) { [weak self] response in
+                switch response {
+                case .success(_):
+                    self?.messageNumber += 1
+                    completion(.success(messageID))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        } catch {
+            log.error("Failed to sendChatMessage: \(error)")
             completion(.failure(error))
         }
     }

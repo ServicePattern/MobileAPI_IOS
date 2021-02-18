@@ -9,6 +9,10 @@ import Foundation
 
 struct ChatSessionDisconnectDto: Codable {
     let event: ContactCenterEventTypeDto
+
+    init() {
+        self.event = .chatSessionDisconnect
+    }
 }
 
 extension ChatSessionDisconnectDto: ContactCenterEventModelConvertible {

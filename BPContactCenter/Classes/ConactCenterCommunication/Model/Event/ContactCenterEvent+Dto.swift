@@ -4,17 +4,44 @@
 
 import Foundation
 
+extension ContactCenterChatSessionPartyType {
+    func toDto() -> ChatSessionPartyTypeDto {
+        switch self {
+        case .scenario:
+            return .scenario
+        case .external:
+            return .external
+        case .internal:
+            return .internal
+        }
+    }
+}
+
 extension ContactCenterEvent {
     func toDto() -> Encodable {
         switch self {
         case .chatSessionMessage(messageID: let messageID, partyID: let partyID, message: let message, timestamp: let timestamp):
-            return ChatSessionMessageDto(event: <#T##ContactCenterEventTypeDto#>, messageID: <#T##String#>, partyID: <#T##String?#>, message: <#T##String#>, timestamp: <#T##Date?#>)
+            return ChatSessionMessageDto(messageID: messageID, partyID: partyID, message: message, timestamp: timestamp)
+        case .chatSessionMessageDelivered(messageID: let messageID, partyID: let partyID, timestamp: let timestamp):
+            return ChatSessionMessageDeliveredDto(messageID: messageID, partyID: partyID, timestamp: timestamp)
+        case .chatSessionMessageRead(messageID: let messageID, partyID: let partyID, timestamp: let timestamp):
+            return ChatSessionMessageReadDto(messageID: messageID, partyID: partyID, timestamp: timestamp)
         case .chatSessionStatus(state: let state, ewt: let ewt):
-            <#code#>
-        case .chatSessionEnded:
-            <#code#>
+            return ChatSessionStatusDto(state: state.toDto(), ewt: ewt)
         case .chatSessionPartyJoined(partyID: let partyID, firstName: let firstName, lastName: let lastName, displayName: let displayName, type: let type, timestamp: let timestamp):
-            <#code#>
+            return ChatSessionPartyJoinedDto(partyID: partyID, firstName: firstName, lastName: lastName, displayName: displayName, type: type.toDto(), timestamp: timestamp)
+        case .chatSessionPartyLeft(partyID: let partyID, timestamp: let timestamp):
+            return ChatSessionPartyLeftDto(partyID: partyID, timestamp: timestamp)
+        case .chatSessionTimeoutWarning(message: let message, timestamp: let timestamp):
+            return ChatSessionTimeoutWarningDto(message: message, timestamp: timestamp)
+        case .chatSessionInactivityTimeout(message: let message, timestamp: let timestamp):
+            return ChatSessionInactivityTimeoutDto(message: message, timestamp: timestamp)
+        case .chatSessionEnded:
+            return ChatSessionEndedDto()
+        case .chatSessionDisconnect:
+            return ChatSessionDisconnectDto()
+        case .chatSessionEnd:
+            return ChatSessionEndDto()
         }
     }
 }

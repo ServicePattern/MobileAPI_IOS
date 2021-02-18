@@ -41,9 +41,9 @@ class ContactCenterTests: XCTestCase {
 
     func testEventsEncoding() {
         do {
-            let eventsContainer = ContactCenterEventsContainerDto(events: [])
+            let eventsContainer = ContactCenterEventsContainerDto(events: [.chatSessionEnd, .chatSessionDisconnect, .chatSessionInactivityTimeout(message: "123123", timestamp: Date()), .chatSessionMessage(messageID: "sdsdfsdf", partyID: "2342342", message: "sfdsfsf", timestamp: Date())])
             let encodedEventsContainer = try jsonEncoder.encode(eventsContainer)
-            print("\(String(data: encodedEventsContainer, encoding: .utf8))")
+            XCTAssertGreaterThan(encodedEventsContainer.count, 0)
         } catch {
             XCTFail("\(error)")
         }

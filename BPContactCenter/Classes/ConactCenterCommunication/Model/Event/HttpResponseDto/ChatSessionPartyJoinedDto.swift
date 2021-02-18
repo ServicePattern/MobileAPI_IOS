@@ -3,12 +3,14 @@
 
 import Foundation
 
-/// - Tag: ContactCenterChatSessionPartyTypeDto
-enum ContactCenterChatSessionPartyTypeDto: String, Codable {
+/// - Tag: ChatSessionPartyTypeDto
+enum ChatSessionPartyTypeDto: String, Codable {
     case scenario
     case external
     case `internal`
+}
 
+extension ChatSessionPartyTypeDto {
     func toModel() -> ContactCenterChatSessionPartyType {
         switch self {
         case .scenario:
@@ -28,7 +30,7 @@ struct ChatSessionPartyJoinedDto: Codable {
     let firstName: String
     let lastName: String
     let displayName: String
-    let type: ContactCenterChatSessionPartyTypeDto
+    let type: ChatSessionPartyTypeDto
     let timestamp: Date
 
     enum CodingKeys: String, CodingKey {
@@ -39,6 +41,16 @@ struct ChatSessionPartyJoinedDto: Codable {
         case displayName = "display_name"
         case type
         case timestamp
+    }
+
+    init(partyID: String, firstName: String, lastName: String, displayName: String, type: ChatSessionPartyTypeDto, timestamp: Date) {
+        self.event = .chatSessionPartyJoined
+        self.partyID = partyID
+        self.firstName = firstName
+        self.lastName = lastName
+        self.displayName = displayName
+        self.type = type
+        self.timestamp = timestamp
     }
 }
 

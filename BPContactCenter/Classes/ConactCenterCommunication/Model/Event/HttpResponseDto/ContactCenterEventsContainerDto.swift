@@ -47,7 +47,12 @@ struct ContactCenterEventsContainerDto: Codable {
             do {
                 // 2. Based on dto type decode data to a specific Dto object
                 // superDecoder() returns a Decoder that points to the part that represents the whole object
-                return try dtoType.decodeDto(from: eventsContainer.superDecoder()).toModel()
+                guard let dtoConvertible = try dtoType.codableType.init(from: decoder) as? ContactCenterEventModelConvertible else {
+
+                    throw ContactCenterError.failedToCast("to: \(ContactCenterEventModelConvertible.self)")
+                }
+
+                return dtoConvertible.toModel()
             } catch {
                 log.error("\(error)")
                 return nil
@@ -57,10 +62,13 @@ struct ContactCenterEventsContainerDto: Codable {
 
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        let e = ChatSessionStatusDto(event: .chatSessionStatus, state: .connected, ewt: "200")
-        let e1 = ChatSessionMessageDto(event: .chatSessionMessage, messageID: "1223", partyID: nil, message: "12233", timestamp: nil)
         var eventsNestedContainer = container.nestedUnkeyedContainer(forKey: .events)
-        try eventsNestedContainer.encode(e.self)
-        try eventsNestedContainer.encode(e1.self)
+        events.forEach { event in
+            do {
+                try event.toDto().encode(to: eventsNestedContainer.superEncoder())
+            } catch {
+                log.error("Failed to encode: \(error)")
+            }
+        }
     }
 }

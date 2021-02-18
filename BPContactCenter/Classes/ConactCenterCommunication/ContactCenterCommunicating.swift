@@ -38,6 +38,12 @@ public protocol ContactCenterCommunicating {
     ///   - phoneNumber: phone number for callback, if necessary
     ///   - from: Propagated into scenario variable $(item.from). May be used to specify either the device owner’s name or phone number.
     ///   - parameters: Additional parameters.
-    ///   - completion: Returns chat session properties [ContactCenterChatSessionProperties](x-source-tag://ContactCenterChatSessionProperties) or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    ///   - completion: Returns chat session properties that includes ``chatID`` in [ContactCenterChatSessionProperties](x-source-tag://ContactCenterChatSessionProperties) or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
     func requestChat(phoneNumber: String, from: String, parameters: [String: String], with completion: @escaping ((Result<ContactCenterChatSessionProperties, Error>) -> Void))
+    /// Send a chat message. Before message is sent the function generates a ```messageID``` which is returned in a completion
+    /// - Parameters:
+    ///   - chatID: The current chat ID
+    ///   - message: Text of the message
+    ///   - completion: Returns  ```messageID``` in the format chatId:messageNumber where messageNumber is ordinal number of the given message in the chat exchange or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    func sendChatMessage(chatID: String, message: String, completion: @escaping ((Result<String, Error>) -> Void))
 }

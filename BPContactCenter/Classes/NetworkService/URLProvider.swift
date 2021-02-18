@@ -26,12 +26,13 @@ class URLProvider {
         return completeBaseURL
     }
 
-    enum Endpoint: CustomStringConvertible {
+    enum Endpoint {
         case checkAvailability
         case getChatHistory(chatID: String)
         case requestChat
+        case sendChatMessage(chatID: String)
 
-        var description: String {
+        var endpointPathString: String {
             switch self {
             case .checkAvailability:
                 return "availability"
@@ -39,6 +40,8 @@ class URLProvider {
                 return "chats/\(chatID)/history"
             case .requestChat:
                 return "chats"
+            case .sendChatMessage(let chatID):
+                return "chats/\(chatID)/events"
             }
         }
     }
