@@ -35,7 +35,6 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
         self.pollInterval = pollInterval
 
         subscribeToNotifications()
-        startTimer()
     }
 
     // MARK:- Convenience
@@ -111,6 +110,8 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
             networkService.dataTask(using: urlRequest) { (result: Result<ChatSessionPropertiesDto, Error>) -> Void in
                 switch result {
                 case .success(let chatSessionProperties):
+                    //  Start polling for chat events
+                    self.startTimer(chatId: chatSessionProperties.chatID)
                     completion(.success(chatSessionProperties.toModel()))
                 case .failure(let error):
                     completion(.failure(error))
@@ -219,7 +220,38 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
 
 // MARK: - Poll action
 extension ContactCenterCommunicator {
-    @objc private func pollAction() {
+    @objc private func pollAction(chatId: String) {
+        do {
+            guard let urlRequest = try networkService.createRequest(method: .get,
+                                                                    baseURL: baseURL,
+                                                                    endpoint: .getNewChatEvents(chatID: chatId),
+                                                                    headerFields: defaultHttpHeaderFields,
+                                                                    parameters: defaultHttpRequestParameters) else {
+                log.error("Failed to create URL request")
+
+                throw ContactCenterError.failedToCreateURLRequest
+            }
+            networkService.dataTask(using: urlRequest) { (result: Result<ContactCenterEventsContainerDto, Error>) -> Void in
+                switch result {
+                case .success(let eventsContainer):
+                    //  Report received server events to the application
+                    self.delegate?(.success(eventsContainer.events))
+                    
+                    //  Stop polling timer if session has ended; otherwise need to start new getNewChatEvents request
+                    for e in eventsContainer.events {
+                        switch e {
+                        case .chatSessionEnded:
+                            self.stopTimer()
+                        default:
+                            break
+                        }
+                    }
+                default:
+                    break
+                }
+            }
+        } catch {
+        }
     }
 
     private func subscribeToNotifications() {
@@ -235,13 +267,13 @@ extension ContactCenterCommunicator {
                                                object: nil)
     }
 
-    private func setupTimer(pollInterval: Double) {
+    private func setupTimer(chatId: String, pollInterval: Double) {
         guard pollTimer == nil else {
             log.debug("Timer already set")
             return
         }
         let timer =  Timer(timeInterval: pollInterval, repeats: true) { [weak self] _ in
-            self?.pollAction()
+            self?.pollAction(chatId: chatId)
         }
         // Allow a timer to run when a UI thread block execution
         RunLoop.current.add(timer, forMode: .commonModes)
@@ -256,10 +288,10 @@ extension ContactCenterCommunicator {
         self.pollTimer = nil
     }
 
-    @objc private func startTimer() {
+    @objc private func startTimer(chatId: String) {
         // Make sure that a timer is scheduled and invalidated on the same thread
         DispatchQueue.main.async { [unowned self] in
-            setupTimer(pollInterval: self.pollInterval)
+            setupTimer(chatId: chatId, pollInterval: self.pollInterval)
         }
     }
 
