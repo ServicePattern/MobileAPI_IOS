@@ -43,7 +43,7 @@ public enum ContactCenterEvent {
     /// Indicates that a system has requested an application to display a message. Typically used to display inactivity warning.
     /// Direction: S->C
     case chatSessionTimeoutWarning(message: String, timestamp: Date)
-    /// Indicates that a system has rended the chat session due to the user's inactivity.
+    /// Indicates that a system has ended the chat session due to the user's inactivity.
     /// Direction: S->C
     case chatSessionInactivityTimeout(message: String, timestamp: Date)
     /// Indicates a normal termination of the chat session (e.g., when the chat session is closed by the agent). The client application shall assume that the chat session no longer exists.
