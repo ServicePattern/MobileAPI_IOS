@@ -47,7 +47,7 @@ struct ContactCenterEventsContainerDto: Codable {
             do {
                 // 2. Based on dto type decode data to a specific Dto object
                 // superDecoder() returns a Decoder that points to the part that represents the whole object
-                guard let dtoConvertible = try dtoType.codableType.init(from: decoder) as? ContactCenterEventModelConvertible else {
+                guard let dtoConvertible = try dtoType.codableType.init(from: eventsContainer.superDecoder()) as? ContactCenterEventModelConvertible else {
 
                     throw ContactCenterError.failedToCast("to: \(ContactCenterEventModelConvertible.self)")
                 }
