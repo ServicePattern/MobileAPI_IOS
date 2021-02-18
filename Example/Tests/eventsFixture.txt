@@ -26,6 +26,14 @@
             "msg": "<chat message>3"
         },
         {
+            "event": "chat_session_message_delivered",
+            "msg_id": "<message id>3"
+        },
+        {
+            "event": "chat_session_message_read",
+            "msg_id": "<message id>3"
+        },
+        {
             "event": "chat_session_message",
             "party_id": "<party id>",
             "msg_id": "<message id>",
@@ -58,6 +66,27 @@
             "display_name": "<party display name>3",
             "type": "external",
             "timestamp": "1613472505"
+        },
+        {
+            "event": "chat_session_party_left",
+            "party_id": "<party id>2",
+            "timestamp": "1613472506"
+        },
+        {
+            "event": "chat_session_timeout_warning",
+            "msg": "Timeout warning",
+            "timestamp": "1613472507"
+        },
+        {
+            "event": "chat_session_inactivity_timeout",
+            "msg": "The session has been ended due to inactivity",
+            "timestamp": "1613472508"
+        },
+        {
+            "event": "chat_session_disconnect"
+        },
+        {
+            "event": "chat_session_end"
         }
     ]
 }
