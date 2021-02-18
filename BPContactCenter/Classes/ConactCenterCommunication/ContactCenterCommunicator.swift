@@ -185,12 +185,12 @@ extension ContactCenterCommunicator {
             decoder.dateDecodingStrategy = .custom { decoder in
                 let container = try decoder.singleValueContainer()
                 let dateString = try container.decode(String.self)
-                guard let ms = TimeInterval(dateString) else {
+                guard let sec = TimeInterval(dateString) else {
 
                     throw DecodingError.dataCorruptedError(in: container, debugDescription: "Expected String containing Int")
                 }
 
-                return Date(timeIntervalSince1970: ms / 1000)
+                return Date(timeIntervalSince1970: sec)
             }
 
             return decoder
