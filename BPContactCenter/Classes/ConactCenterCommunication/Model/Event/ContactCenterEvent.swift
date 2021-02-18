@@ -51,8 +51,8 @@ public enum ContactCenterEvent {
     case chatSessionEnded
     /// Client sends the message to end current chat conversation but keep the session open.
     /// Direction: C->S
-    case chatSessionDisconnect(partyID: String?, timestamp: Date?)
+    case chatSessionDisconnect
     /// Client sends the message to end chat session.
     /// Direction: C->S
-    case chatSessionEnd(partyID: String?, timestamp: Date?)
+    case chatSessionEnd
 }
