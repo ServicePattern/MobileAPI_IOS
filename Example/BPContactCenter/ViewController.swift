@@ -39,6 +39,8 @@ class ViewController: UIViewController {
                                 switch eventsResult {
                                 case .success(let events):
                                     print("Events: \(events)")
+                                    self?.sendChatMessage(chatID: chatProperties
+                                                            .chatID, message: "Hello")
                                 case .failure(let error):
                                     print("Failed to getChatHistory: \(error)")
                                 }
@@ -50,6 +52,20 @@ class ViewController: UIViewController {
                 }
             case .failure(let error):
                 print("Failed to check availability: \(error)")
+            }
+        }
+    }
+
+
+    private func sendChatMessage(chatID: String, message: String) {
+        self.contactCenterService?.sendChatMessage(chatID: chatID, message: "Hello") { chatMessageResult in
+            switch chatMessageResult {
+            case .success(let messageID):
+                print("MessageID: \(messageID)")
+
+            case .failure(let error):
+
+                print("Failed to send chat message: \(error)")
             }
         }
     }

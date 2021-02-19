@@ -46,7 +46,7 @@ class NetworkService {
 
         var urlComponents = URLComponents(url: baseURL, resolvingAgainstBaseURL: true)
         let basePath = urlComponents?.path ?? ""
-        urlComponents?.path = basePath.appendingPathComponents("\(endpoint)")
+        urlComponents?.path = basePath.appendingPathComponents(endpoint.endpointPathString)
         urlComponents?.queryItems = parameters?.queryItems
 
         guard let url = urlComponents?.url else {
@@ -101,31 +101,6 @@ extension NetworkService: NetworkSessionServiceable {
                 log.debug("Received data: \(decodedString)")
                 do {
                     let decodedObject: T = try self.decode(to: T.self, data: data)
-                    completion(.success(decodedObject))
-                } catch {
-                    completion(.failure(error))
-                }
-            case .failure(let error):
-                log.error("Request failed: \(error)")
-                completion(.failure(error))
-            }
-        }
-    }
-
-    func dataTask<T: Decodable>(using request: URLRequest, with completion: @escaping (Result<[T], Error>) -> Void) {
-        dataTask(using: request) { [unowned self] response in
-            switch response {
-            case .success((let data, _)):
-                guard let data = data else {
-                    log.error("Data is empty for request: \(request)")
-                    completion(.failure(ContactCenterError.dataEmpty))
-                    return
-                }
-                var decodedString = String(decoding: data, as: UTF8.self)
-                decodedString = decodedString.isEmpty ? "\(data)": decodedString
-                log.debug("Received data: \(decodedString)")
-                do {
-                    let decodedObject: [T] = try self.decode(to: [T].self, data: data)
                     completion(.success(decodedObject))
                 } catch {
                     completion(.failure(error))

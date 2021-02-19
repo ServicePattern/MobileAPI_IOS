@@ -45,13 +45,4 @@ enum ContactCenterEventTypeDto: String, Codable, CaseIterable {
             return ChatSessionEndDto.self
         }
     }
-
-    func decodeDto(from decoder: Decoder) throws -> ContactCenterEventModelConvertible {
-        guard let dtoConvertible = try codableType.init(from: decoder) as? ContactCenterEventModelConvertible else {
-
-            throw ContactCenterError.failedToCast("to: \(ContactCenterEventModelConvertible.self)")
-        }
-
-        return dtoConvertible
-    }
 }

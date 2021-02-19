@@ -19,6 +19,12 @@ struct ChatSessionInactivityTimeoutDto: Codable {
         case message = "msg"
         case timestamp
     }
+
+    init(message: String, timestamp: Date) {
+        self.event = .chatSessionInactivityTimeout
+        self.message = message
+        self.timestamp = timestamp
+    }
 }
 
 extension ChatSessionInactivityTimeoutDto: ContactCenterEventModelConvertible {

@@ -3,6 +3,7 @@ import XCTest
 
 class ContactCenterTests: XCTestCase {
     let jsonDecoder = ContactCenterCommunicator.JSONCoder.decoder()
+    let jsonEncoder = ContactCenterCommunicator.JSONCoder.encoder()
     
     override func setUp() {
         super.setUp()
@@ -33,6 +34,16 @@ class ContactCenterTests: XCTestCase {
         do {
             let eventsContainer = try jsonDecoder.decode(ContactCenterEventsContainerDto.self, from: eventsFixtureData())
             XCTAssertEqual(eventsContainer.events.count, 16)
+        } catch {
+            XCTFail("\(error)")
+        }
+    }
+
+    func testEventsEncoding() {
+        do {
+            let eventsContainer = ContactCenterEventsContainerDto(events: [.chatSessionEnd, .chatSessionDisconnect, .chatSessionInactivityTimeout(message: "123123", timestamp: Date()), .chatSessionMessage(messageID: "sdsdfsdf", partyID: "2342342", message: "sfdsfsf", timestamp: Date())])
+            let encodedEventsContainer = try jsonEncoder.encode(eventsContainer)
+            XCTAssertGreaterThan(encodedEventsContainer.count, 0)
         } catch {
             XCTFail("\(error)")
         }

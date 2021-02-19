@@ -5,6 +5,10 @@ import Foundation
 
 struct ChatSessionEndedDto: Codable {
     let event: ContactCenterEventTypeDto
+
+    init() {
+        self.event = .chatSessionEnded
+    }
 }
 
 extension ChatSessionEndedDto: ContactCenterEventModelConvertible {
