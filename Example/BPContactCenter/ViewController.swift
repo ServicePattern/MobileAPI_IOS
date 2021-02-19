@@ -46,8 +46,7 @@ class ViewController: UIViewController {
                                             print("\(timestamp): message: \(message) from party \(partyID)")
                                             self?.chatMessageDelivered(chatID: chatProperties.chatID, messageID: messageID)
                                             self?.chatMessageRead(chatID: chatProperties.chatID, messageID: messageID)
-                                        default:
-                                            break
+                                        default:()
                                         }
                                     }
                                     
@@ -133,4 +132,3 @@ class ViewController: UIViewController {
     }
 
 }
-
