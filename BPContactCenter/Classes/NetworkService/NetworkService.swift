@@ -2,6 +2,7 @@
 // Copyright © 2021 BrightPattern. All rights reserved.
 
 import Foundation
+import CFNetwork
 
 class NetworkService: NetworkServiceable {
     /// Might be used to switch between live and Mock Data

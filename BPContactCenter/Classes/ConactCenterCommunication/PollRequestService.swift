@@ -6,7 +6,7 @@ import Foundation
 
 protocol PollRequestServiceable {
     var currentChatID: String? { get set }
-    var delegate: ((Result<[ContactCenterEvent], Error>) -> Void)? { get set }
+    var delegate: ContactCenterEventsDelegating? { get set }
 }
 
 // MARK: - Poll action
@@ -27,7 +27,7 @@ class PollRequestService: PollRequestServiceable {
         }
     }
 
-    private var isForegroundValue: Bool = false
+    private var isForegroundValue: Bool = true
     internal var isForeground: Bool {
         get {
             readerWriterQueue.sync {
@@ -39,20 +39,28 @@ class PollRequestService: PollRequestServiceable {
                 self?.isForegroundValue = newValue
                 self?.startPollingIfNeeded()
             }
+            startOrStopReachability(start: newValue)
         }
     }
     internal var pollRequestDataTask: URLSessionDataTask?
     private let readerWriterQueue = DispatchQueue(label: "com.BPContactCenter.PollRequestServiceable.reader-writer", attributes: .concurrent)
     internal let pollRequestQueue = DispatchQueue(label: "com.BPContactCenter.pollRequestQueue")
     private let networkService: NetworkServiceable
-    internal var httpGetRequestBuilder: ((URLProvider.Endpoint) throws -> URLRequest)?
-    internal var delegate: ((Result<[ContactCenterEvent], Error>) -> Void)?
+    internal weak var httpRequestBuilder: HttpRequestBuilding?
+    internal weak var delegate: ContactCenterEventsDelegating?
+    private let reachability: Reachability
 
     init(networkService: NetworkServiceable, pollInterval: Double) {
         self.networkService = networkService
         self.pollInterval = pollInterval
+        do {
+            self.reachability = try Reachability()
+        } catch {
+            fatalError("Failed to initialize reachability: \(error)")
+        }
 
         subscribeToNotifications()
+        setupReachability()
     }
 
     // MARK:- Deinitialization part
@@ -75,7 +83,7 @@ class PollRequestService: PollRequestServiceable {
                 log.debug("There is already poll task running")
                 return
             }
-            guard let urlRequest = try httpGetRequestBuilder?(.getNewChatEvents(chatID: currentChatID)) else {
+            guard let urlRequest = try httpRequestBuilder?.httpGetRequest(with: .getNewChatEvents(chatID: currentChatID)) else {
                 log.error("Failed to create URL request")
 
                 throw ContactCenterError.failedToCreateURLRequest
@@ -87,7 +95,7 @@ class PollRequestService: PollRequestServiceable {
                 switch result {
                 case .success(let eventsContainer):
                     //  Report received server events to the application
-                    self?.delegate?(.success(eventsContainer.events))
+                    self?.delegate?.chatSessionEvents(events: .success(eventsContainer.events))
                     //  Reset currentChatID to stop polling timer if session has ended
                     for e in eventsContainer.events {
                         switch e {
@@ -99,8 +107,7 @@ class PollRequestService: PollRequestServiceable {
                     }
                     // Check and start new getNewChatEvents request if needed
                     self?.startPollingIfNeeded()
-                default:
-                    break
+                case .failure:()
                 }
             }
         } catch {
@@ -124,10 +131,12 @@ class PollRequestService: PollRequestServiceable {
     }
 
     internal func startPollingIfNeeded() {
-        if isForeground && currentChatID != nil {
-            startPolling()
-        } else {
-            stopPolling()
+        pollRequestQueue.async { [weak self] in
+            if self?.isForeground == true && self?.currentChatID != nil {
+                self?.startPolling()
+            } else {
+                self?.stopPolling()
+            }
         }
     }
 }
@@ -153,5 +162,34 @@ extension PollRequestService {
 
     @objc private func didEnterBackground() {
         self.isForeground = false
+    }
+}
+
+// MARK:- Network reachability
+extension PollRequestService {
+    private func setupReachability() {
+        reachability.whenReachable = { [weak self] reachability in
+            log.debug("Start polling if needed because network became reachable: \(reachability)")
+            self?.startPollingIfNeeded()
+        }
+        reachability.whenUnreachable = { [weak self] reachability in
+            log.debug("Stop polling because network is unreachable: \(reachability)")
+            self?.stopPolling()
+        }
+        startOrStopReachability(start: true)
+    }
+
+    private func startOrStopReachability(start: Bool) {
+        if start {
+            do {
+                try reachability.startNotifier()
+                log.debug("Reachability notifications started")
+            } catch {
+                log.error("Failed to start reachability notifications:\(error)")
+            }
+        } else {
+            reachability.stopNotifier()
+            log.debug("Reachability notifications stopped")
+        }
     }
 }

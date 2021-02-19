@@ -3,12 +3,16 @@
 
 import Foundation
 
+protocol HttpRequestBuilding: class {
+    func httpGetRequest(with endpoint: URLProvider.Endpoint) throws -> URLRequest
+}
+
 public final class ContactCenterCommunicator: ContactCenterCommunicating {
     public let baseURL: URL
     public let tenantURL: URL
     public let appID: String
     public let clientID: String
-    public var delegate: ((Result<[ContactCenterEvent], Error>) -> Void)? {
+    public weak var delegate: ContactCenterEventsDelegating? {
         get {
             pollRequestService.delegate
         }
@@ -65,41 +69,7 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
                   networkService: networkService,
                   pollRequestService: pollRequestService)
 
-        pollRequestService.httpGetRequestBuilder = httpGetRequest
-    }
-
-    // MARK: - HTTP request helper factory functions
-    internal func httpGetRequest(with endpoint: URLProvider.Endpoint) throws -> URLRequest {
-        guard let urlRequest = try networkService.createRequest(method: .get,
-                                                                baseURL: baseURL,
-                                                                endpoint: endpoint,
-                                                                headerFields: defaultHttpHeaderFields,
-                                                                parameters: defaultHttpRequestParameters) else {
-            log.error("Failed to create URL request")
-
-            throw ContactCenterError.failedToCreateURLRequest
-        }
-
-        return urlRequest
-    }
-
-    private func httpSendEventsPostRequest(chatID: String, events: [ContactCenterEvent]) throws -> URLRequest {
-        let eventsContainer = ContactCenterEventsContainerDto(events: events)
-        do {
-            guard let urlRequest = try networkService.createRequest(method: .post,
-                                                                    baseURL: baseURL,
-                                                                    endpoint: .sendEvents(chatID: chatID),
-                                                                    headerFields: defaultHttpHeaderFields,
-                                                                    parameters: defaultHttpRequestParameters) else {
-                log.error("Failed to create URL request")
-
-                throw ContactCenterError.failedToCreateURLRequest
-            }
-            return try networkService.encode(from: eventsContainer, request: urlRequest)
-        } catch {
-            log.error("Failed to sendChatMessage: \(error)")
-            throw error
-        }
+        pollRequestService.httpRequestBuilder = self
     }
 
     // MARK: - Public methods
@@ -233,6 +203,42 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
         } catch {
             log.error("Failed to endChat: \(error)")
             completion(.failure(error))
+        }
+    }
+}
+
+// MARK: - HTTP request helper factory functions
+extension ContactCenterCommunicator: HttpRequestBuilding {
+    internal func httpGetRequest(with endpoint: URLProvider.Endpoint) throws -> URLRequest {
+        guard let urlRequest = try networkService.createRequest(method: .get,
+                                                                baseURL: baseURL,
+                                                                endpoint: endpoint,
+                                                                headerFields: defaultHttpHeaderFields,
+                                                                parameters: defaultHttpRequestParameters) else {
+            log.error("Failed to create URL request")
+
+            throw ContactCenterError.failedToCreateURLRequest
+        }
+
+        return urlRequest
+    }
+
+    private func httpSendEventsPostRequest(chatID: String, events: [ContactCenterEvent]) throws -> URLRequest {
+        let eventsContainer = ContactCenterEventsContainerDto(events: events)
+        do {
+            guard let urlRequest = try networkService.createRequest(method: .post,
+                                                                    baseURL: baseURL,
+                                                                    endpoint: .sendEvents(chatID: chatID),
+                                                                    headerFields: defaultHttpHeaderFields,
+                                                                    parameters: defaultHttpRequestParameters) else {
+                log.error("Failed to create URL request")
+
+                throw ContactCenterError.failedToCreateURLRequest
+            }
+            return try networkService.encode(from: eventsContainer, request: urlRequest)
+        } catch {
+            log.error("Failed to sendChatMessage: \(error)")
+            throw error
         }
     }
 }

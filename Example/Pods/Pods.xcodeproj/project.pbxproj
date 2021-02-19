@@ -50,6 +50,7 @@
 		EBB14B34226DFEEF70959EFA2318AA05 /* ChatSessionStatusDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062AC3C43474E05B69D10C5BD38AE41E /* ChatSessionStatusDto.swift */; };
 		F1CBC85425DFBCA90048CCFF /* PollRequestService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1CBC85325DFBCA90048CCFF /* PollRequestService.swift */; };
 		F1CBC8AD25E025530048CCFF /* NetworkServiceable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1CBC8AC25E025530048CCFF /* NetworkServiceable.swift */; };
+		F1CBC8C925E06B8F0048CCFF /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1CBC8C825E06B8F0048CCFF /* Reachability.swift */; };
 		F8642E6EE4678B27C028D5B4FABD2143 /* URLSession+NetworkSessionServiceable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB0311EDEA5DF701D942C4F0263AF09 /* URLSession+NetworkSessionServiceable.swift */; };
 		FCCB9E2A5B6846A56F1B904ADA67A744 /* ChatSessionMessageDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3ADC4CB3AE2BBCCF8575DF529940F3E /* ChatSessionMessageDto.swift */; };
 /* End PBXBuildFile section */
@@ -138,6 +139,7 @@
 		EBECF15B27DC836727F6F8B8746C3864 /* BPContactCenter-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "BPContactCenter-Info.plist"; sourceTree = "<group>"; };
 		F1CBC85325DFBCA90048CCFF /* PollRequestService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollRequestService.swift; sourceTree = "<group>"; };
 		F1CBC8AC25E025530048CCFF /* NetworkServiceable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkServiceable.swift; sourceTree = "<group>"; };
+		F1CBC8C825E06B8F0048CCFF /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		F493FE37932DD6FF8091A28E18C9B79A /* ContactCenterEventsContainerDto.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContactCenterEventsContainerDto.swift; sourceTree = "<group>"; };
 		F5058CA495ECC219C4FE3EED06DE5D00 /* Logger.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -341,6 +343,7 @@
 				1E9AE721653B4E6C93EA82247F79BDBD /* URLProvider.swift */,
 				249520723473B4A19F09537B1C25D9D6 /* URLRequest+Extension.swift */,
 				BAB0311EDEA5DF701D942C4F0263AF09 /* URLSession+NetworkSessionServiceable.swift */,
+				F1CBC8C825E06B8F0048CCFF /* Reachability.swift */,
 			);
 			name = NetworkService;
 			path = BPContactCenter/Classes/NetworkService;
@@ -564,6 +567,7 @@
 				1603D5FA109C16023BFCE8A987BDCC41 /* ChatSessionTimeoutWarningDto.swift in Sources */,
 				E9D7FABB60B0A96C1018B2916A73174A /* ContactCenterChatSessionProperties+Dto.swift in Sources */,
 				F1CBC8AD25E025530048CCFF /* NetworkServiceable.swift in Sources */,
+				F1CBC8C925E06B8F0048CCFF /* Reachability.swift in Sources */,
 				989B16C49E60589C25D68EBF0DB9702B /* ContactCenterChatSessionProperties.swift in Sources */,
 				DC2EB578985F08AA4861FE78DF30BF72 /* ContactCenterCommunicating.swift in Sources */,
 				C840D5C0136990197429F312F475B852 /* ContactCenterCommunicator.swift in Sources */,
