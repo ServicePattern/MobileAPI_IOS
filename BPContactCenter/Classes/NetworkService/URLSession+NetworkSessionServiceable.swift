@@ -7,12 +7,14 @@ import Foundation
 typealias NetworkDataResponse = Result<(Data?, URLResponse?), Error>
 
 protocol NetworkSessionServiceable {
-    func dataTask(using request: URLRequest, with completion: @escaping (NetworkDataResponse) -> Void)
+    @discardableResult
+    func dataTask(using request: URLRequest, with completion: @escaping (NetworkDataResponse) -> Void) -> URLSessionDataTask
 }
 
 extension URLSession: NetworkSessionServiceable {
-    func dataTask(using request: URLRequest, with completion: @escaping (NetworkDataResponse) -> Void) {
-        self.dataTask(with: request) { (data, response, error) in
+    @discardableResult
+    func dataTask(using request: URLRequest, with completion: @escaping (NetworkDataResponse) -> Void) -> URLSessionDataTask {
+        let task = dataTask(with: request) { (data, response, error) in
 
             let networkResponse: NetworkDataResponse
 
@@ -43,6 +45,9 @@ extension URLSession: NetworkSessionServiceable {
 
             completion(networkResponse)
         }
-        .resume()
+
+        task.resume()
+
+        return task
     }
 }

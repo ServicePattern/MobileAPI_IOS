@@ -17,6 +17,18 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
     private let pollInterval: Double
     private static let timerTolerance = 0.2
     private var messageNumber = 0
+    private var currentChatID: String? {
+        didSet {
+            startPollingIfNeeded()
+        }
+    }
+
+    private var isForeground: Bool = false {
+        didSet {
+            startPollingIfNeeded()
+        }
+    }
+    private var pollRequestDataTask: URLSessionDataTask?
 
     /// This method is not exposed to the consumer and it might be used to inject dependencies for unit testing
     init(baseURL: URL, tenantURL: URL, appID: String, clientID: String, networkService: NetworkService, pollInterval: Double = 1.0) {
@@ -107,11 +119,11 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
 
                 throw ContactCenterError.failedToCreateURLRequest
             }
-            networkService.dataTask(using: urlRequest) { (result: Result<ChatSessionPropertiesDto, Error>) -> Void in
+            networkService.dataTask(using: urlRequest) { [weak self] (result: Result<ChatSessionPropertiesDto, Error>) -> Void in
                 switch result {
                 case .success(let chatSessionProperties):
                     //  Start polling for chat events
-                    self.startTimer(chatId: chatSessionProperties.chatID)
+                    self?.currentChatID = chatSessionProperties.chatID
                     completion(.success(chatSessionProperties.toModel()))
                 case .failure(let error):
                     completion(.failure(error))
@@ -220,30 +232,25 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
 
 // MARK: - Poll action
 extension ContactCenterCommunicator {
-    @objc private func pollAction(chatId: String) {
+    private func pollAction() {
         do {
-            guard let urlRequest = try networkService.createRequest(method: .get,
-                                                                    baseURL: baseURL,
-                                                                    endpoint: .getNewChatEvents(chatID: chatId),
-                                                                    headerFields: defaultHttpHeaderFields,
-                                                                    parameters: defaultHttpRequestParameters) else {
-                log.error("Failed to create URL request")
-
-                throw ContactCenterError.failedToCreateURLRequest
+            guard let currentChatID = currentChatID else {
+                log.debug("Poll requested when current chatID is nil")
+                return
             }
-            networkService.dataTask(using: urlRequest) { (result: Result<ContactCenterEventsContainerDto, Error>) -> Void in
+            let urlRequest = try defaultHttpGetRequest(with: .getNewChatEvents(chatID: currentChatID))
+            pollRequestDataTask = networkService.dataTask(using: urlRequest) { [weak self] (result: Result<ContactCenterEventsContainerDto, Error>) -> Void in
                 switch result {
                 case .success(let eventsContainer):
                     //  Report received server events to the application
-                    self.delegate?(.success(eventsContainer.events))
-                    
+                    self?.delegate?(.success(eventsContainer.events))
                     //  Stop polling timer if session has ended; otherwise need to start new getNewChatEvents request
                     for e in eventsContainer.events {
                         switch e {
                         case .chatSessionEnded:
-                            self.stopTimer()
-                        default:
+                            self?.currentChatID = nil
                             break
+                        default:()
                         }
                     }
                 default:
@@ -251,29 +258,44 @@ extension ContactCenterCommunicator {
                 }
             }
         } catch {
+            log.error("Failed to send poll request: \(error)")
+            // If fails re-try
+            startPolling()
         }
     }
 
     private func subscribeToNotifications() {
         // Restore a poll action when the app is going to go the foreground
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(startTimer),
+                                               selector: #selector(willEnterForeground),
                                                name: .UIApplicationWillEnterForeground,
                                                object: nil)
         // Pause a poll action after the app goes to the background
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(stopTimer),
+                                               selector: #selector(didEnterBackground),
                                                name: .UIApplicationDidEnterBackground,
                                                object: nil)
     }
 
-    private func setupTimer(chatId: String, pollInterval: Double) {
+    @objc private func willEnterForeground() {
+        DispatchQueue.main.async { [weak self] in
+            self?.isForeground = true
+        }
+    }
+
+    @objc private func didEnterBackground() {
+        DispatchQueue.main.async { [weak self] in
+            self?.isForeground = false
+        }
+    }
+
+    private func setupTimer() {
         guard pollTimer == nil else {
             log.debug("Timer already set")
             return
         }
-        let timer =  Timer(timeInterval: pollInterval, repeats: true) { [weak self] _ in
-            self?.pollAction(chatId: chatId)
+        let timer =  Timer(timeInterval: self.pollInterval, repeats: false) { [weak self] _ in
+            self?.pollAction()
         }
         // Allow a timer to run when a UI thread block execution
         RunLoop.current.add(timer, forMode: .commonModes)
@@ -284,21 +306,34 @@ extension ContactCenterCommunicator {
     }
 
     private func invalidateTimer() {
+        self.pollRequestDataTask?.cancel()
         self.pollTimer?.invalidate()
         self.pollTimer = nil
     }
 
-    @objc private func startTimer(chatId: String) {
+    private func startPolling() {
         // Make sure that a timer is scheduled and invalidated on the same thread
-        DispatchQueue.main.async { [unowned self] in
-            setupTimer(chatId: chatId, pollInterval: self.pollInterval)
+        DispatchQueue.main.async { [weak self] in
+            guard self?.currentChatID != nil else {
+                log.debug("Poll requested when current chatID is nil")
+                return
+            }
+            self?.setupTimer()
         }
     }
 
-    @objc private func stopTimer() {
+    private func stopPolling() {
         // Make sure that a timer is scheduled and invalidated on the same thread
-        DispatchQueue.main.async { [unowned self] in
-            self.invalidateTimer()
+        DispatchQueue.main.async { [weak self] in
+            self?.invalidateTimer()
+        }
+    }
+
+    private func startPollingIfNeeded() {
+        if isForeground && currentChatID != nil {
+            startPolling()
+        } else {
+            stopPolling()
         }
     }
 }

@@ -85,18 +85,14 @@ class NetworkService {
 
 extension NetworkService: NetworkSessionServiceable {
     /// Delegate job to the URLSession
-    func dataTask(using request: URLRequest, with completion: @escaping (NetworkDataResponse) -> Void) {
-        if ((request.httpBody) != nil) {
-            var decodedBody = String(decoding: request.httpBody!, as: UTF8.self)
-            decodedBody = decodedBody.isEmpty ? "\(request.httpBody)": decodedBody
-            log.debug("Sending data: \(decodedBody)")
-        }
-        
+    @discardableResult
+    func dataTask(using request: URLRequest, with completion: @escaping (NetworkDataResponse) -> Void) -> URLSessionDataTask {
         networkSessionService.dataTask(using: request, with: completion)
     }
 
-    func dataTask<T: Decodable>(using request: URLRequest, with completion: @escaping (Result<T, Error>) -> Void) {
-        dataTask(using: request) { [decoder] (response: NetworkDataResponse) in
+    @discardableResult
+    func dataTask<T: Decodable>(using request: URLRequest, with completion: @escaping (Result<T, Error>) -> Void) -> URLSessionDataTask {
+        dataTask(using: request) { [unowned self] response in
             switch response {
             case .success((let data, _)):
                 guard let data = data else {
@@ -120,8 +116,9 @@ extension NetworkService: NetworkSessionServiceable {
         }
     }
 
-    func dataTask(using request: URLRequest, with completion: @escaping (NetworkVoidResponse) -> Void) {
-        dataTask(using: request) { (response: NetworkDataResponse) in
+    @discardableResult
+    func dataTask(using request: URLRequest, with completion: @escaping (NetworkVoidResponse) -> Void) -> URLSessionDataTask {
+        return dataTask(using: request) { (response: NetworkDataResponse) in
             switch response {
             case .success(_):
                 completion(.success(()))
