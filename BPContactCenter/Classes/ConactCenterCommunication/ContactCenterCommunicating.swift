@@ -50,7 +50,7 @@ public protocol ContactCenterCommunicating {
     /// - Parameters:
     ///   - chatID: The current chat ID
     ///   - messageID: The message ID
-    ///   - completion: Returns  true or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    ///   - completion: Returns  .succeeded or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
     func chatMessageDelivered(chatID: String, messageID: String, completion: @escaping ((Result<Void, Error>) -> Void))
     /// Confirms that a chat message has been read by the user
     /// - Parameters:
