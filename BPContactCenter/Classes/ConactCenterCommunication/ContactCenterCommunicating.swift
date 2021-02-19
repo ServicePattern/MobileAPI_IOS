@@ -61,7 +61,7 @@ public protocol ContactCenterCommunicating {
     /// Request to disconnect chat conversation but keep the session active. Server may continue communicating with the client
     /// - Parameters:
     ///   - chatID: The current chat ID
-    ///   - completion: Returns  true or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    ///   - completion: Returns  .succeeded or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
     func disconnectChat(chatID: String, completion: @escaping ((Result<Void, Error>) -> Void))
     /// Request to disconnect chat conversation and complete the session. Server will not continue communicating with the client once request is sent
     /// - Parameters:
