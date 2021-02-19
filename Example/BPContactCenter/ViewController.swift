@@ -12,6 +12,17 @@ import BPContactCenter
 class Communicating {
 }
 
+extension DefaultStringInterpolation {
+    /// Allows to print optional values without a prefix.
+    /// ```
+    /// let x: Int? = 1
+    /// print("\(x)") // > 1
+    /// ```
+    mutating func appendInterpolation<T>(_ optional: T?) {
+        appendInterpolation(String(describing: optional))
+    }
+}
+
 class ViewController: UIViewController {
     var contactCenterService: ContactCenterCommunicating?
 

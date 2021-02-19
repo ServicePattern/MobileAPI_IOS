@@ -30,7 +30,7 @@ class URLProvider {
         case checkAvailability
         case getChatHistory(chatID: String)
         case requestChat
-        case sendChatMessage(chatID: String)
+        case sendEvents(chatID: String)
 
         var endpointPathString: String {
             switch self {
@@ -40,7 +40,7 @@ class URLProvider {
                 return "chats/\(chatID)/history"
             case .requestChat:
                 return "chats"
-            case .sendChatMessage(let chatID):
+            case .sendEvents(let chatID):
                 return "chats/\(chatID)/events"
             }
         }

@@ -3,6 +3,8 @@
 
 import Foundation
 
+typealias NetworkVoidResponse = Result<Void, Error>
+
 class NetworkService {
     /// Used to set a`URLRequest`'s HTTP Method
     enum HttpMethod: String {
@@ -94,7 +96,7 @@ extension NetworkService: NetworkSessionServiceable {
     }
 
     func dataTask<T: Decodable>(using request: URLRequest, with completion: @escaping (Result<T, Error>) -> Void) {
-        dataTask(using: request) { [unowned self] response in
+        dataTask(using: request) { [decoder] (response: NetworkDataResponse) in
             switch response {
             case .success((let data, _)):
                 guard let data = data else {
@@ -106,13 +108,24 @@ extension NetworkService: NetworkSessionServiceable {
                 decodedString = decodedString.isEmpty ? "\(data)": decodedString
                 log.debug("Received data: \(decodedString)")
                 do {
-                    let decodedObject: T = try self.decode(to: T.self, data: data)
+                    let decodedObject: T = try decoder.decode(T.self, from: data)
                     completion(.success(decodedObject))
                 } catch {
                     completion(.failure(error))
                 }
             case .failure(let error):
                 log.error("Request failed: \(error)")
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func dataTask(using request: URLRequest, with completion: @escaping (NetworkVoidResponse) -> Void) {
+        dataTask(using: request) { (response: NetworkDataResponse) in
+            switch response {
+            case .success(_):
+                completion(.success(()))
+            case .failure(let error):
                 completion(.failure(error))
             }
         }

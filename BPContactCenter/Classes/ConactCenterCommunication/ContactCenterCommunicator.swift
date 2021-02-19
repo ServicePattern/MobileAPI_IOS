@@ -54,7 +54,7 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
         NotificationCenter.default.removeObserver(self)
     }
 
-    private func defaultHttpGetRequest(with endpoint: URLProvider.Endpoint) throws -> URLRequest {
+    private func httpGetRequest(with endpoint: URLProvider.Endpoint) throws -> URLRequest {
         guard let urlRequest = try networkService.createRequest(method: .get,
                                                                 baseURL: baseURL,
                                                                 endpoint: endpoint,
@@ -71,7 +71,7 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
     // MARK: - Public methods
     public func checkAvailability(with completion: @escaping ((Result<ContactCenterServiceAvailability, Error>) -> Void)) {
         do {
-            networkService.dataTask(using: try defaultHttpGetRequest(with: .checkAvailability), with: completion)
+            networkService.dataTask(using: try httpGetRequest(with: .checkAvailability), with: completion)
         } catch {
             log.error("Failed to checkAvailability: \(error)")
             completion(.failure(error))
@@ -80,7 +80,7 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
 
     public func getChatHistory(chatID: String, with completion: @escaping ((Result<[ContactCenterEvent], Error>) -> Void)) {
         do {
-            let urlRequest = try defaultHttpGetRequest(with: .getChatHistory(chatID: chatID))
+            let urlRequest = try httpGetRequest(with: .getChatHistory(chatID: chatID))
             networkService.dataTask(using: urlRequest) { (result: Result<ContactCenterEventsContainerDto, Error>) -> Void in
                 switch result {
                 case .success(let eventsContainer):
@@ -122,26 +122,38 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
         }
     }
 
-    private func messageIdentifier() -> String {
-        "\(UUID()):\(messageNumber)"
-    }
-
-    public func sendChatMessage(chatID: String, message: String, completion: @escaping ((Result<String, Error>) -> Void)) {
-
-        let messageID = messageIdentifier()
-        let eventsContainer = ContactCenterEventsContainerDto(events: [.chatSessionMessage(messageID: messageID, partyID: nil, message: message, timestamp: nil)])
+    private func httpSendEventsPostRequest(chatID: String, events: [ContactCenterEvent]) throws -> URLRequest {
+        let eventsContainer = ContactCenterEventsContainerDto(events: events)
         do {
-            guard var urlRequest = try networkService.createRequest(method: .post,
+            guard let urlRequest = try networkService.createRequest(method: .post,
                                                                     baseURL: baseURL,
-                                                                    endpoint: .sendChatMessage(chatID: chatID),
+                                                                    endpoint: .sendEvents(chatID: chatID),
                                                                     headerFields: defaultHttpHeaderFields,
                                                                     parameters: defaultHttpRequestParameters) else {
                 log.error("Failed to create URL request")
 
                 throw ContactCenterError.failedToCreateURLRequest
             }
-            urlRequest = try networkService.encode(from: eventsContainer, request: urlRequest)
-            networkService.dataTask(using: urlRequest) { [weak self] response in
+            return try networkService.encode(from: eventsContainer, request: urlRequest)
+        } catch {
+            log.error("Failed to sendChatMessage: \(error)")
+            throw error
+        }
+    }
+
+    private func messageIdentifier() -> String {
+        "\(UUID()):\(messageNumber)"
+    }
+
+    public func sendChatMessage(chatID: String, message: String, with completion: @escaping (Result<String, Error>) -> Void) {
+        let messageID = messageIdentifier()
+        do {
+            let urlRequest = try httpSendEventsPostRequest(chatID: chatID,
+                                                           events: [.chatSessionMessage(messageID: messageID,
+                                                                                        partyID: nil,
+                                                                                        message: message,
+                                                                                        timestamp: nil)])
+            networkService.dataTask(using: urlRequest) { [weak self] (response: NetworkDataResponse) in
                 switch response {
                 case .success(_):
                     self?.messageNumber += 1
@@ -156,115 +168,54 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
         }
     }
 
-    public func chatMessageDelivered(chatID: String, messageID: String, completion: @escaping ((Result<Void, Error>) -> Void)) {
-        let eventsContainer = ContactCenterEventsContainerDto(events: [.chatSessionMessageDelivered(messageID: messageID, partyID: nil, timestamp: nil)])
+    public func chatMessageDelivered(chatID: String, messageID: String, with completion: @escaping (Result<Void, Error>) -> Void) {
         do {
-            guard var urlRequest = try networkService.createRequest(method: .post,
-                                                                    baseURL: baseURL,
-                                                                    endpoint: .sendChatMessage(chatID: chatID),
-                                                                    headerFields: defaultHttpHeaderFields,
-                                                                    parameters: defaultHttpRequestParameters) else {
-                log.error("Failed to create URL request")
-
-                throw ContactCenterError.failedToCreateURLRequest
-            }
-            urlRequest = try networkService.encode(from: eventsContainer, request: urlRequest)
-            networkService.dataTask(using: urlRequest) { [weak self] response in
-                switch response {
-                case .success(_):
-                    completion(.success(()))
-                case .failure(let error):
-                    completion(.failure(error))
-                }
-            }
+            let urlRequest = try httpSendEventsPostRequest(chatID: chatID,
+                                                           events: [.chatSessionMessageDelivered(messageID: messageID,
+                                                                                                 partyID: nil,
+                                                                                                 timestamp: nil)])
+            networkService.dataTask(using: urlRequest, with: completion)
         } catch {
             log.error("Failed to chatMessageDelivered: \(error)")
             completion(.failure(error))
         }
     }
 
-    public func chatMessageRead(chatID: String, messageID: String, completion: @escaping ((Result<Void, Error>) -> Void)) {
-        let eventsContainer = ContactCenterEventsContainerDto(events: [.chatSessionMessageRead(messageID: messageID, partyID: nil, timestamp: nil)])
+    public func chatMessageRead(chatID: String, messageID: String, with completion: @escaping (Result<Void, Error>) -> Void) {
         do {
-            guard var urlRequest = try networkService.createRequest(method: .post,
-                                                                    baseURL: baseURL,
-                                                                    endpoint: .sendChatMessage(chatID: chatID),
-                                                                    headerFields: defaultHttpHeaderFields,
-                                                                    parameters: defaultHttpRequestParameters) else {
-                log.error("Failed to create URL request")
-
-                throw ContactCenterError.failedToCreateURLRequest
-            }
-            urlRequest = try networkService.encode(from: eventsContainer, request: urlRequest)
-            networkService.dataTask(using: urlRequest) { [weak self] response in
-                switch response {
-                case .success(_):
-                    completion(.success(()))
-                case .failure(let error):
-                    completion(.failure(error))
-                }
-            }
+            let urlRequest = try httpSendEventsPostRequest(chatID: chatID,
+                                                           events: [.chatSessionMessageRead(messageID: messageID,
+                                                                                            partyID: nil,
+                                                                                            timestamp: nil)])
+            networkService.dataTask(using: urlRequest, with: completion)
         } catch {
             log.error("Failed to chatMessageRead: \(error)")
             completion(.failure(error))
         }
     }
 
-    public func disconnectChat(chatID: String, completion: @escaping ((Result<Void, Error>) -> Void)) {
-        let eventsContainer = ContactCenterEventsContainerDto(events: [.chatSessionDisconnect])
+    public func disconnectChat(chatID: String, with completion: @escaping ((Result<Void, Error>) -> Void)) {
         do {
-            guard var urlRequest = try networkService.createRequest(method: .post,
-                                                                    baseURL: baseURL,
-                                                                    endpoint: .sendChatMessage(chatID: chatID),
-                                                                    headerFields: defaultHttpHeaderFields,
-                                                                    parameters: defaultHttpRequestParameters) else {
-                log.error("Failed to create URL request")
-
-                throw ContactCenterError.failedToCreateURLRequest
-            }
-            urlRequest = try networkService.encode(from: eventsContainer, request: urlRequest)
-            networkService.dataTask(using: urlRequest) { [weak self] response in
-                switch response {
-                case .success(_):
-                    completion(.success(()))
-                case .failure(let error):
-                    completion(.failure(error))
-                }
-            }
+            let urlRequest = try httpSendEventsPostRequest(chatID: chatID,
+                                                           events: [.chatSessionDisconnect])
+            networkService.dataTask(using: urlRequest, with: completion)
         } catch {
             log.error("Failed to disconnectChat: \(error)")
             completion(.failure(error))
         }
     }
 
-    public func endChat(chatID: String, completion: @escaping ((Result<Void, Error>) -> Void)) {
-        let eventsContainer = ContactCenterEventsContainerDto(events: [.chatSessionEnd])
+    public func endChat(chatID: String, with completion: @escaping ((Result<Void, Error>) -> Void)) {
         do {
-            guard var urlRequest = try networkService.createRequest(method: .post,
-                                                                    baseURL: baseURL,
-                                                                    endpoint: .sendChatMessage(chatID: chatID),
-                                                                    headerFields: defaultHttpHeaderFields,
-                                                                    parameters: defaultHttpRequestParameters) else {
-                log.error("Failed to create URL request")
-
-                throw ContactCenterError.failedToCreateURLRequest
-            }
-            urlRequest = try networkService.encode(from: eventsContainer, request: urlRequest)
-            networkService.dataTask(using: urlRequest) { [weak self] response in
-                switch response {
-                case .success(_):
-                    completion(.success(()))
-                case .failure(let error):
-                    completion(.failure(error))
-                }
-            }
+            let urlRequest = try httpSendEventsPostRequest(chatID: chatID,
+                                                           events: [.chatSessionEnd])
+            networkService.dataTask(using: urlRequest, with: completion)
         } catch {
             log.error("Failed to endChat: \(error)")
             completion(.failure(error))
         }
     }
 }
-
 
 // MARK: - Poll action
 extension ContactCenterCommunicator {

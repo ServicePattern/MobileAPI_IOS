@@ -45,27 +45,27 @@ public protocol ContactCenterCommunicating {
     ///   - chatID: The current chat ID
     ///   - message: Text of the message
     ///   - completion: Returns  ```messageID``` in the format chatId:messageNumber where messageNumber is ordinal number of the given message in the chat exchange or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
-    func sendChatMessage(chatID: String, message: String, completion: @escaping ((Result<String, Error>) -> Void))
+    func sendChatMessage(chatID: String, message: String, with completion: @escaping (Result<String, Error>) -> Void)
     /// Confirms that a chat message has been delivered to the application
     /// - Parameters:
     ///   - chatID: The current chat ID
     ///   - messageID: The message ID
     ///   - completion: Returns  .succeeded or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
-    func chatMessageDelivered(chatID: String, messageID: String, completion: @escaping ((Result<Void, Error>) -> Void))
+    func chatMessageDelivered(chatID: String, messageID: String, with completion: @escaping (Result<Void, Error>) -> Void)
     /// Confirms that a chat message has been read by the user
     /// - Parameters:
     ///   - chatID: The current chat ID
     ///   - messageID: The message ID
     ///   - completion: Returns  .succeeded or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
-    func chatMessageRead(chatID: String, messageID: String, completion: @escaping ((Result<Void, Error>) -> Void))
+    func chatMessageRead(chatID: String, messageID: String, with completion: @escaping (Result<Void, Error>) -> Void)
     /// Request to disconnect chat conversation but keep the session active. Server may continue communicating with the client
     /// - Parameters:
     ///   - chatID: The current chat ID
     ///   - completion: Returns  .succeeded or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
-    func disconnectChat(chatID: String, completion: @escaping ((Result<Void, Error>) -> Void))
+    func disconnectChat(chatID: String, with completion: @escaping (Result<Void, Error>) -> Void)
     /// Request to disconnect chat conversation and complete the session. Server will not continue communicating with the client once request is sent
     /// - Parameters:
     ///   - chatID: The current chat ID
     ///   - completion: Returns  .succeeded or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
-    func endChat(chatID: String, completion: @escaping ((Result<Void, Error>) -> Void))
+    func endChat(chatID: String, with completion: @escaping (Result<Void, Error>) -> Void)
 }
