@@ -3,35 +3,41 @@
 
 import Foundation
 
-public class ContactCenterCommunicator: ContactCenterCommunicating {
+public final class ContactCenterCommunicator: ContactCenterCommunicating {
     public let baseURL: URL
     public let tenantURL: URL
     public let appID: String
     public let clientID: String
-    public var delegate: ((Result<[ContactCenterEvent], Error>) -> Void)?
+    public var delegate: ((Result<[ContactCenterEvent], Error>) -> Void)? {
+        get {
+            pollRequestService.delegate
+        }
+        set {
+            pollRequestService.delegate = newValue
+        }
+    }
 
-    internal let networkService: NetworkService
+    internal let networkService: NetworkServiceable
     private var defaultHttpHeaderFields: HttpHeaderFields
     private var defaultHttpRequestParameters: Encodable
-    internal var pollTimer: Timer?
-    internal let pollInterval: Double
-    internal static let timerTolerance = 0.2
-    private var messageNumber = 0
-    internal var currentChatID: String? {
-        didSet {
-            startPollingIfNeeded()
+    private var messageNumberValue: Int = 0
+    private var messageNumber: Int {
+        get {
+            readerWriterQueue.sync {
+                messageNumberValue
+            }
+        }
+        set {
+            readerWriterQueue.async(flags: .barrier) { [weak self] in
+                self?.messageNumberValue = newValue
+            }
         }
     }
-
-    internal var isForeground: Bool = false {
-        didSet {
-            startPollingIfNeeded()
-        }
-    }
-    internal var pollRequestDataTask: URLSessionDataTask?
+    private let readerWriterQueue = DispatchQueue(label: "com.BPContactCenter.ContactCenterCommunicator.reader-writer", attributes: .concurrent)
+    private var pollRequestService: PollRequestServiceable
 
     /// This method is not exposed to the consumer and it might be used to inject dependencies for unit testing
-    init(baseURL: URL, tenantURL: URL, appID: String, clientID: String, networkService: NetworkService, pollInterval: Double = 1.0) {
+    init(baseURL: URL, tenantURL: URL, appID: String, clientID: String, networkService: NetworkServiceable, pollRequestService: PollRequestServiceable) {
 
         do {
             self.baseURL = try URLProvider.baseURL(basedOn: baseURL)
@@ -44,30 +50,22 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
         self.networkService = networkService
         self.defaultHttpHeaderFields = HttpHeaderFields.defaultFields(appID: appID, clientID: clientID)
         self.defaultHttpRequestParameters = HttpRequestDefaultParameters(tenantUrl: tenantURL.absoluteString)
-        self.pollInterval = pollInterval
-
-        subscribeToNotifications()
+        self.pollRequestService = pollRequestService
     }
 
     // MARK:- Convenience
     public convenience init(baseURL: URL, tenantURL: URL, appID: String, clientID: String, pollInterval: Double = 1.0) {
         let networkService = NetworkService(encoder: JSONCoder.encoder(),
                                             decoder: JSONCoder.decoder())
+        let pollRequestService = PollRequestService(networkService: networkService, pollInterval: pollInterval)
         self.init(baseURL: baseURL,
                   tenantURL: tenantURL,
                   appID: appID,
                   clientID: clientID,
                   networkService: networkService,
-                  pollInterval: pollInterval)
-    }
+                  pollRequestService: pollRequestService)
 
-    // MARK:- Deinitialization part
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-        // Use synchronous method to make sure the self point is still alive
-        DispatchQueue.main.sync { [unowned self] in
-            self.invalidatePollTimer()
-        }
+        pollRequestService.httpGetRequestBuilder = httpGetRequest
     }
 
     // MARK: - HTTP request helper factory functions
@@ -147,13 +145,10 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
             networkService.dataTask(using: urlRequest) { [weak self] (result: Result<ChatSessionPropertiesDto, Error>) -> Void in
                 switch result {
                 case .success(let chatSessionProperties):
-                    // Change the internal state on the main thread which used at other places
-                    DispatchQueue.main.async {
-                        // Save a chat ID which will initiate polling for chat events
-                        self?.currentChatID = chatSessionProperties.chatID
-                        // Since it is a new chat session reset a message number counter
-                        self?.messageNumber = 0
-                    }
+                    // Save a chat ID which will initiate polling for chat events
+                    self?.pollRequestService.currentChatID = chatSessionProperties.chatID
+                    // Since it is a new chat session reset a message number counter
+                    self?.messageNumber = 0
                     completion(.success(chatSessionProperties.toModel()))
                 case .failure(let error):
                     completion(.failure(error))
@@ -181,9 +176,7 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
                 switch response {
                 case .success(_):
                     // Change the internal state on the main thread which used at other places
-                    DispatchQueue.main.async {
-                        self?.messageNumber += 1
-                    }
+                    self?.messageNumber += 1
                     completion(.success(messageID))
                 case .failure(let error):
                     completion(.failure(error))
@@ -240,34 +233,6 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
         } catch {
             log.error("Failed to endChat: \(error)")
             completion(.failure(error))
-        }
-    }
-}
-
-// MARK:- Background/foreground notifications subscribtion
-extension ContactCenterCommunicator {
-    private func subscribeToNotifications() {
-        // Restore a poll action when the app is going to go the foreground
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(willEnterForeground),
-                                               name: .UIApplicationWillEnterForeground,
-                                               object: nil)
-        // Pause a poll action after the app goes to the background
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(didEnterBackground),
-                                               name: .UIApplicationDidEnterBackground,
-                                               object: nil)
-    }
-
-    @objc private func willEnterForeground() {
-        DispatchQueue.main.async { [weak self] in
-            self?.isForeground = true
-        }
-    }
-
-    @objc private func didEnterBackground() {
-        DispatchQueue.main.async { [weak self] in
-            self?.isForeground = false
         }
     }
 }
