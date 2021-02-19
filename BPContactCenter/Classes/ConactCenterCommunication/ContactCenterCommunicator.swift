@@ -10,25 +10,25 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
     public let clientID: String
     public var delegate: ((Result<[ContactCenterEvent], Error>) -> Void)?
 
-    private let networkService: NetworkService
+    internal let networkService: NetworkService
     private var defaultHttpHeaderFields: HttpHeaderFields
     private var defaultHttpRequestParameters: Encodable
-    private var pollTimer: Timer?
-    private let pollInterval: Double
-    private static let timerTolerance = 0.2
+    internal var pollTimer: Timer?
+    internal let pollInterval: Double
+    internal static let timerTolerance = 0.2
     private var messageNumber = 0
-    private var currentChatID: String? {
+    internal var currentChatID: String? {
         didSet {
             startPollingIfNeeded()
         }
     }
 
-    private var isForeground: Bool = false {
+    internal var isForeground: Bool = false {
         didSet {
             startPollingIfNeeded()
         }
     }
-    private var pollRequestDataTask: URLSessionDataTask?
+    internal var pollRequestDataTask: URLSessionDataTask?
 
     /// This method is not exposed to the consumer and it might be used to inject dependencies for unit testing
     init(baseURL: URL, tenantURL: URL, appID: String, clientID: String, networkService: NetworkService, pollInterval: Double = 1.0) {
@@ -61,11 +61,17 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
                   pollInterval: pollInterval)
     }
 
+    // MARK:- Deinitialization part
     deinit {
         NotificationCenter.default.removeObserver(self)
+        // Use synchronous method to make sure the self point is still alive
+        DispatchQueue.main.sync { [unowned self] in
+            self.invalidatePollTimer()
+        }
     }
 
-    private func httpGetRequest(with endpoint: URLProvider.Endpoint) throws -> URLRequest {
+    // MARK: - HTTP request helper factory functions
+    internal func httpGetRequest(with endpoint: URLProvider.Endpoint) throws -> URLRequest {
         guard let urlRequest = try networkService.createRequest(method: .get,
                                                                 baseURL: baseURL,
                                                                 endpoint: endpoint,
@@ -77,6 +83,25 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
         }
 
         return urlRequest
+    }
+
+    private func httpSendEventsPostRequest(chatID: String, events: [ContactCenterEvent]) throws -> URLRequest {
+        let eventsContainer = ContactCenterEventsContainerDto(events: events)
+        do {
+            guard let urlRequest = try networkService.createRequest(method: .post,
+                                                                    baseURL: baseURL,
+                                                                    endpoint: .sendEvents(chatID: chatID),
+                                                                    headerFields: defaultHttpHeaderFields,
+                                                                    parameters: defaultHttpRequestParameters) else {
+                log.error("Failed to create URL request")
+
+                throw ContactCenterError.failedToCreateURLRequest
+            }
+            return try networkService.encode(from: eventsContainer, request: urlRequest)
+        } catch {
+            log.error("Failed to sendChatMessage: \(error)")
+            throw error
+        }
     }
 
     // MARK: - Public methods
@@ -122,8 +147,13 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
             networkService.dataTask(using: urlRequest) { [weak self] (result: Result<ChatSessionPropertiesDto, Error>) -> Void in
                 switch result {
                 case .success(let chatSessionProperties):
-                    //  Start polling for chat events
-                    self?.currentChatID = chatSessionProperties.chatID
+                    // Change the internal state on the main thread which used at other places
+                    DispatchQueue.main.async {
+                        // Save a chat ID which will initiate polling for chat events
+                        self?.currentChatID = chatSessionProperties.chatID
+                        // Since it is a new chat session reset a message number counter
+                        self?.messageNumber = 0
+                    }
                     completion(.success(chatSessionProperties.toModel()))
                 case .failure(let error):
                     completion(.failure(error))
@@ -132,25 +162,6 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
         } catch {
             log.error("Failed to requestChat: \(error)")
             completion(.failure(error))
-        }
-    }
-
-    private func httpSendEventsPostRequest(chatID: String, events: [ContactCenterEvent]) throws -> URLRequest {
-        let eventsContainer = ContactCenterEventsContainerDto(events: events)
-        do {
-            guard let urlRequest = try networkService.createRequest(method: .post,
-                                                                    baseURL: baseURL,
-                                                                    endpoint: .sendEvents(chatID: chatID),
-                                                                    headerFields: defaultHttpHeaderFields,
-                                                                    parameters: defaultHttpRequestParameters) else {
-                log.error("Failed to create URL request")
-
-                throw ContactCenterError.failedToCreateURLRequest
-            }
-            return try networkService.encode(from: eventsContainer, request: urlRequest)
-        } catch {
-            log.error("Failed to sendChatMessage: \(error)")
-            throw error
         }
     }
 
@@ -169,7 +180,10 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
             networkService.dataTask(using: urlRequest) { [weak self] (response: NetworkDataResponse) in
                 switch response {
                 case .success(_):
-                    self?.messageNumber += 1
+                    // Change the internal state on the main thread which used at other places
+                    DispatchQueue.main.async {
+                        self?.messageNumber += 1
+                    }
                     completion(.success(messageID))
                 case .failure(let error):
                     completion(.failure(error))
@@ -230,40 +244,8 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
     }
 }
 
-// MARK: - Poll action
+// MARK:- Background/foreground notifications subscribtion
 extension ContactCenterCommunicator {
-    private func pollAction() {
-        do {
-            guard let currentChatID = currentChatID else {
-                log.debug("Poll requested when current chatID is nil")
-                return
-            }
-            let urlRequest = try defaultHttpGetRequest(with: .getNewChatEvents(chatID: currentChatID))
-            pollRequestDataTask = networkService.dataTask(using: urlRequest) { [weak self] (result: Result<ContactCenterEventsContainerDto, Error>) -> Void in
-                switch result {
-                case .success(let eventsContainer):
-                    //  Report received server events to the application
-                    self?.delegate?(.success(eventsContainer.events))
-                    //  Stop polling timer if session has ended; otherwise need to start new getNewChatEvents request
-                    for e in eventsContainer.events {
-                        switch e {
-                        case .chatSessionEnded:
-                            self?.currentChatID = nil
-                            break
-                        default:()
-                        }
-                    }
-                default:
-                    break
-                }
-            }
-        } catch {
-            log.error("Failed to send poll request: \(error)")
-            // If fails re-try
-            startPolling()
-        }
-    }
-
     private func subscribeToNotifications() {
         // Restore a poll action when the app is going to go the foreground
         NotificationCenter.default.addObserver(self,
@@ -286,54 +268,6 @@ extension ContactCenterCommunicator {
     @objc private func didEnterBackground() {
         DispatchQueue.main.async { [weak self] in
             self?.isForeground = false
-        }
-    }
-
-    private func setupTimer() {
-        guard pollTimer == nil else {
-            log.debug("Timer already set")
-            return
-        }
-        let timer =  Timer(timeInterval: self.pollInterval, repeats: false) { [weak self] _ in
-            self?.pollAction()
-        }
-        // Allow a timer to run when a UI thread block execution
-        RunLoop.current.add(timer, forMode: .commonModes)
-        // Gives OS a chance to safe a battery life
-        timer.tolerance = Self.timerTolerance
-
-        pollTimer = timer
-    }
-
-    private func invalidateTimer() {
-        self.pollRequestDataTask?.cancel()
-        self.pollTimer?.invalidate()
-        self.pollTimer = nil
-    }
-
-    private func startPolling() {
-        // Make sure that a timer is scheduled and invalidated on the same thread
-        DispatchQueue.main.async { [weak self] in
-            guard self?.currentChatID != nil else {
-                log.debug("Poll requested when current chatID is nil")
-                return
-            }
-            self?.setupTimer()
-        }
-    }
-
-    private func stopPolling() {
-        // Make sure that a timer is scheduled and invalidated on the same thread
-        DispatchQueue.main.async { [weak self] in
-            self?.invalidateTimer()
-        }
-    }
-
-    private func startPollingIfNeeded() {
-        if isForeground && currentChatID != nil {
-            startPolling()
-        } else {
-            stopPolling()
         }
     }
 }

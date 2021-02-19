@@ -87,12 +87,12 @@ extension NetworkService: NetworkSessionServiceable {
     /// Delegate job to the URLSession
     @discardableResult
     func dataTask(using request: URLRequest, with completion: @escaping (NetworkDataResponse) -> Void) -> URLSessionDataTask {
-        networkSessionService.dataTask(using: request, with: completion)
+        return networkSessionService.dataTask(using: request, with: completion)
     }
 
     @discardableResult
     func dataTask<T: Decodable>(using request: URLRequest, with completion: @escaping (Result<T, Error>) -> Void) -> URLSessionDataTask {
-        dataTask(using: request) { [unowned self] response in
+        dataTask(using: request) { [unowned self] (response: NetworkDataResponse) in
             switch response {
             case .success((let data, _)):
                 guard let data = data else {
