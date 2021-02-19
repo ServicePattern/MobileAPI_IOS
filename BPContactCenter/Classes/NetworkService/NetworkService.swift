@@ -84,6 +84,12 @@ class NetworkService {
 extension NetworkService: NetworkSessionServiceable {
     /// Delegate job to the URLSession
     func dataTask(using request: URLRequest, with completion: @escaping (NetworkDataResponse) -> Void) {
+        if ((request.httpBody) != nil) {
+            var decodedBody = String(decoding: request.httpBody!, as: UTF8.self)
+            decodedBody = decodedBody.isEmpty ? "\(request.httpBody)": decodedBody
+            log.debug("Sending data: \(decodedBody)")
+        }
+        
         networkSessionService.dataTask(using: request, with: completion)
     }
 

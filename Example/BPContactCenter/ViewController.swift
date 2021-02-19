@@ -39,8 +39,22 @@ class ViewController: UIViewController {
                                 switch eventsResult {
                                 case .success(let events):
                                     print("Events: \(events)")
-                                    self?.sendChatMessage(chatID: chatProperties
-                                                            .chatID, message: "Hello")
+                                    
+                                    for e in events {
+                                        switch e {
+                                        case .chatSessionMessage(let messageID, let partyID, let message, let timestamp):
+                                            print("\(timestamp): message: \(message) from party \(partyID)")
+                                            self?.chatMessageDelivered(chatID: chatProperties.chatID, messageID: messageID)
+                                            self?.chatMessageRead(chatID: chatProperties.chatID, messageID: messageID)
+                                        default:
+                                            break
+                                        }
+                                    }
+                                    
+                                    self?.sendChatMessage(chatID: chatProperties.chatID, message: "Hello")
+                                    self?.disconnectChat(chatID: chatProperties.chatID)
+                                    self?.endChat(chatID: chatProperties.chatID)
+                                    
                                 case .failure(let error):
                                     print("Failed to getChatHistory: \(error)")
                                 }
@@ -56,7 +70,6 @@ class ViewController: UIViewController {
         }
     }
 
-
     private func sendChatMessage(chatID: String, message: String) {
         self.contactCenterService?.sendChatMessage(chatID: chatID, message: "Hello") { chatMessageResult in
             switch chatMessageResult {
@@ -66,6 +79,50 @@ class ViewController: UIViewController {
             case .failure(let error):
 
                 print("Failed to send chat message: \(error)")
+            }
+        }
+    }
+
+    private func chatMessageDelivered(chatID: String, messageID: String) {
+        self.contactCenterService?.chatMessageDelivered(chatID: chatID, messageID: messageID) { result in
+            switch result {
+            case .success(_):
+                print("chatMessageDelivered confirmed")
+            case .failure(let error):
+                print("chatMessageDelivered error: \(error)")
+            }
+        }
+    }
+
+    private func chatMessageRead(chatID: String, messageID: String) {
+        self.contactCenterService?.chatMessageRead(chatID: chatID, messageID: messageID) { result in
+            switch result {
+            case .success(_):
+                print("chatMessageRead confirmed")
+            case .failure(let error):
+                print("chatMessageRead error: \(error)")
+            }
+        }
+    }
+
+    private func disconnectChat(chatID: String) {
+        self.contactCenterService?.disconnectChat(chatID: chatID) { result in
+            switch result {
+            case .success(_):
+                print("disconnectChat confirmed")
+            case .failure(let error):
+                print("disconnectChat error: \(error)")
+            }
+        }
+    }
+
+    private func endChat(chatID: String) {
+        self.contactCenterService?.endChat(chatID: chatID) { result in
+            switch result {
+            case .success(_):
+                print("endChat confirmed")
+            case .failure(let error):
+                print("endChat error: \(error)")
             }
         }
     }
