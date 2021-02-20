@@ -41,9 +41,9 @@ extension ContactCenterEvent {
                                              partyID: partyID,
                                              timestamp: timestamp)
         case .chatSessionStatus(state: let state,
-                                ewt: let ewt):
+                                estimatedWaitTime: let estimatedWaitTime):
             return ChatSessionStatusDto(state: state.toDto(),
-                                        ewt: ewt)
+                                        ewt: "\(estimatedWaitTime)")
         case .chatSessionPartyJoined(partyID: let partyID,
                                      firstName: let firstName,
                                      lastName: let lastName,

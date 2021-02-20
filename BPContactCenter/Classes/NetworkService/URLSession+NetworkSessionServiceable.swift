@@ -30,7 +30,12 @@ extension URLSession: NetworkSessionServiceable {
                     if let data = data {
                         do {
                             let errorResponse = try JSONDecoder().decode(ContactCenterErrorResponse.self, from: data)
-                            networkResponse = .failure(ContactCenterError.badStatusCode(statusCode: statusCode, errorResponse))
+                            if let contactCenterError = errorResponse.toModel() {
+                                networkResponse = .failure(contactCenterError)
+                            } else {
+                                networkResponse = .failure(ContactCenterError.badStatusCode(statusCode: statusCode, errorResponse))
+
+                            }
                         } catch {
                             log.error("Failed to decode JSON: \(error)")
                             networkResponse = .failure(ContactCenterError.badStatusCode(statusCode: statusCode, nil))

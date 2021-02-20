@@ -18,7 +18,7 @@ public enum ContactCenterChatSessionState {
 public struct ContactCenterChatSessionProperties {
     public let chatID: String
     public let state: ContactCenterChatSessionState
-    public let ewt: String
+    public let estimatedWaitTime: Int
     public let isNewChat: Bool
     public let phoneNumber: String
 }

@@ -107,7 +107,12 @@ class PollRequestService: PollRequestServiceable {
                     }
                     // Check and start new getNewChatEvents request if needed
                     self?.startPollingIfNeeded()
-                case .failure:()
+                case .failure(let error):
+                    if let contactCenterError = error as? ContactCenterError,
+                       case .chatSessionNotFound = contactCenterError {
+                        // If the backend says that a chat id does not exist then forget it
+                        self?.currentChatID = nil
+                    }
                 }
             }
         } catch {

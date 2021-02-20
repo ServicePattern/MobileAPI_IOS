@@ -33,7 +33,7 @@ public enum ContactCenterEvent {
     case chatSessionMessageRead(messageID: String, partyID: String?, timestamp: Date?)
     /// Updates the current state of the chat session. If the state is failed, the client application shall assume that the chat session no longer exists.
     /// Direction: S->C
-    case chatSessionStatus(state: ContactCenterChatSessionState, ewt: String)
+    case chatSessionStatus(state: ContactCenterChatSessionState, estimatedWaitTime: Int)
     /// Indicates that a new party (a new agent) has joined the chat session.
     /// Direction: S->C
     case chatSessionPartyJoined(partyID: String, firstName: String, lastName: String, displayName: String, type: ContactCenterChatSessionPartyType, timestamp: Date)

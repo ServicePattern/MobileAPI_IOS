@@ -18,6 +18,6 @@ struct ChatSessionStatusDto: Codable {
 
 extension ChatSessionStatusDto: ContactCenterEventModelConvertible {
     func toModel() -> ContactCenterEvent {
-        ContactCenterEvent.chatSessionStatus(state: state.toModel(), ewt: ewt)
+        ContactCenterEvent.chatSessionStatus(state: state.toModel(), estimatedWaitTime: Int(ewt) ?? 0)
     }
 }
