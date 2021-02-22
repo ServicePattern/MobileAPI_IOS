@@ -3,10 +3,6 @@
 
 import Foundation
 
-private struct ContactCenterEventTypeContainerDto: Decodable {
-    let event: ContactCenterEventTypeDto
-}
-
 /// - Tag: ContactCenterEventsContainerDto
 struct ContactCenterEventsContainerDto: Codable {
     let events: [ContactCenterEvent]
@@ -34,11 +30,18 @@ struct ContactCenterEventsContainerDto: Codable {
         // On the first pass Dto types are decoded
         // On the second pass Dto objects are decoded
         while !eventsContainer.isAtEnd {
-            // The backend sends a collection of event of different types
-            // To decode each item to a specific type use JSONEncoder to get data
-            // 1. Try to infer a specific Dto type based on the "event" property
-            let eventType = try eventsContainer.decode(ContactCenterEventTypeContainerDto.self).event
-            eventDtoTypes.append(eventType)
+            do {
+                // The backend sends a collection of event of different types
+                // To decode each item to a specific type use JSONEncoder to get data
+                // 1. Try to infer a specific Dto type based on the "event" property
+                let eventType = try eventsContainer.decode(ContactCenterEventTypeContainerDto.self).event
+                eventDtoTypes.append(eventType)
+            } catch {
+                // Skip unknown messages and continue to parse
+                _ = try eventsContainer.decode(UnknownEventDto.self)
+                eventDtoTypes.append(.unknown)
+                log.error("Failed to parse unknown message from server: \(error)")
+            }
         }
         // Each decode() call changes container internal state
         // So, reset it to decode Dto objects
@@ -54,7 +57,8 @@ struct ContactCenterEventsContainerDto: Codable {
 
                 return dtoConvertible.toModel()
             } catch {
-                log.error("\(error)")
+                // Skip unknown messages and continue to parse
+                log.error("Failed to parse unknown message from server: \(error)")
                 return nil
             }
         }
@@ -71,4 +75,15 @@ struct ContactCenterEventsContainerDto: Codable {
             }
         }
     }
+}
+
+/// Special Dto type that correposnd to an unknown event from the server
+/// The purpose of this is to skip unknown events when parsing
+/// When parsing this type can be used to decode unknown events and increase currentIndex of decoding container
+internal struct UnknownEventDto: Codable {
+}
+
+/// This Dto is used to decode event types by decoding their names from ```event``` property
+private struct ContactCenterEventTypeContainerDto: Decodable {
+    let event: ContactCenterEventTypeDto
 }

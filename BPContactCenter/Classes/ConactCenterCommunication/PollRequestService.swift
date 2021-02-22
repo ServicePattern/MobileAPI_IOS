@@ -95,7 +95,7 @@ class PollRequestService: PollRequestServiceable {
                 switch result {
                 case .success(let eventsContainer):
                     //  Report received server events to the application
-                    self?.delegate?.chatSessionEvents(events: .success(eventsContainer.events))
+                    self?.delegate?.chatSessionEvents(result: .success(eventsContainer.events))
                     //  Reset currentChatID to stop polling timer if session has ended
                     for e in eventsContainer.events {
                         switch e {

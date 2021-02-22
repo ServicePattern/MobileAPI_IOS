@@ -6,7 +6,7 @@ import Foundation
 
 /// - Tag: ContactCenterEventsDelegating
 public protocol ContactCenterEventsDelegating: class {
-    func chatSessionEvents(events: Result<[ContactCenterEvent], Error>)
+    func chatSessionEvents(result: Result<[ContactCenterEvent], Error>)
 }
 
 /// Provides chat and voice interactions.
