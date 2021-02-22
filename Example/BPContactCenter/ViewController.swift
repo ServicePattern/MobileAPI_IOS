@@ -143,3 +143,14 @@ class ViewController: UIViewController {
     }
 
 }
+
+extension ViewController: ContactCenterEventsDelegating {
+    func chatSessionEvents(result: Result<[ContactCenterEvent], Error>) {
+        switch result {
+        case .success(let events):
+            print("Received events: \(events.count) confirmed")
+        case .failure(let error):
+            print("chatSessionEvents failed: \(error)")
+        }
+    }
+}

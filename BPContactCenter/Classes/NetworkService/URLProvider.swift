@@ -29,6 +29,7 @@ class URLProvider {
     enum Endpoint {
         case checkAvailability
         case getChatHistory(chatID: String)
+        case getNewChatEvents(chatID: String)
         case requestChat
         case sendEvents(chatID: String)
 
@@ -38,6 +39,8 @@ class URLProvider {
                 return "availability"
             case .getChatHistory(let chatID):
                 return "chats/\(chatID)/history"
+            case .getNewChatEvents(let chatID):
+                return "chats/\(chatID)/events"
             case .requestChat:
                 return "chats"
             case .sendEvents(let chatID):

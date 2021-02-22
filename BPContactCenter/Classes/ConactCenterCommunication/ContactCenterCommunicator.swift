@@ -3,23 +3,45 @@
 
 import Foundation
 
-public class ContactCenterCommunicator: ContactCenterCommunicating {
+protocol HttpRequestBuilding: class {
+    func httpGetRequest(with endpoint: URLProvider.Endpoint) throws -> URLRequest
+}
+
+public final class ContactCenterCommunicator: ContactCenterCommunicating {
     public let baseURL: URL
     public let tenantURL: URL
     public let appID: String
     public let clientID: String
-    public var delegate: ((Result<[ContactCenterEvent], Error>) -> Void)?
+    public weak var delegate: ContactCenterEventsDelegating? {
+        get {
+            pollRequestService.delegate
+        }
+        set {
+            pollRequestService.delegate = newValue
+        }
+    }
 
-    private let networkService: NetworkService
+    internal let networkService: NetworkServiceable
     private var defaultHttpHeaderFields: HttpHeaderFields
     private var defaultHttpRequestParameters: Encodable
-    private var pollTimer: Timer?
-    private let pollInterval: Double
-    private static let timerTolerance = 0.2
-    private var messageNumber = 0
+    private var messageNumberValue: Int = 0
+    private var messageNumber: Int {
+        get {
+            readerWriterQueue.sync {
+                messageNumberValue
+            }
+        }
+        set {
+            readerWriterQueue.async(flags: .barrier) { [weak self] in
+                self?.messageNumberValue = newValue
+            }
+        }
+    }
+    private let readerWriterQueue = DispatchQueue(label: "com.BPContactCenter.ContactCenterCommunicator.reader-writer", attributes: .concurrent)
+    private var pollRequestService: PollRequestServiceable
 
     /// This method is not exposed to the consumer and it might be used to inject dependencies for unit testing
-    init(baseURL: URL, tenantURL: URL, appID: String, clientID: String, networkService: NetworkService, pollInterval: Double = 1.0) {
+    init(baseURL: URL, tenantURL: URL, appID: String, clientID: String, networkService: NetworkServiceable, pollRequestService: PollRequestServiceable) {
 
         do {
             self.baseURL = try URLProvider.baseURL(basedOn: baseURL)
@@ -32,40 +54,22 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
         self.networkService = networkService
         self.defaultHttpHeaderFields = HttpHeaderFields.defaultFields(appID: appID, clientID: clientID)
         self.defaultHttpRequestParameters = HttpRequestDefaultParameters(tenantUrl: tenantURL.absoluteString)
-        self.pollInterval = pollInterval
-
-        subscribeToNotifications()
-        startTimer()
+        self.pollRequestService = pollRequestService
     }
 
     // MARK:- Convenience
     public convenience init(baseURL: URL, tenantURL: URL, appID: String, clientID: String, pollInterval: Double = 1.0) {
         let networkService = NetworkService(encoder: JSONCoder.encoder(),
                                             decoder: JSONCoder.decoder())
+        let pollRequestService = PollRequestService(networkService: networkService, pollInterval: pollInterval)
         self.init(baseURL: baseURL,
                   tenantURL: tenantURL,
                   appID: appID,
                   clientID: clientID,
                   networkService: networkService,
-                  pollInterval: pollInterval)
-    }
+                  pollRequestService: pollRequestService)
 
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-
-    private func httpGetRequest(with endpoint: URLProvider.Endpoint) throws -> URLRequest {
-        guard let urlRequest = try networkService.createRequest(method: .get,
-                                                                baseURL: baseURL,
-                                                                endpoint: endpoint,
-                                                                headerFields: defaultHttpHeaderFields,
-                                                                parameters: defaultHttpRequestParameters) else {
-            log.error("Failed to create URL request")
-
-            throw ContactCenterError.failedToCreateURLRequest
-        }
-
-        return urlRequest
+        pollRequestService.httpRequestBuilder = self
     }
 
     // MARK: - Public methods
@@ -108,9 +112,13 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
 
                 throw ContactCenterError.failedToCreateURLRequest
             }
-            networkService.dataTask(using: urlRequest) { (result: Result<ChatSessionPropertiesDto, Error>) -> Void in
+            networkService.dataTask(using: urlRequest) { [weak self] (result: Result<ChatSessionPropertiesDto, Error>) -> Void in
                 switch result {
                 case .success(let chatSessionProperties):
+                    // Save a chat ID which will initiate polling for chat events
+                    self?.pollRequestService.currentChatID = chatSessionProperties.chatID
+                    // Since it is a new chat session reset a message number counter
+                    self?.messageNumber = 0
                     completion(.success(chatSessionProperties.toModel()))
                 case .failure(let error):
                     completion(.failure(error))
@@ -119,25 +127,6 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
         } catch {
             log.error("Failed to requestChat: \(error)")
             completion(.failure(error))
-        }
-    }
-
-    private func httpSendEventsPostRequest(chatID: String, events: [ContactCenterEvent]) throws -> URLRequest {
-        let eventsContainer = ContactCenterEventsContainerDto(events: events)
-        do {
-            guard let urlRequest = try networkService.createRequest(method: .post,
-                                                                    baseURL: baseURL,
-                                                                    endpoint: .sendEvents(chatID: chatID),
-                                                                    headerFields: defaultHttpHeaderFields,
-                                                                    parameters: defaultHttpRequestParameters) else {
-                log.error("Failed to create URL request")
-
-                throw ContactCenterError.failedToCreateURLRequest
-            }
-            return try networkService.encode(from: eventsContainer, request: urlRequest)
-        } catch {
-            log.error("Failed to sendChatMessage: \(error)")
-            throw error
         }
     }
 
@@ -156,6 +145,7 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
             networkService.dataTask(using: urlRequest) { [weak self] (response: NetworkDataResponse) in
                 switch response {
                 case .success(_):
+                    // Change the internal state on the main thread which used at other places
                     self?.messageNumber += 1
                     completion(.success(messageID))
                 case .failure(let error):
@@ -217,56 +207,38 @@ public class ContactCenterCommunicator: ContactCenterCommunicating {
     }
 }
 
-// MARK: - Poll action
-extension ContactCenterCommunicator {
-    @objc private func pollAction() {
-    }
+// MARK: - HTTP request helper factory functions
+extension ContactCenterCommunicator: HttpRequestBuilding {
+    internal func httpGetRequest(with endpoint: URLProvider.Endpoint) throws -> URLRequest {
+        guard let urlRequest = try networkService.createRequest(method: .get,
+                                                                baseURL: baseURL,
+                                                                endpoint: endpoint,
+                                                                headerFields: defaultHttpHeaderFields,
+                                                                parameters: defaultHttpRequestParameters) else {
+            log.error("Failed to create URL request")
 
-    private func subscribeToNotifications() {
-        // Restore a poll action when the app is going to go the foreground
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(startTimer),
-                                               name: .UIApplicationWillEnterForeground,
-                                               object: nil)
-        // Pause a poll action after the app goes to the background
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(stopTimer),
-                                               name: .UIApplicationDidEnterBackground,
-                                               object: nil)
-    }
-
-    private func setupTimer(pollInterval: Double) {
-        guard pollTimer == nil else {
-            log.debug("Timer already set")
-            return
+            throw ContactCenterError.failedToCreateURLRequest
         }
-        let timer =  Timer(timeInterval: pollInterval, repeats: true) { [weak self] _ in
-            self?.pollAction()
-        }
-        // Allow a timer to run when a UI thread block execution
-        RunLoop.current.add(timer, forMode: .commonModes)
-        // Gives OS a chance to safe a battery life
-        timer.tolerance = Self.timerTolerance
 
-        pollTimer = timer
+        return urlRequest
     }
 
-    private func invalidateTimer() {
-        self.pollTimer?.invalidate()
-        self.pollTimer = nil
-    }
+    private func httpSendEventsPostRequest(chatID: String, events: [ContactCenterEvent]) throws -> URLRequest {
+        let eventsContainer = ContactCenterEventsContainerDto(events: events)
+        do {
+            guard let urlRequest = try networkService.createRequest(method: .post,
+                                                                    baseURL: baseURL,
+                                                                    endpoint: .sendEvents(chatID: chatID),
+                                                                    headerFields: defaultHttpHeaderFields,
+                                                                    parameters: defaultHttpRequestParameters) else {
+                log.error("Failed to create URL request")
 
-    @objc private func startTimer() {
-        // Make sure that a timer is scheduled and invalidated on the same thread
-        DispatchQueue.main.async { [unowned self] in
-            setupTimer(pollInterval: self.pollInterval)
-        }
-    }
-
-    @objc private func stopTimer() {
-        // Make sure that a timer is scheduled and invalidated on the same thread
-        DispatchQueue.main.async { [unowned self] in
-            self.invalidateTimer()
+                throw ContactCenterError.failedToCreateURLRequest
+            }
+            return try networkService.encode(from: eventsContainer, request: urlRequest)
+        } catch {
+            log.error("Failed to sendChatMessage: \(error)")
+            throw error
         }
     }
 }

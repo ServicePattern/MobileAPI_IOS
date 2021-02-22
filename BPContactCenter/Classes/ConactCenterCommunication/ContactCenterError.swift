@@ -14,4 +14,5 @@ public enum ContactCenterError: Error {
     case unexpectedResponse(URLResponse?)
     case dataEmpty
     case failedToCast(String)
+    case chatSessionNotFound
 }
