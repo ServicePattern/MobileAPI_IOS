@@ -7,15 +7,33 @@
 //
 
 import UIKit
+import BPContactCenter
+
+protocol DeviceTokenDelegateProtocol: class {
+    func received(token: Data)
+}
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    var contactCenterService: ContactCenterCommunicating?
+    var deviceToken: Data?
+    let useFirebase = false
+    weak var deviceTokenDelegate: DeviceTokenDelegateProtocol?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+
+        let baseURL = URL(string: "http://alvm.bugfocus.com")!
+        let tenantURL = URL(string: "devs.alvm.bugfocus.com")!
+        let appID = "apns"
+        let clientID = "D3577669-EB4B-4565-B9C6-27DD857CE8E5"
+        //let clientID = "817AB6B9-75E8-4CCB-A042-C78E8EA45FF6"
+
+        contactCenterService = ContactCenterCommunicator(baseURL: baseURL, tenantURL: tenantURL, appID: appID, clientID: clientID)
+
+        UIApplication.shared.registerForRemoteNotifications()
+
         return true
     }
 
@@ -41,6 +59,46 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
+    func application(_ application: UIApplication,
+                didRegisterForRemoteNotificationsWithDeviceToken
+                    deviceToken: Data) {
+        print("Received a device token from APNs: \(deviceToken)")
+        self.deviceToken = deviceToken
+        deviceTokenDelegate?.received(token: deviceToken)
+    }
 
+    func application(_ application: UIApplication,
+                didFailToRegisterForRemoteNotificationsWithError
+                    error: Error) {
+       // Try again later.
+    }
+
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        contactCenterService?.appDidReceiveMessage(userInfo)
+        completionHandler(UIBackgroundFetchResult.newData)
+    }
 }
+
+@available(iOS 10, *)
+extension AppDelegate : UNUserNotificationCenterDelegate {
+
+  // Receive displayed notifications for iOS 10 devices.
+  func userNotificationCenter(_ center: UNUserNotificationCenter,
+                              willPresent notification: UNNotification,
+    withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+    let userInfo = notification.request.content.userInfo
+    contactCenterService?.appDidReceiveMessage(userInfo)
+    // Change this to your preferred presentation option
+    completionHandler([[.alert, .sound]])
+  }
+
+  func userNotificationCenter(_ center: UNUserNotificationCenter,
+                              didReceive response: UNNotificationResponse,
+                              withCompletionHandler completionHandler: @escaping () -> Void) {
+    let userInfo = response.notification.request.content.userInfo
+    contactCenterService?.appDidReceiveMessage(userInfo)
+    completionHandler()
+  }
+}
+
 

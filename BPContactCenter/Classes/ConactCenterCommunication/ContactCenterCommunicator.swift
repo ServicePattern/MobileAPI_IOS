@@ -205,6 +205,35 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
             completion(.failure(error))
         }
     }
+
+    // MARK: - Remote notifications
+    public func subscribeForRemoteNotificationsAPNs(chatID: String, deviceToken: Data, appBundleID: String, with completion: @escaping (Result<Void, Error>) -> Void) {
+        do {
+            var urlRequest = try httpPostRequest(with: .subscribeForNotifications(chatID: chatID))
+            let parameters = SubscribeForAPNsNotificationsParameters(deviceToken: deviceToken, appBundleID: appBundleID)
+            urlRequest = try networkService.encode(from: parameters, request: urlRequest)
+            networkService.dataTask(using: urlRequest, with: completion)
+        } catch {
+            log.error("Failed to subscribePushAPNs: \(error)")
+            completion(.failure(error))
+        }
+    }
+
+    public func subscribeForRemoteNotificationsFirebase(chatID: String, deviceToken: Data, with completion: @escaping (Result<Void, Error>) -> Void) {
+        do {
+            var urlRequest = try httpPostRequest(with: .subscribeForNotifications(chatID: chatID))
+            let parameters = SubscribeForFirebaseNotificationsParameters(deviceToken: deviceToken)
+            urlRequest = try networkService.encode(from: parameters, request: urlRequest)
+            networkService.dataTask(using: urlRequest, with: completion)
+        } catch {
+            log.error("Failed to subscribePushAPNs: \(error)")
+            completion(.failure(error))
+        }
+    }
+
+    public func appDidReceiveMessage(_ userInfo: [AnyHashable : Any]) {
+        // Parse APNs message payload
+    }
 }
 
 // MARK: - HTTP request helper factory functions
@@ -223,18 +252,23 @@ extension ContactCenterCommunicator: HttpRequestBuilding {
         return urlRequest
     }
 
+    private func httpPostRequest(with endpoint: URLProvider.Endpoint) throws -> URLRequest {
+        guard let urlRequest = try networkService.createRequest(method: .post,
+                                                                baseURL: baseURL,
+                                                                endpoint: endpoint,
+                                                                headerFields: defaultHttpHeaderFields,
+                                                                parameters: defaultHttpRequestParameters) else {
+            log.error("Failed to create URL request")
+
+            throw ContactCenterError.failedToCreateURLRequest
+        }
+        return urlRequest
+    }
+
     private func httpSendEventsPostRequest(chatID: String, events: [ContactCenterEvent]) throws -> URLRequest {
         let eventsContainer = ContactCenterEventsContainerDto(events: events)
         do {
-            guard let urlRequest = try networkService.createRequest(method: .post,
-                                                                    baseURL: baseURL,
-                                                                    endpoint: .sendEvents(chatID: chatID),
-                                                                    headerFields: defaultHttpHeaderFields,
-                                                                    parameters: defaultHttpRequestParameters) else {
-                log.error("Failed to create URL request")
-
-                throw ContactCenterError.failedToCreateURLRequest
-            }
+            let urlRequest = try httpPostRequest(with: .sendEvents(chatID: chatID))
             return try networkService.encode(from: eventsContainer, request: urlRequest)
         } catch {
             log.error("Failed to sendChatMessage: \(error)")

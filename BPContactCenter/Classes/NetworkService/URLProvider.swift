@@ -5,7 +5,7 @@
 import Foundation
 
 class URLProvider {
-    static let apiVersion = "v1"
+    static let apiVersion = "v2"
     static let basePath = "clientweb/api"
 
     struct HTTPRequestDefaultParameters: Codable {
@@ -32,6 +32,7 @@ class URLProvider {
         case getNewChatEvents(chatID: String)
         case requestChat
         case sendEvents(chatID: String)
+        case subscribeForNotifications(chatID: String)
 
         var endpointPathString: String {
             switch self {
@@ -45,6 +46,8 @@ class URLProvider {
                 return "chats"
             case .sendEvents(let chatID):
                 return "chats/\(chatID)/events"
+            case .subscribeForNotifications(let chatID):
+                return "chats/\(chatID)/notifications"
             }
         }
     }

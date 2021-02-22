@@ -83,7 +83,7 @@ struct ContactCenterEventsContainerDto: Codable {
 internal struct UnknownEventDto: Codable {
 }
 
-/// This Dto is used to decode event types by decoding their names from ```event``` property
+/// This Dto is used to decode event types by decoding their names from `event` property
 private struct ContactCenterEventTypeContainerDto: Decodable {
     let event: ContactCenterEventTypeDto
 }
