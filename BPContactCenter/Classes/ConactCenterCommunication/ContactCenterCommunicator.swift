@@ -39,6 +39,12 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
     }
     private let readerWriterQueue = DispatchQueue(label: "com.BPContactCenter.ContactCenterCommunicator.reader-writer", attributes: .concurrent)
     private var pollRequestService: PollRequestServiceable
+    private var bundleIdentifier: String {
+        guard let bundleIdentifier = Bundle.main.bundleIdentifier else {
+            fatalError("Failed to get a bundle identitifer")
+        }
+        return bundleIdentifier
+    }
 
     /// This method is not exposed to the consumer and it might be used to inject dependencies for unit testing
     init(baseURL: URL, tenantURL: URL, appID: String, clientID: String, networkService: NetworkServiceable, pollRequestService: PollRequestServiceable) {
@@ -102,16 +108,7 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
     public func requestChat(phoneNumber: String, from: String, parameters: [String: String], with completion: @escaping ((Result<ContactCenterChatSessionProperties, Error>) -> Void)) {
         do {
             let requestChatBodyParameters = RequestChatParameters(phoneNumber: phoneNumber, from: from, parameters: parameters)
-            guard let urlRequest = try networkService.createRequest(method: .post,
-                                                                    baseURL: baseURL,
-                                                                    endpoint: .requestChat,
-                                                                    headerFields: defaultHttpHeaderFields,
-                                                                    parameters: defaultHttpRequestParameters,
-                                                                    body: requestChatBodyParameters) else {
-                log.error("Failed to create URL request")
-
-                throw ContactCenterError.failedToCreateURLRequest
-            }
+            let urlRequest = try httpPostRequest(with: .requestChat, body: requestChatBodyParameters)
             networkService.dataTask(using: urlRequest) { [weak self] (result: Result<ChatSessionPropertiesDto, Error>) -> Void in
                 switch result {
                 case .success(let chatSessionProperties):
@@ -207,11 +204,10 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
     }
 
     // MARK: - Remote notifications
-    public func subscribeForRemoteNotificationsAPNs(chatID: String, deviceToken: Data, appBundleID: String, with completion: @escaping (Result<Void, Error>) -> Void) {
+    public func subscribeForRemoteNotificationsAPNs(chatID: String, deviceToken: Data, with completion: @escaping (Result<Void, Error>) -> Void) {
+        let bodyParameters = SubscribeForAPNsNotificationsParameters(deviceToken: deviceToken, appBundleID: bundleIdentifier)
         do {
-            var urlRequest = try httpPostRequest(with: .subscribeForNotifications(chatID: chatID))
-            let parameters = SubscribeForAPNsNotificationsParameters(deviceToken: deviceToken, appBundleID: appBundleID)
-            urlRequest = try networkService.encode(from: parameters, request: urlRequest)
+            let urlRequest = try httpPostRequest(with: .subscribeForNotifications(chatID: chatID), body: bodyParameters)
             networkService.dataTask(using: urlRequest, with: completion)
         } catch {
             log.error("Failed to subscribePushAPNs: \(error)")
@@ -220,10 +216,9 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
     }
 
     public func subscribeForRemoteNotificationsFirebase(chatID: String, deviceToken: Data, with completion: @escaping (Result<Void, Error>) -> Void) {
+        let bodyParameters = SubscribeForFirebaseNotificationsParameters(deviceToken: deviceToken)
         do {
-            var urlRequest = try httpPostRequest(with: .subscribeForNotifications(chatID: chatID))
-            let parameters = SubscribeForFirebaseNotificationsParameters(deviceToken: deviceToken)
-            urlRequest = try networkService.encode(from: parameters, request: urlRequest)
+            let urlRequest = try httpPostRequest(with: .subscribeForNotifications(chatID: chatID), body: bodyParameters)
             networkService.dataTask(using: urlRequest, with: completion)
         } catch {
             log.error("Failed to subscribePushAPNs: \(error)")
@@ -252,12 +247,13 @@ extension ContactCenterCommunicator: HttpRequestBuilding {
         return urlRequest
     }
 
-    private func httpPostRequest(with endpoint: URLProvider.Endpoint) throws -> URLRequest {
+    private func httpPostRequest(with endpoint: URLProvider.Endpoint, body: Encodable) throws -> URLRequest {
         guard let urlRequest = try networkService.createRequest(method: .post,
                                                                 baseURL: baseURL,
                                                                 endpoint: endpoint,
                                                                 headerFields: defaultHttpHeaderFields,
-                                                                parameters: defaultHttpRequestParameters) else {
+                                                                parameters: defaultHttpRequestParameters,
+                                                                body: body) else {
             log.error("Failed to create URL request")
 
             throw ContactCenterError.failedToCreateURLRequest
@@ -268,8 +264,7 @@ extension ContactCenterCommunicator: HttpRequestBuilding {
     private func httpSendEventsPostRequest(chatID: String, events: [ContactCenterEvent]) throws -> URLRequest {
         let eventsContainer = ContactCenterEventsContainerDto(events: events)
         do {
-            let urlRequest = try httpPostRequest(with: .sendEvents(chatID: chatID))
-            return try networkService.encode(from: eventsContainer, request: urlRequest)
+            return try httpPostRequest(with: .sendEvents(chatID: chatID), body: eventsContainer)
         } catch {
             log.error("Failed to sendChatMessage: \(error)")
             throw error

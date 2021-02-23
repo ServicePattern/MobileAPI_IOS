@@ -17,7 +17,7 @@ enum HttpMethod: String {
 
 protocol NetworkServiceable {
     /// Create a request given requestMethod  (get, post, create, etc...),  a URL,  and header fields
-    func createRequest(method: HttpMethod, url: URL, headerFields: HttpHeaderFields?, body: Encodable?) -> URLRequest
+    func createRequest(method: HttpMethod, url: URL, headerFields: HttpHeaderFields?, body: Encodable?) throws -> URLRequest
     /// Create a request given requestMethod  (get, post, create, etc...),  a base URL, endpoint and header fields
     /// To create  a request with special header files that represent authorization, content type and user agent use [HttpHeaderFields](x-source-tag://HttpHeaderFields)
     /// That header fields are usually sent inside the requests to the backend
@@ -26,7 +26,6 @@ protocol NetworkServiceable {
     /// - Tag: createRequest
     func createRequest(method: HttpMethod, baseURL: URL, endpoint: URLProvider.Endpoint, headerFields: HttpHeaderFields, parameters: Encodable?, body: Encodable?) throws -> URLRequest?
     func decode<T: Decodable>(to type: T.Type, data: Data) throws -> T
-    func encode<T: Encodable>(from instance: T, request: URLRequest) throws -> URLRequest
     @discardableResult
     func dataTask(using request: URLRequest, with completion: @escaping (NetworkDataResponse) -> Void) -> URLSessionDataTask
     @discardableResult
@@ -45,7 +44,7 @@ extension NetworkServiceable {
         try createRequest(method: method, baseURL: baseURL, endpoint: endpoint, headerFields: headerFields, parameters: parameters, body: nil)
     }
 
-    func createRequest(method: HttpMethod, url: URL) -> URLRequest {
-        return createRequest(method: method, url: url, headerFields: nil, body: nil)
+    func createRequest(method: HttpMethod, url: URL) throws -> URLRequest {
+        return try createRequest(method: method, url: url, headerFields: nil, body: nil)
     }
 }

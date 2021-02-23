@@ -79,9 +79,8 @@ public protocol ContactCenterCommunicating {
     /// - Parameters:
     ///   - chatID: The current chat ID
     ///   - deviceToken: Unique to both the device and the app. Which is received in `didRegisterForRemoteNotificationsWithDeviceToken`
-    ///   - appBundleID: Represents the app's unique identifier. Which might be obtained using `Bundle.main.bundleIdentifier`
     ///   - completion: Returns `.success` or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
-    func subscribeForRemoteNotificationsAPNs(chatID: String, deviceToken: Data, appBundleID: String, with completion: @escaping (Result<Void, Error>) -> Void)
+    func subscribeForRemoteNotificationsAPNs(chatID: String, deviceToken: Data, with completion: @escaping (Result<Void, Error>) -> Void)
     /// Subscribes for push notifications from APNs server when using Firebase service.
     /// Firebase gives one more layer of flexibility to have event more granular control of notifications that are sent to the users devices.
     ///

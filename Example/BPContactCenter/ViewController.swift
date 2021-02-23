@@ -47,14 +47,12 @@ class ViewController: UIViewController {
         appDelegate.useFirebase
     }
 
+    var currentChatID: String?
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         appDelegate.deviceTokenDelegate = self
-
-        if appDelegate.deviceToken != nil {
-            checkChatAvailability()
-        }
     }
 }
 
@@ -86,17 +84,7 @@ extension ViewController {
             case .success(let chatProperties):
                 print("Chat properties: \(chatProperties)")
                 DispatchQueue.main.async {
-                    self?.subscribeForNotifications(chatID: chatProperties.chatID) { subscribeResult in
-                        DispatchQueue.main.async {
-                            switch subscribeResult {
-                            case .success:
-                                print("Subscribe for Firebase notification confirmed")
-                                self?.sendChatMessage(chatID: chatProperties.chatID)
-                            case .failure(let error):
-                                print("Failed to subscribe for notifications: \(error)")
-                            }
-                        }
-                    }
+                    self?.getChatHistory(chatID: chatProperties.chatID)
                 }
             case .failure(let error):
                 print("\(error)")
@@ -104,30 +92,24 @@ extension ViewController {
         }
     }
 
-    private func sendChatMessage(chatID: String) {
+    private func getChatHistory(chatID: String) {
         contactCenterService.getChatHistory(chatID: chatID) { [weak self] eventsResult in
             switch eventsResult {
             case .success(let events):
-                print("Events: \(events)")
+                print("Received chat history")
                 DispatchQueue.main.async {
-                    for e in events {
-                        switch e {
-                        case .chatSessionMessage(let messageID, let partyID, let message, let timestamp):
-                            print("\(timestamp): message: \(message) from party \(partyID)")
-                            self?.chatMessageDelivered(chatID: chatID, messageID: messageID)
-                            self?.chatMessageRead(chatID: chatID, messageID: messageID)
-                        default:()
-                        }
-                    }
-
-                    self?.sendChatMessage(chatID: chatID, message: "Hello")
-                    self?.disconnectChat(chatID: chatID)
-                    self?.endChat(chatID: chatID)
+                    self?.currentChatID = chatID
+                    self?.processSessionEvents(chatID: chatID, events: events)
                 }
             case .failure(let error):
                 print("Failed to getChatHistory: \(error)")
             }
         }
+    }
+
+    private func endChatSession(chatID: String) {
+        self.disconnectChat(chatID: chatID)
+        self.endChat(chatID: chatID)
     }
 
     private func subscribeForNotifications(chatID: String, completion: @escaping (Result<Void, Error>) -> Void) {
@@ -139,11 +121,12 @@ extension ViewController {
 
         if useFirebase {
             contactCenterService.subscribeForRemoteNotificationsFirebase(chatID: chatID,
-                                                                         deviceToken: deviceToken, with: completion)
+                                                                         deviceToken: deviceToken,
+                                                                         with: completion)
         } else {
             contactCenterService.subscribeForRemoteNotificationsAPNs(chatID: chatID,
-                                                                          deviceToken: deviceToken,
-                                                                          appBundleID: bundleIdentifier, with: completion)
+                                                                     deviceToken: deviceToken,
+                                                                     with: completion)
         }
     }
 
@@ -203,13 +186,46 @@ extension ViewController {
             }
         }
     }
+
+    private func processSessionEvents(chatID: String, events: [ContactCenterEvent]) {
+        for e in events {
+            switch e {
+            case .chatSessionMessage(let messageID, let partyID, let message, let timestamp):
+                print("\(timestamp): message: \(message) from party \(partyID)")
+                self.chatMessageDelivered(chatID: chatID, messageID: messageID)
+                self.chatMessageRead(chatID: chatID, messageID: messageID)
+            case .chatSessionStatus(let state, let estimatedWaitTime):
+                if state == .connected {
+                    print("Connected to a chat: \(chatID)")
+                    self.subscribeForNotifications(chatID: chatID) { subscribeResult in
+                        DispatchQueue.main.async {
+                            switch subscribeResult {
+                            case .success:
+                                print("Subscribe for remote notifications confirmed")
+                            case .failure(let error):
+                                print("Failed to subscribe for notifications: \(error)")
+                            }
+                        }
+                    }
+                } else {
+                    print("Waiting in a queue: \(chatID) estimated wait time: \(estimatedWaitTime)")
+                }
+            default:()
+            }
+        }
+    }
 }
 
 extension ViewController: ContactCenterEventsDelegating {
     func chatSessionEvents(result: Result<[ContactCenterEvent], Error>) {
         switch result {
         case .success(let events):
-            print("Received events: \(events.count) confirmed")
+            print("Received events from delegate")
+            guard let chatID = self.currentChatID else {
+                print("ChatID is not set")
+                return
+            }
+            self.processSessionEvents(chatID: chatID, events: events)
         case .failure(let error):
             print("chatSessionEvents failed: \(error)")
         }

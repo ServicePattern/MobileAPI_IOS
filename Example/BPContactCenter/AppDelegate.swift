@@ -32,9 +32,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         contactCenterService = ContactCenterCommunicator(baseURL: baseURL, tenantURL: tenantURL, appID: appID, clientID: clientID)
 
-        UIApplication.shared.registerForRemoteNotifications()
+        subscribeForRemoteNotifications()
 
         return true
+    }
+
+    private func subscribeForRemoteNotifications() {
+        UNUserNotificationCenter.current().delegate = self
+
+        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+        UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { (authorized, error) in
+            guard authorized else {
+                if let error = error {
+                    print("Failed to authorize remote notifications: \(error)")
+                }
+                return
+            }
+            DispatchQueue.main.async {
+                UIApplication.shared.registerForRemoteNotifications()
+            }
+            print("Successfully authorized for remote notifications")
+        }
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
@@ -62,7 +80,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                 didRegisterForRemoteNotificationsWithDeviceToken
                     deviceToken: Data) {
-        print("Received a device token from APNs: \(deviceToken)")
+        let deviceTokenString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+        print("Received a device token from APNs: \(deviceTokenString)")
         self.deviceToken = deviceToken
         deviceTokenDelegate?.received(token: deviceToken)
     }
