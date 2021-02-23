@@ -91,25 +91,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     error: Error) {
        // Try again later.
     }
-
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        contactCenterService?.appDidReceiveMessage(userInfo)
-        completionHandler(UIBackgroundFetchResult.newData)
-    }
 }
 
 @available(iOS 10, *)
 extension AppDelegate : UNUserNotificationCenterDelegate {
-
-  // Receive displayed notifications for iOS 10 devices.
-  func userNotificationCenter(_ center: UNUserNotificationCenter,
-                              willPresent notification: UNNotification,
-    withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-    let userInfo = notification.request.content.userInfo
-    contactCenterService?.appDidReceiveMessage(userInfo)
-    // Change this to your preferred presentation option
-    completionHandler([[.alert, .sound]])
-  }
 
   func userNotificationCenter(_ center: UNUserNotificationCenter,
                               didReceive response: UNNotificationResponse,

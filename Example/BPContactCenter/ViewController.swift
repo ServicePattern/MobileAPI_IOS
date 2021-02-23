@@ -53,6 +53,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         appDelegate.deviceTokenDelegate = self
+        appDelegate.contactCenterService?.delegate = self
     }
 }
 
@@ -225,7 +226,9 @@ extension ViewController: ContactCenterEventsDelegating {
                 print("ChatID is not set")
                 return
             }
-            self.processSessionEvents(chatID: chatID, events: events)
+            DispatchQueue.main.async {
+                self.processSessionEvents(chatID: chatID, events: events)
+            }
         case .failure(let error):
             print("chatSessionEvents failed: \(error)")
         }

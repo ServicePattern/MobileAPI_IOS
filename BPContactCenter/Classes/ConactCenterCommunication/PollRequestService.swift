@@ -49,6 +49,7 @@ class PollRequestService: PollRequestServiceable {
     internal weak var httpRequestBuilder: HttpRequestBuilding?
     internal weak var delegate: ContactCenterEventsDelegating?
     private let reachability: Reachability
+    private let pollActionHttpRequestLock = NSLock()
 
     init(networkService: NetworkServiceable, pollInterval: Double) {
         self.networkService = networkService
@@ -68,19 +69,18 @@ class PollRequestService: PollRequestServiceable {
         NotificationCenter.default.removeObserver(self)
         // Make sure to access pollRequestDataTask from the same queue it was set before
         pollRequestQueue.sync {
+            // Make sure that no additional poll request will be made
+            currentChatID = nil
             pollRequestDataTask?.cancel()
         }
     }
 
     private func pollAction() {
         /// - Note: Make sure that this function is called from pollRequestQueue!!!
+        pollActionHttpRequestLock.lock()
         do {
             guard let currentChatID = currentChatID else {
                 log.debug("Poll requested when current chatID is nil")
-                return
-            }
-            guard pollRequestDataTask == nil else {
-                log.debug("There is already poll task running")
                 return
             }
             guard let urlRequest = try httpRequestBuilder?.httpGetRequest(with: .getNewChatEvents(chatID: currentChatID)) else {
@@ -89,9 +89,6 @@ class PollRequestService: PollRequestServiceable {
                 throw ContactCenterError.failedToCreateURLRequest
             }
             pollRequestDataTask = networkService.dataTask(using: urlRequest) { [weak self] (result: Result<ContactCenterEventsContainerDto, Error>) -> Void in
-                self?.pollRequestQueue.sync {
-                    self?.pollRequestDataTask = nil
-                }
                 switch result {
                 case .success(let eventsContainer):
                     //  Report received server events to the application
@@ -114,6 +111,7 @@ class PollRequestService: PollRequestServiceable {
                         self?.currentChatID = nil
                     }
                 }
+                self?.pollActionHttpRequestLock.unlock()
             }
         } catch {
             log.error("Failed to send poll request: \(error)")
