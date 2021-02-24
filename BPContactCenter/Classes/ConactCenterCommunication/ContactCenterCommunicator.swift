@@ -204,7 +204,7 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
     }
 
     // MARK: - Remote notifications
-    public func subscribeForRemoteNotificationsAPNs(chatID: String, deviceToken: Data, with completion: @escaping (Result<Void, Error>) -> Void) {
+    public func subscribeForRemoteNotificationsAPNs(chatID: String, deviceToken: String, with completion: @escaping (Result<Void, Error>) -> Void) {
         let bodyParameters = SubscribeForAPNsNotificationsParameters(deviceToken: deviceToken, appBundleID: bundleIdentifier)
         do {
             let urlRequest = try httpPostRequest(with: .subscribeForNotifications(chatID: chatID), body: bodyParameters)
@@ -215,7 +215,7 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
         }
     }
 
-    public func subscribeForRemoteNotificationsFirebase(chatID: String, deviceToken: Data, with completion: @escaping (Result<Void, Error>) -> Void) {
+    public func subscribeForRemoteNotificationsFirebase(chatID: String, deviceToken: String, with completion: @escaping (Result<Void, Error>) -> Void) {
         let bodyParameters = SubscribeForFirebaseNotificationsParameters(deviceToken: deviceToken)
         do {
             let urlRequest = try httpPostRequest(with: .subscribeForNotifications(chatID: chatID), body: bodyParameters)

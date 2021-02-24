@@ -80,7 +80,7 @@ public protocol ContactCenterCommunicating {
     ///   - chatID: The current chat ID
     ///   - deviceToken: Unique to both the device and the app. Which is received in `didRegisterForRemoteNotificationsWithDeviceToken`
     ///   - completion: Returns `.success` or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
-    func subscribeForRemoteNotificationsAPNs(chatID: String, deviceToken: Data, with completion: @escaping (Result<Void, Error>) -> Void)
+    func subscribeForRemoteNotificationsAPNs(chatID: String, deviceToken: String, with completion: @escaping (Result<Void, Error>) -> Void)
     /// Subscribes for push notifications from APNs server when using Firebase service.
     /// Firebase gives one more layer of flexibility to have event more granular control of notifications that are sent to the users devices.
     ///
@@ -89,7 +89,7 @@ public protocol ContactCenterCommunicating {
     ///   - chatID: The current chat ID
     ///   - deviceToken: Unique to both the device and the app. Which is received in `didRegisterForRemoteNotificationsWithDeviceToken`
    ///   - completion: Returns `.success` or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
-    func subscribeForRemoteNotificationsFirebase(chatID: String, deviceToken: Data, with completion: @escaping (Result<Void, Error>) -> Void)
+    func subscribeForRemoteNotificationsFirebase(chatID: String, deviceToken: String, with completion: @escaping (Result<Void, Error>) -> Void)
     /// Notify contact center library about new remote notification
     /// - Parameters:
     ///   - userInfo: Contains a payload with a new event from a backend which is received in `didReceiveRemoteNotification` or `userNotificationCenter`

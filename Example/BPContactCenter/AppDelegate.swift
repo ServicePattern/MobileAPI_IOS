@@ -8,9 +8,10 @@
 
 import UIKit
 import BPContactCenter
+import Firebase
 
 protocol DeviceTokenDelegateProtocol: class {
-    func received(token: Data)
+    func received(token: String)
 }
 
 @UIApplicationMain
@@ -18,19 +19,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     var contactCenterService: ContactCenterCommunicating?
-    var deviceToken: Data?
-    let useFirebase = false
+    var deviceToken: String?
+    let useFirebase = true
     weak var deviceTokenDelegate: DeviceTokenDelegateProtocol?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 
         let baseURL = URL(string: "http://alvm.bugfocus.com")!
         let tenantURL = URL(string: "devs.alvm.bugfocus.com")!
-        let appID = "apns"
+        let appID = useFirebase ? "FirebaseApple": "apns"
         let clientID = "D3577669-EB4B-4565-B9C6-27DD857CE8E5"
-        //let clientID = "817AB6B9-75E8-4CCB-A042-C78E8EA45FF6"
 
         contactCenterService = ContactCenterCommunicator(baseURL: baseURL, tenantURL: tenantURL, appID: appID, clientID: clientID)
+
+        if useFirebase {
+            FirebaseApp.configure()
+        }
 
         subscribeForRemoteNotifications()
 
@@ -52,6 +56,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 UIApplication.shared.registerForRemoteNotifications()
             }
             print("Successfully authorized for remote notifications")
+        }
+
+        if useFirebase {
+            Messaging.messaging().delegate = self
         }
     }
 
@@ -80,10 +88,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                 didRegisterForRemoteNotificationsWithDeviceToken
                     deviceToken: Data) {
+        // Convert data to hex string
         let deviceTokenString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
         print("Received a device token from APNs: \(deviceTokenString)")
-        self.deviceToken = deviceToken
-        deviceTokenDelegate?.received(token: deviceToken)
+        if !useFirebase {
+            self.deviceToken = deviceTokenString
+            deviceTokenDelegate?.received(token: deviceTokenString)
+        }
     }
 
     func application(_ application: UIApplication,
@@ -93,7 +104,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
-@available(iOS 10, *)
 extension AppDelegate : UNUserNotificationCenterDelegate {
 
   func userNotificationCenter(_ center: UNUserNotificationCenter,
@@ -105,4 +115,15 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
   }
 }
 
+extension AppDelegate: MessagingDelegate {
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+        guard let fcmToken = fcmToken else {
+            print("Empty fcm token")
+            return
+        }
+        print("Received fcm token from Firebase: \(fcmToken)")
+        self.deviceToken = fcmToken
+        deviceTokenDelegate?.received(token: fcmToken)
+    }
+}
 

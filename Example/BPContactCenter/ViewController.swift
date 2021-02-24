@@ -35,7 +35,7 @@ class ViewController: UIViewController {
     var contactCenterService: ContactCenterCommunicating {
         appDelegate.contactCenterService!
     }
-    var deviceToken: Data? {
+    var deviceToken: String? {
         appDelegate.deviceToken
     }
 
@@ -58,7 +58,7 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: DeviceTokenDelegateProtocol {
-    func received(token _: Data) {
+    func received(token _: String) {
         checkChatAvailability()
     }
 }
@@ -86,6 +86,16 @@ extension ViewController {
                 print("Chat properties: \(chatProperties)")
                 DispatchQueue.main.async {
                     self?.getChatHistory(chatID: chatProperties.chatID)
+                    self?.subscribeForNotifications(chatID: chatProperties.chatID) { subscribeResult in
+                        DispatchQueue.main.async {
+                            switch subscribeResult {
+                            case .success:
+                                print("Subscribe for remote notifications confirmed")
+                            case .failure(let error):
+                                print("Failed to subscribe for notifications: \(error)")
+                            }
+                        }
+                    }
                 }
             case .failure(let error):
                 print("\(error)")
@@ -198,16 +208,6 @@ extension ViewController {
             case .chatSessionStatus(let state, let estimatedWaitTime):
                 if state == .connected {
                     print("Connected to a chat: \(chatID)")
-                    self.subscribeForNotifications(chatID: chatID) { subscribeResult in
-                        DispatchQueue.main.async {
-                            switch subscribeResult {
-                            case .success:
-                                print("Subscribe for remote notifications confirmed")
-                            case .failure(let error):
-                                print("Failed to subscribe for notifications: \(error)")
-                            }
-                        }
-                    }
                 } else {
                     print("Waiting in a queue: \(chatID) estimated wait time: \(estimatedWaitTime)")
                 }
