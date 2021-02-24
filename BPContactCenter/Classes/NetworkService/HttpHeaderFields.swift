@@ -51,14 +51,14 @@ struct HttpHeaderFields {
     }
 
     /// Might be used to merge two header fields dictionaries together
-    /// ````
-    ///     let specialHttpHeaderFields:[HttpHeaderType: HttpHeaderValue] = [
+    /// ```
+    /// let specialHttpHeaderFields:[HttpHeaderType: HttpHeaderValue] = [
     ///     .specialType, .specialValue
     ///     ]
-    ///     let headerFieldsToBuildURLRequest = HttpHeaderFields.defaultFields(appID: "1",
-    ///                                                                     clientID: "2")
-    ///                                             .merging(specialHttpHeaderFields)
-    /// ````
+    /// let headerFieldsToBuildURLRequest = HttpHeaderFields.defaultFields(appID: "1",
+    ///                                                                  clientID: "2")
+    ///                                                     .merging(specialHttpHeaderFields)
+    /// ```
     func merging(_ headerFieldsToMerge: HttpHeaderFields) -> HttpHeaderFields {
         let mergedFields = fields.merging(headerFieldsToMerge.fields)  { (current, _) in current }
 

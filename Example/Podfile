@@ -4,6 +4,7 @@ platform :ios, '11.0'
 
 target 'BPContactCenter_Example' do
   pod 'BPContactCenter', :path => '../'
+  pod 'Firebase/Messaging'
 
   target 'BPContactCenter_Tests' do
     inherit! :search_paths

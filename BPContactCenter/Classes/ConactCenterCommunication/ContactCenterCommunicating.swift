@@ -11,7 +11,7 @@ public protocol ContactCenterEventsDelegating: class {
 
 /// Provides chat and voice interactions.
 /// This API can be used for development of rich contact applications, such as customer-facing mobile and web applications for advanced chat, voice, and video communications with Bright Pattern Contact Center-based contact centers.
-/// Sends "poll" request to the backend repeatedly for get new chat events. The chat events are received through ```delegate```
+/// Sends `poll` request to the backend repeatedly for get new chat events. The chat events are received through `delegate`
 public protocol ContactCenterCommunicating {
     // MARK: - Initialization
     /// Base URL to make requests
@@ -43,34 +43,55 @@ public protocol ContactCenterCommunicating {
     ///   - phoneNumber: phone number for callback, if necessary
     ///   - from: Propagated into scenario variable $(item.from). May be used to specify either the device owner’s name or phone number.
     ///   - parameters: Additional parameters.
-    ///   - completion: Returns chat session properties that includes ``chatID`` in [ContactCenterChatSessionProperties](x-source-tag://ContactCenterChatSessionProperties) or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    ///   - completion: Returns chat session properties that includes `chatID` in [ContactCenterChatSessionProperties](x-source-tag://ContactCenterChatSessionProperties) or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
     func requestChat(phoneNumber: String, from: String, parameters: [String: String], with completion: @escaping ((Result<ContactCenterChatSessionProperties, Error>) -> Void))
-    /// Send a chat message. Before message is sent the function generates a ```messageID``` which is returned in a completion
+    /// Send a chat message. Before message is sent the function generates a `messageID` which is returned in a completion
     /// - Parameters:
     ///   - chatID: The current chat ID
     ///   - message: Text of the message
-    ///   - completion: Returns  ```messageID``` in the format chatId:messageNumber where messageNumber is ordinal number of the given message in the chat exchange or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    ///   - completion: Returns  `messageID` in the format chatId:messageNumber where messageNumber is ordinal number of the given message in the chat exchange or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
     func sendChatMessage(chatID: String, message: String, with completion: @escaping (Result<String, Error>) -> Void)
     /// Confirms that a chat message has been delivered to the application
     /// - Parameters:
     ///   - chatID: The current chat ID
     ///   - messageID: The message ID
-    ///   - completion: Returns  .succeeded or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    ///   - completion: Returns ` .success` or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
     func chatMessageDelivered(chatID: String, messageID: String, with completion: @escaping (Result<Void, Error>) -> Void)
     /// Confirms that a chat message has been read by the user
     /// - Parameters:
     ///   - chatID: The current chat ID
     ///   - messageID: The message ID
-    ///   - completion: Returns  .succeeded or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    ///   - completion: Returns `.success` or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
     func chatMessageRead(chatID: String, messageID: String, with completion: @escaping (Result<Void, Error>) -> Void)
     /// Request to disconnect chat conversation but keep the session active. Server may continue communicating with the client
     /// - Parameters:
     ///   - chatID: The current chat ID
-    ///   - completion: Returns  .succeeded or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    ///   - completion: Returns `.success` or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
     func disconnectChat(chatID: String, with completion: @escaping (Result<Void, Error>) -> Void)
     /// Request to disconnect chat conversation and complete the session. Server will not continue communicating with the client once request is sent
     /// - Parameters:
     ///   - chatID: The current chat ID
-    ///   - completion: Returns  .succeeded or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    ///   - completion: Returns `.success` or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
     func endChat(chatID: String, with completion: @escaping (Result<Void, Error>) -> Void)
+    /// Subscribes for push notifications from APNs server
+    ///
+    /// This function should be called each time `chatID` is changed
+    /// - Parameters:
+    ///   - chatID: The current chat ID
+    ///   - deviceToken: Unique to both the device and the app. Which is received in `didRegisterForRemoteNotificationsWithDeviceToken`
+    ///   - completion: Returns `.success` or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    func subscribeForRemoteNotificationsAPNs(chatID: String, deviceToken: String, with completion: @escaping (Result<Void, Error>) -> Void)
+    /// Subscribes for push notifications from APNs server when using Firebase service.
+    /// Firebase gives one more layer of flexibility to have event more granular control of notifications that are sent to the users devices.
+    ///
+    /// This function should be called each time `chatID` is changed
+    /// - Parameters:
+    ///   - chatID: The current chat ID
+    ///   - deviceToken: Unique to both the device and the app. Which is received in `didRegisterForRemoteNotificationsWithDeviceToken`
+   ///   - completion: Returns `.success` or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    func subscribeForRemoteNotificationsFirebase(chatID: String, deviceToken: String, with completion: @escaping (Result<Void, Error>) -> Void)
+    /// Notify contact center library about new remote notification
+    /// - Parameters:
+    ///   - userInfo: Contains a payload with a new event from a backend which is received in `didReceiveRemoteNotification` or `userNotificationCenter`
+    func appDidReceiveMessage(_ userInfo: [AnyHashable : Any])
 }

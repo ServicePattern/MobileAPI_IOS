@@ -5,23 +5,29 @@
 import Foundation
 
 protocol PollRequestServiceable {
-    var currentChatID: String? { get set }
     var delegate: ContactCenterEventsDelegating? { get set }
+    func addChatID(_ chatID: String)
 }
 
 // MARK: - Poll action
 class PollRequestService: PollRequestServiceable {
     internal let pollInterval: Double
-    private var currentChatIDValue: String?
-    internal var currentChatID: String? {
+    private var chatIDsValue = Set<String>()
+    private var chatIDs: Set<String> {
         get {
             readerWriterQueue.sync {
-                currentChatIDValue
+                chatIDsValue
             }
         }
         set {
             readerWriterQueue.async(flags: .barrier) { [weak self] in
-                self?.currentChatIDValue = newValue
+                guard self?.chatIDsValue != newValue else {
+                    log.debug("No changes made to chatIDs, so don't stop poll action")
+                    return
+                }
+                self?.chatIDsValue = newValue
+                // Wait until all network tasks have finished
+                self?.stopPolling(synchronously: true)
                 self?.startPollingIfNeeded()
             }
         }
@@ -42,13 +48,14 @@ class PollRequestService: PollRequestServiceable {
             startOrStopReachability(start: newValue)
         }
     }
-    internal var pollRequestDataTask: URLSessionDataTask?
+    internal var pollRequestDataTask = Set<URLSessionDataTask>()
     private let readerWriterQueue = DispatchQueue(label: "com.BPContactCenter.PollRequestServiceable.reader-writer", attributes: .concurrent)
     internal let pollRequestQueue = DispatchQueue(label: "com.BPContactCenter.pollRequestQueue")
     private let networkService: NetworkServiceable
     internal weak var httpRequestBuilder: HttpRequestBuilding?
     internal weak var delegate: ContactCenterEventsDelegating?
     private let reachability: Reachability
+    private let pollActionHttpRequestLock = NSLock()
 
     init(networkService: NetworkServiceable, pollInterval: Double) {
         self.networkService = networkService
@@ -66,55 +73,66 @@ class PollRequestService: PollRequestServiceable {
     // MARK:- Deinitialization part
     deinit {
         NotificationCenter.default.removeObserver(self)
-        // Make sure to access pollRequestDataTask from the same queue it was set before
-        pollRequestQueue.sync {
-            pollRequestDataTask?.cancel()
-        }
+        // Make sure that no additional poll request will be made by cleaning up all chat IDs
+        chatIDs.removeAll()
+        stopPolling(synchronously: true)
+    }
+
+    func addChatID(_ chatID: String) {
+        chatIDs.insert(chatID)
     }
 
     private func pollAction() {
         /// - Note: Make sure that this function is called from pollRequestQueue!!!
+        guard let httpRequestBuilder = httpRequestBuilder else {
+            fatalError("httpRequestBuilder is not set")
+        }
+        guard pollActionHttpRequestLock.try() else {
+            log.debug("Skip poll request because another is in progress")
+            return
+        }
         do {
-            guard let currentChatID = currentChatID else {
-                log.debug("Poll requested when current chatID is nil")
+            guard chatIDs.count > 0 else {
+                log.debug("Skip poll request because there are no chatIDs")
                 return
             }
-            guard pollRequestDataTask == nil else {
-                log.debug("There is already poll task running")
-                return
+            let urlRequestsWithChatIDs = try chatIDs.map { chatID in
+                (try httpRequestBuilder.httpGetRequest(with: .getNewChatEvents(chatID: chatID)), chatID)
             }
-            guard let urlRequest = try httpRequestBuilder?.httpGetRequest(with: .getNewChatEvents(chatID: currentChatID)) else {
-                log.error("Failed to create URL request")
-
-                throw ContactCenterError.failedToCreateURLRequest
-            }
-            pollRequestDataTask = networkService.dataTask(using: urlRequest) { [weak self] (result: Result<ContactCenterEventsContainerDto, Error>) -> Void in
-                self?.pollRequestQueue.sync {
-                    self?.pollRequestDataTask = nil
-                }
-                switch result {
-                case .success(let eventsContainer):
-                    //  Report received server events to the application
-                    self?.delegate?.chatSessionEvents(result: .success(eventsContainer.events))
-                    //  Reset currentChatID to stop polling timer if session has ended
-                    for e in eventsContainer.events {
-                        switch e {
-                        case .chatSessionEnded:
-                            self?.currentChatID = nil
-                            break
-                        default:()
+            let pollRequestsGroup = DispatchGroup()
+            pollRequestDataTask = Set(urlRequestsWithChatIDs.map { urlRequest, chatID in
+                pollRequestsGroup.enter()
+                return networkService.dataTask(using: urlRequest) { [weak self] (result: Result<ContactCenterEventsContainerDto, Error>) -> Void in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success(let eventsContainer):
+                        //  Report received server events to the application
+                        self.delegate?.chatSessionEvents(result: .success(eventsContainer.events))
+                        //  Reset currentChatID to stop polling timer if session has ended
+                        for e in eventsContainer.events {
+                            switch e {
+                            case .chatSessionEnded:
+                                self.chatIDs.remove(chatID)
+                                break
+                            default:()
+                            }
+                        }
+                        // Check and start new getNewChatEvents request if needed
+                        self.startPollingIfNeeded()
+                    case .failure(let error):
+                        if let contactCenterError = error as? ContactCenterError,
+                           case .chatSessionNotFound = contactCenterError {
+                            // If the backend says that a chat id does not exist then remove it
+                            // To prevent another poll request with this chatID
+                            self.chatIDs.remove(chatID)
                         }
                     }
-                    // Check and start new getNewChatEvents request if needed
-                    self?.startPollingIfNeeded()
-                case .failure(let error):
-                    if let contactCenterError = error as? ContactCenterError,
-                       case .chatSessionNotFound = contactCenterError {
-                        // If the backend says that a chat id does not exist then forget it
-                        self?.currentChatID = nil
-                    }
+                    pollRequestsGroup.leave()
                 }
-            }
+            })
+            pollRequestsGroup.wait()
+            // All network tasks have been finished, so unlock a mutex to allow another poll action
+            self.pollActionHttpRequestLock.unlock()
         } catch {
             log.error("Failed to send poll request: \(error)")
             // If fails re-try polling request
@@ -128,19 +146,26 @@ class PollRequestService: PollRequestServiceable {
         }
     }
 
-    private func stopPolling() {
-        pollRequestQueue.async { [weak self] in
-            self?.pollRequestDataTask?.cancel()
-            self?.pollRequestDataTask = nil
+    private func stopPolling(synchronously: Bool = false) {
+        let stopPollingBlock = { [weak self] in
+            guard let self = self else { return }
+            self.pollRequestDataTask.forEach { $0.cancel() }
+            self.pollRequestDataTask.removeAll()
+        }
+        if synchronously {
+            pollRequestQueue.sync(execute: stopPollingBlock)
+        } else {
+            pollRequestQueue.async(execute: stopPollingBlock)
         }
     }
 
     internal func startPollingIfNeeded() {
         pollRequestQueue.async { [weak self] in
-            if self?.isForeground == true && self?.currentChatID != nil {
-                self?.startPolling()
+            guard let self = self else { return }
+            if self.isForeground == true && self.chatIDs.count > 0 {
+                self.startPolling()
             } else {
-                self?.stopPolling()
+                self.stopPolling()
             }
         }
     }

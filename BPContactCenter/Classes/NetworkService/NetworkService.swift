@@ -16,12 +16,12 @@ class NetworkService: NetworkServiceable {
         self.decoder = decoder
     }
 
-    func createRequest(method: HttpMethod, url: URL, headerFields: HttpHeaderFields? = nil, body: Encodable? = nil) -> URLRequest {
+    func createRequest(method: HttpMethod, url: URL, headerFields: HttpHeaderFields? = nil, body: Encodable? = nil) throws -> URLRequest {
 
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
         request.set(headerFields: headerFields?.stringDictionary)
-        request.httpBody = body?.encode(using: encoder)
+        request.httpBody = try body?.encode(using: encoder)
 
         log.debug("\(request.cURL)")
 
@@ -39,7 +39,7 @@ class NetworkService: NetworkServiceable {
             fatalError("Failed to build URL: method \(method) baseURL \(baseURL) endpoint \(endpoint)")
         }
 
-        return createRequest(method: method,
+        return try createRequest(method: method,
                              url: url,
                              headerFields: headerFields,
                              body: body)
@@ -52,18 +52,6 @@ class NetworkService: NetworkServiceable {
             log.error("Failed to decode: \(error)")
             throw ContactCenterError.failedToCodeJCON(nestedErrors: [error])
         }
-    }
-
-    func encode<T: Encodable>(from instance: T, request: URLRequest) throws -> URLRequest {
-        var request = request
-        do {
-            request.httpBody = try encoder.encode(instance)
-            return request
-        } catch {
-            log.error("Failed to encode: \(error)")
-            throw ContactCenterError.failedToCodeJCON(nestedErrors: [error])
-        }
-
     }
 }
 
