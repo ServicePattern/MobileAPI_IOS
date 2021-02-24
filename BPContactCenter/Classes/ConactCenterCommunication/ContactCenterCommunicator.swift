@@ -113,7 +113,7 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
                 switch result {
                 case .success(let chatSessionProperties):
                     // Save a chat ID which will initiate polling for chat events
-                    self?.pollRequestService.currentChatID = chatSessionProperties.chatID
+                    self?.pollRequestService.addChatID(chatSessionProperties.chatID)
                     // Since it is a new chat session reset a message number counter
                     self?.messageNumber = 0
                     completion(.success(chatSessionProperties.toModel()))
@@ -228,6 +228,11 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
 
     public func appDidReceiveMessage(_ userInfo: [AnyHashable : Any]) {
         // Parse APNs message payload
+        guard let chatID = userInfo["chatID"] as? String else {
+            log.error("Failed to get chatID from remote message")
+            return
+        }
+        pollRequestService.addChatID(chatID)
     }
 }
 
