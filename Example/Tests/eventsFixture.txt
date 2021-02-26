@@ -83,6 +83,13 @@
             "timestamp": "1613472508"
         },
         {
+            "event": "chat_session_location",
+            "party_id": "<party id>2",
+            "latitude": "123.456",
+            "longitude":"321.654",
+            "timestamp": "1613472506"
+        },
+        {
             "event": "chat_session_disconnect"
         },
         {
