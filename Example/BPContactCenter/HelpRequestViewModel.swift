@@ -5,15 +5,32 @@
 import Foundation
 import BPContactCenter
 
+protocol HelpRequestUpdatable: class {
+    func update()
+    func showChat()
+}
+
 class HelpRequestViewModel {
     let service: ServiceDependencyProtocol
     private var currentChatID: String?
     let bottomSpace = CGFloat(105)
+    var isChatAvailable: Bool = false {
+        didSet {
+            delegate?.update()
+        }
+    }
+    var isRequestInProgress: Bool = false {
+        didSet {
+            delegate?.update()
+        }
+    }
+    weak var delegate: HelpRequestUpdatable?
 
     init(service: ServiceDependencyProtocol) {
         self.service = service
 
         NotificationCenter.default.addObserver(self, selector: #selector(receivedEvents), name: NotificationName.contactCenterEventsReceived.name, object: nil)
+        checkChatAvailability()
     }
 
     deinit {
@@ -21,7 +38,15 @@ class HelpRequestViewModel {
     }
 
     func helpMePressed() {
-        checkChatAvailability()
+        requestChat()
+    }
+
+    func pastConversationsPressed() {
+        guard let chatID = currentChatID else {
+            print("chatID is empty")
+            return
+        }
+        getChatHistory(chatID: chatID)
     }
 
     @objc
@@ -30,24 +55,20 @@ class HelpRequestViewModel {
             print("Failed to get contact center events: \(notification)")
             return
         }
-        guard let currentChatID = currentChatID else {
-            print("currentChatID is empty")
-            return
-        }
-        processSessionEvents(chatID: currentChatID, events: events)
+        processSessionEvents(events: events)
     }
 }
 
 extension HelpRequestViewModel {
     private func checkChatAvailability() {
+        isRequestInProgress = true
         service.contactCenterService.checkAvailability { [weak self] serviceAvailabilityResult in
             DispatchQueue.main.async {
+                self?.isRequestInProgress = false
                 switch serviceAvailabilityResult {
                 case .success(let serviceAvailability):
                     print("Chat is \(serviceAvailability.chat)")
-                    if serviceAvailability.chat == .available {
-                        self?.requestChat()
-                    }
+                    self?.isChatAvailable = serviceAvailability.chat == .available
                 case .failure(let error):
                     print("Failed to check availability: \(error)")
                 }
@@ -55,12 +76,14 @@ extension HelpRequestViewModel {
         }
     }
     private func requestChat() {
+        isRequestInProgress = true
         service.contactCenterService.requestChat(phoneNumber: "12345", from: "54321", parameters: [:]) { [weak self] chatPropertiesResult in
-            switch chatPropertiesResult {
-            case .success(let chatProperties):
-                print("Chat properties: \(chatProperties)")
-                DispatchQueue.main.async {
-                    self?.getChatHistory(chatID: chatProperties.chatID)
+            DispatchQueue.main.async {
+                self?.isRequestInProgress = false
+                switch chatPropertiesResult {
+                case .success(let chatProperties):
+                    print("Chat properties: \(chatProperties)")
+                    self?.currentChatID = chatProperties.chatID
                     self?.subscribeForNotifications(chatID: chatProperties.chatID) { subscribeResult in
                         DispatchQueue.main.async {
                             switch subscribeResult {
@@ -71,30 +94,32 @@ extension HelpRequestViewModel {
                             }
                         }
                     }
+                case .failure(let error):
+                    print("\(error)")
                 }
-            case .failure(let error):
-                print("\(error)")
             }
         }
     }
 
     private func getChatHistory(chatID: String) {
+        isRequestInProgress = true
         service.contactCenterService.getChatHistory(chatID: chatID) { [weak self] eventsResult in
-            switch eventsResult {
-            case .success(let events):
-                print("Received chat history: \(events)")
-                DispatchQueue.main.async {
-                    self?.currentChatID = chatID
-                    self?.processSessionEvents(chatID: chatID, events: events)
+            DispatchQueue.main.async {
+                self?.isRequestInProgress = false
+                switch eventsResult {
+                case .success(let events):
+                    print("Received chat history")
+                        self?.currentChatID = chatID
+                        self?.processSessionEvents(events: events)
+                case .failure(let error):
+                    print("Failed to getChatHistory: \(error)")
                 }
-            case .failure(let error):
-                print("Failed to getChatHistory: \(error)")
             }
         }
     }
 
     private func getCaseHistory(chatID: String) {
-        contactCenterService.getCaseHistory(chatID: chatID) { [weak self] eventsResult in
+        service.contactCenterService.getCaseHistory(chatID: chatID) { [weak self] eventsResult in
             switch eventsResult {
             case .success(let sessions):
                 print("Received case history: \(sessions)")
@@ -189,7 +214,7 @@ extension HelpRequestViewModel {
     }
 
     private func closeCase(chatID: String) {
-        contactCenterService.closeCase(chatID: chatID) { result in
+        service.contactCenterService.closeCase(chatID: chatID) { result in
             switch result {
             case .success(_):
                 print("closeCase confirmed")
@@ -199,17 +224,30 @@ extension HelpRequestViewModel {
         }
     }
 
-    private func processSessionEvents(chatID: String, events: [ContactCenterEvent]) {
+    private func processSessionEvents(events: [ContactCenterEvent]) {
         for e in events {
             switch e {
             case .chatSessionMessage(let messageID, let partyID, let message, let timestamp):
                 print("\(timestamp): message: \(message) from party \(partyID)")
+                guard let chatID = self.currentChatID else {
+                    print("chatID is empty")
+                    continue
+                }
                 self.chatMessageDelivered(chatID: chatID, messageID: messageID)
                 self.chatMessageRead(chatID: chatID, messageID: messageID)
             case .chatSessionStatus(let state, let estimatedWaitTime):
                 if state == .connected {
+                    self.delegate?.showChat()
+                    guard let chatID = self.currentChatID else {
+                        print("chatID is empty")
+                        continue
+                    }
                     print("Connected to a chat: \(chatID)")
                 } else if state == .queued {
+                    guard let chatID = self.currentChatID else {
+                        print("chatID is empty")
+                        continue
+                    }
                     print("Waiting in a queue: \(chatID) estimated wait time: \(estimatedWaitTime)")
                 }
             case .chatSessionCaseSet(let caseID, let timestamp):
