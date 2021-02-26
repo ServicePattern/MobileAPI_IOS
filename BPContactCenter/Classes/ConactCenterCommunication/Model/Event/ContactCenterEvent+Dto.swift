@@ -68,6 +68,16 @@ extension ContactCenterEvent {
                                         timestamp: let timestamp):
             return ChatSessionNotTypingDto(partyID: partyID,
                                          timestamp: timestamp)
+        case .chatSessionLocation(partyID: let partyID,
+                                  url: let url,
+                                  latitude: let latitude,
+                                  longitude: let longitude,
+                                  timestamp: let timestamp):
+            return ChatSessionLocationDto(partyID: partyID,
+                                          url: url,
+                                          latitude: latitude,
+                                          longitude: longitude,
+                                         timestamp: timestamp)
         case .chatSessionTimeoutWarning(message: let message,
                                         timestamp: let timestamp):
             return ChatSessionTimeoutWarningDto(message: message,

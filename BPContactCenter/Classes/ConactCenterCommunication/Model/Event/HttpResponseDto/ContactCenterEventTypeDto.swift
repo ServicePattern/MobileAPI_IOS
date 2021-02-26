@@ -14,6 +14,7 @@ enum ContactCenterEventTypeDto: String, Codable, CaseIterable {
     case chatSessionPartyLeft = "chat_session_party_left"
     case chatSessionTyping = "chat_session_typing"
     case chatSessionNotTyping = "chat_session_not_typing"
+    case chatSessionLocation = "chat_session_location"
     case chatSessionTimeoutWarning = "chat_session_timeout_warning"
     case chatSessionInactivityTimeout = "chat_session_inactivity_timeout"
     case chatSessionEnded = "chat_session_ended"
@@ -40,6 +41,8 @@ enum ContactCenterEventTypeDto: String, Codable, CaseIterable {
             return ChatSessionTypingDto.self
         case .chatSessionNotTyping:
             return ChatSessionNotTypingDto.self
+        case .chatSessionLocation:
+            return ChatSessionLocationDto.self
         case .chatSessionTimeoutWarning:
             return ChatSessionTimeoutWarningDto.self
         case .chatSessionInactivityTimeout:

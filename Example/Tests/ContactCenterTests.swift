@@ -33,7 +33,8 @@ class ContactCenterTests: XCTestCase {
     func testEventsDecoding() {
         do {
             let eventsContainer = try jsonDecoder.decode(ContactCenterEventsContainerDto.self, from: eventsFixtureData())
-            XCTAssertEqual(eventsContainer.events.count, 16)
+            print("\(eventsContainer.events)")
+            XCTAssertEqual(eventsContainer.events.count, 17)
         } catch {
             XCTFail("\(error)")
         }
@@ -41,8 +42,10 @@ class ContactCenterTests: XCTestCase {
 
     func testEventsEncoding() {
         do {
-            let eventsContainer = ContactCenterEventsContainerDto(events: [.chatSessionEnd, .chatSessionDisconnect, .chatSessionInactivityTimeout(message: "123123", timestamp: Date()), .chatSessionMessage(messageID: "sdsdfsdf", partyID: "2342342", message: "sfdsfsf", timestamp: Date())])
+            let eventsContainer = ContactCenterEventsContainerDto(events: [.chatSessionEnd, .chatSessionDisconnect, .chatSessionInactivityTimeout(message: "123123", timestamp: Date()), .chatSessionMessage(messageID: "sdsdfsdf", partyID: "2342342", message: "sfdsfsf", timestamp: Date()),
+                                                                           .chatSessionLocation(partyID: "111", url: "urkl1", latitude: 123.456, longitude: 321.654, timestamp: Date())])
             let encodedEventsContainer = try jsonEncoder.encode(eventsContainer)
+            print("\(String(decoding: encodedEventsContainer, as: UTF8.self))")
             XCTAssertGreaterThan(encodedEventsContainer.count, 0)
         } catch {
             XCTFail("\(error)")
