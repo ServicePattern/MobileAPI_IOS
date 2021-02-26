@@ -40,6 +40,12 @@ public enum ContactCenterEvent {
     /// Indicates that a party has left the chat session.
     /// Direction: S->C
     case chatSessionPartyLeft(partyID: String, timestamp: Date)
+    /// Indicates that the party started typing a message
+    /// Direction: S<->C
+    case chatSessionTyping(partyID: String?, timestamp: Date?)
+    /// Indicates that the party stopped typing a message
+    /// Direction: S<->C
+    case chatSessionNotTyping(partyID: String?, timestamp: Date?)
     /// Indicates that a system has requested an application to display a message. Typically used to display inactivity warning.
     /// Direction: S->C
     case chatSessionTimeoutWarning(message: String, timestamp: Date)

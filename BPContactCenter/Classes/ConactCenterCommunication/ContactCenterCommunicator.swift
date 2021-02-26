@@ -181,6 +181,30 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
         }
     }
 
+    public func chatTyping(chatID: String, with completion: @escaping (Result<Void, Error>) -> Void) {
+        do {
+            let urlRequest = try httpSendEventsPostRequest(chatID: chatID,
+                                                           events: [.chatSessionTyping(partyID: nil,
+                                                                                            timestamp: nil)])
+            networkService.dataTask(using: urlRequest, with: completion)
+        } catch {
+            log.error("Failed to chatTyping: \(error)")
+            completion(.failure(error))
+        }
+    }
+
+    public func chatNotTyping(chatID: String, with completion: @escaping (Result<Void, Error>) -> Void) {
+        do {
+            let urlRequest = try httpSendEventsPostRequest(chatID: chatID,
+                                                           events: [.chatSessionNotTyping(partyID: nil,
+                                                                                            timestamp: nil)])
+            networkService.dataTask(using: urlRequest, with: completion)
+        } catch {
+            log.error("Failed to chatNotTyping: \(error)")
+            completion(.failure(error))
+        }
+    }
+
     public func disconnectChat(chatID: String, with completion: @escaping ((Result<Void, Error>) -> Void)) {
         do {
             let urlRequest = try httpSendEventsPostRequest(chatID: chatID,

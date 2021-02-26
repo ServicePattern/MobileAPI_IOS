@@ -60,6 +60,14 @@ extension ContactCenterEvent {
                                    timestamp: let timestamp):
             return ChatSessionPartyLeftDto(partyID: partyID,
                                            timestamp: timestamp)
+        case .chatSessionTyping(partyID: let partyID,
+                                     timestamp: let timestamp):
+            return ChatSessionTypingDto(partyID: partyID,
+                                         timestamp: timestamp)
+        case .chatSessionNotTyping(partyID: let partyID,
+                                        timestamp: let timestamp):
+            return ChatSessionNotTypingDto(partyID: partyID,
+                                         timestamp: timestamp)
         case .chatSessionTimeoutWarning(message: let message,
                                         timestamp: let timestamp):
             return ChatSessionTimeoutWarningDto(message: message,

@@ -63,6 +63,16 @@ public protocol ContactCenterCommunicating {
     ///   - messageID: The message ID
     ///   - completion: Returns `.success` or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
     func chatMessageRead(chatID: String, messageID: String, with completion: @escaping (Result<Void, Error>) -> Void)
+    /// Informs that a user started to type in a new chat message
+    /// - Parameters:
+    ///   - chatID: The current chat ID
+    ///   - completion: Returns `.success` or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    func chatTyping(chatID: String, with completion: @escaping (Result<Void, Error>) -> Void)
+    /// Informs that a user stopped to type in a new chat message
+    /// - Parameters:
+    ///   - chatID: The current chat ID
+    ///   - completion: Returns `.success` or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    func chatNotTyping(chatID: String, with completion: @escaping (Result<Void, Error>) -> Void)
     /// Request to disconnect chat conversation but keep the session active. Server may continue communicating with the client
     /// - Parameters:
     ///   - chatID: The current chat ID
