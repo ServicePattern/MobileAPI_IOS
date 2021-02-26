@@ -8,6 +8,7 @@ import BPContactCenter
 class HelpRequestViewModel {
     let service: ServiceDependencyProtocol
     private var currentChatID: String?
+    let bottomSpace = CGFloat(105)
 
     init(service: ServiceDependencyProtocol) {
         self.service = service
