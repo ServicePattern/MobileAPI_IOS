@@ -126,7 +126,7 @@ class HelpRequestViewController: ViewController, ServiceDependencyProviding {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
         if let chatVC = segue.destination as? ChatViewController {
-            // Set chatID
+            chatVC.currentChatID = viewModel.currentChatID
         }
     }
 }

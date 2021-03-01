@@ -12,7 +12,7 @@ protocol HelpRequestUpdatable: class {
 
 class HelpRequestViewModel {
     let service: ServiceDependencyProtocol
-    private var currentChatID: String?
+    var currentChatID: String?
     let bottomSpace = CGFloat(105)
     var isChatAvailable: Bool = false {
         didSet {

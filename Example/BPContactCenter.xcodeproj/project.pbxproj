@@ -28,6 +28,8 @@
 		F1A15A2F25E9B3C800191AAB /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A15A2E25E9B3C800191AAB /* ChatViewModel.swift */; };
 		F1A15B7325ED0F9A00191AAB /* ChatBubbleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A15B7225ED0F9A00191AAB /* ChatBubbleCell.swift */; };
 		F1A15BAE25ED22E700191AAB /* LinkLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A15BAD25ED22E700191AAB /* LinkLabel.swift */; };
+		F1A15C1E25ED85A700191AAB /* LinkDetectorTextStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A15C1D25ED85A700191AAB /* LinkDetectorTextStorage.swift */; };
+		F1A15C3325EE2AA000191AAB /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A15C3225EE2AA000191AAB /* ChatMessage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +75,8 @@
 		F1A15A2E25E9B3C800191AAB /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
 		F1A15B7225ED0F9A00191AAB /* ChatBubbleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBubbleCell.swift; sourceTree = "<group>"; };
 		F1A15BAD25ED22E700191AAB /* LinkLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkLabel.swift; sourceTree = "<group>"; };
+		F1A15C1D25ED85A700191AAB /* LinkDetectorTextStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkDetectorTextStorage.swift; sourceTree = "<group>"; };
+		F1A15C3225EE2AA000191AAB /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		F681B50D64B48541F780AC7E /* Pods-BPContactCenter_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BPContactCenter_Example.debug.xcconfig"; path = "Target Support Files/Pods-BPContactCenter_Example/Pods-BPContactCenter_Example.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -220,6 +224,8 @@
 				F1A15A2E25E9B3C800191AAB /* ChatViewModel.swift */,
 				F1A15B7225ED0F9A00191AAB /* ChatBubbleCell.swift */,
 				F1A15BAD25ED22E700191AAB /* LinkLabel.swift */,
+				F1A15C1D25ED85A700191AAB /* LinkDetectorTextStorage.swift */,
+				F1A15C3225EE2AA000191AAB /* ChatMessage.swift */,
 			);
 			name = ChatView;
 			sourceTree = "<group>";
@@ -422,7 +428,9 @@
 				F101270025E8301B00AC0B5D /* UIViewController+Extension.swift in Sources */,
 				F101272725E863ED00AC0B5D /* NotificationNamesKeys.swift in Sources */,
 				F10126F925E82F3600AC0B5D /* ViewController+ServiceDependency.swift in Sources */,
+				F1A15C3325EE2AA000191AAB /* ChatMessage.swift in Sources */,
 				607FACD81AFB9204008FA782 /* HelpRequestViewController.swift in Sources */,
+				F1A15C1E25ED85A700191AAB /* LinkDetectorTextStorage.swift in Sources */,
 				F101271325E83A5900AC0B5D /* ContactCenterService.swift in Sources */,
 				F1A15B7325ED0F9A00191AAB /* ChatBubbleCell.swift in Sources */,
 				F101270425E8305600AC0B5D /* DefaultStringInterpolation+Extension.swift in Sources */,

@@ -3,62 +3,38 @@
 
 import Foundation
 import UIKit
+import MobileCoreServices
 
-enum TimeStampLabelAlignment : Int {
-    ///  Timestamp labels will be horizontally aligned on the cell.
-    case kBPNTimeStampCenterAligned
-    ///  Timestamp libels will be shown at the left or right side of the bubble.
-    case kBPNTimeStampSideAligned
+protocol UITableCellIdentifiable {
+    static var reuseIdentifier: String { get }
 }
 
-enum MessageType : Int {
-    case kBPNMessageMine
-    case kBPNMessageSomeone
-    case kBPNMessageTypingMine
-    case kBPNMessageTypingSomeone
-    case kBPNMessageStatus
-}
-
-protocol ChatAttachmentProtocol: NSObjectProtocol {
-    var fileId: String? { get set }
-    var data: Data? { get set }
-    var uti: String? { get set }
-    var as_attachment: Bool { get set }
-}
-
-protocol BPNChatProfileImageProtocol: NSObjectProtocol {
-    var partyId: String? { get set }
-    var data: Data? { get set }
-}
-
-protocol BPNChatMessageProtocol: NSObjectProtocol {
-    var type: Int16 { get set }
-    var text: String? { get set }
-    var attachment: ChatAttachmentProtocol? { get set }
-    var senderName: String? { get set }
-    var time: Date? { get set }
-    var profileImage: ChatProfileImageProtocol? { get set }
-    var chatID: String? { get set }
-}
-
-protocol ChatBubbleCellDelegate: NSObjectProtocol {
-    func bubbleCellImageTapped(_ cell: BPNChatBubbleCell?, containingMessage message: BPNChatMessageProtocol?)
+protocol ChatBubbleCellDelegate: class {
+    func bubbleCellImageTapped(_ cell: ChatBubbleCell?, containingMessage message: ChatMessage?)
 }
 
 class ChatBubbleCell: UITableViewCell {
-    private let kMaxImageWidth: CGFloat = 180.0
-    private let kNippleMarginX: CGFloat = 11.0
-    private let kImageIndentY: CGFloat = 8.0
+    private static let kMaxImageWidth: CGFloat = 180.0
+    private static let kNippleMarginX: CGFloat = 11.0
+    private static let kImageIndentY: CGFloat = 8.0
     private let kMyBubbleContentIndentX: CGFloat = 5.0
     private let kOtherBubbleContentIndentX: CGFloat = 10.0
     private let kContentIndentX: CGFloat = 5.0
-    private let kContentIndentY: CGFloat = 16.0
+    private static let kContentIndentY: CGFloat = 16.0
     private let kAvatarMarginX: CGFloat = 2.0
-    private let kAvatarMarginY: CGFloat = 4.0
-    private let kTimeStampMarginY: CGFloat = 8.0
+    private static let kAvatarMarginY: CGFloat = 4.0
+    private static let kTimeStampMarginY: CGFloat = 8.0
     private let kTimeStampMarginX: CGFloat = 4.0
     ///  Chat message
-    var message: BPNChatMessageProtocol?
+    private var messageValue: ChatMessage?
+    var message: ChatMessage? {
+        get {
+            messageValue
+        }
+        set {
+            setMessageValue(newValue)
+        }
+    }
     ///  Cell's delegate
     weak var delegate: ChatBubbleCellDelegate?
     ///  Image for message bubble
@@ -87,66 +63,94 @@ class ChatBubbleCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        p_setup()
+        p_setupCell()
     }
 
-    func layoutSubviews() {
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func layoutSubviews() {
         super.layoutSubviews()
 
         p_resizeControls()
     }
 
     // MARK: - Properties
-    func setMessage(_ message: BPNChatMessageProtocol?) {
-        if self.message == message {
+    func setMessageValue(_ newMessage: ChatMessage?) {
+        guard self.messageValue?.time != newMessage?.time ||
+            self.messageValue?.text != newMessage?.text ||
+            self.messageValue?.chatID != newMessage?.chatID else {
             return
         }
 
         //BOOL messageTypeDiffers = (_message.type != message.type);
 
-        self.message = message
-        messageLabel.text = self.message.text
-        messageLabel.sizeToFit()
+        self.messageValue = newMessage
+        messageLabel?.text = self.messageValue?.text
+        messageLabel?.sizeToFit()
 
-        nameLabel.text = self.message.senderName
+        nameLabel?.text = self.messageValue?.senderName
 
-
-        if self.message.attachment.data {
-            if let uti = (self.message.attachment.uti) as? CFString? {
-                if UTTypeConformsTo(uti, kUTTypeImage) {
-                    let messageImage = UIImage(data: self.message.attachment.data)
-                    messageImageView.image = messageImage
-                    messageSize = BPNChatBubbleCell.p_sizeOf(messageImage)
-                } else if UTTypeConformsTo(uti, kUTTypeMovie) {
-                    messageImageView.image = videoFilePlaceholderImage
-                    messageSize = BPNChatBubbleCell.p_sizeOfImage(videoFilePlaceholderImage)
+        if let messageAttachment = self.messageValue?.attachment,
+           messageAttachment.data != nil,
+           let uti = messageAttachment.uti {
+            if UTTypeConformsTo(uti as CFString, kUTTypeImage) {
+                if let attachmentData = self.messageValue?.attachment?.data,
+                   let messageImage = UIImage(data: attachmentData) {
+                    messageImageView?.image = messageImage
+                    messageSize = Self.p_sizeOf(messageImage)
                 } else {
-                    messageImageView.image = otherFilePlaceholderImage
-                    messageSize = BPNChatBubbleCell.p_sizeOfImage(otherFilePlaceholderImage)
+                    messageImageView?.image = nil
+                    messageSize = .zero
+                    print("Failed to get image data")
+                }
+            } else if UTTypeConformsTo(uti as CFString, kUTTypeMovie) {
+                messageImageView?.image = videoFilePlaceholderImage
+                if let videoFilePlaceholderImage = videoFilePlaceholderImage {
+                    messageSize = Self.p_sizeOf(videoFilePlaceholderImage)
+                } else {
+                    messageSize = .zero
+                }
+            } else {
+                messageImageView?.image = otherFilePlaceholderImage
+                if let otherFilePlaceholderImage = otherFilePlaceholderImage {
+                    messageSize = Self.p_sizeOf(otherFilePlaceholderImage)
+                } else {
+                    messageSize = .zero
                 }
             }
         } else {
-            messageImageView.image = nil
-            messageSize = BPNChatBubbleCell.p_calculateSizeOfMessage(
+            messageImageView?.image = nil
+            messageSize = Self.p_calculateSizeOfMessage(
                 message,
-                messageFont: messageLabel.font,
+                messageFont: messageLabel?.font,
                 limitedByWidth: contentWidth)
         }
-        if kBPNMessageMine == self.message.type {
+
+        if let message = self.messageValue,
+           MessageType.kBPNMessageMine == message.type,
+           let messageTime = message.time,
+           let timeStampLabel = timeStampLabel {
             timeStampLabel.text = DateFormatter.localizedString(
-                from: self.message.time,
+                from: messageTime,
                 dateStyle: .medium,
                 timeStyle: .short)
         }
 
+        avatarImageView?.image = avatarImage
 
-        avatarImageView.image = avatarImage
-
-        let center = CGPoint(x: bubbleImage.size.width / 2.0, y: bubbleImage.size.height / 2.0)
-        let capInsets = UIEdgeInsets(top: center.y, left: center.x, bottom: center.y, right: center.x)
-
-        bubbleImageView.image = bubbleImage.resizableImage(withCapInsets: capInsets,
-                                                           resizingMode: UIImageResizingModeStretch)
+        if let bubbleImage = bubbleImage,
+           let bubbleImageView = bubbleImageView {
+            let center = CGPoint(x: bubbleImage.size.width / 2,
+                                 y: bubbleImage.size.height / 2)
+            let capInsets = UIEdgeInsets(top: center.y,
+                                         left: center.x,
+                                         bottom: center.y,
+                                         right: center.x)
+            bubbleImageView.image = bubbleImage.resizableImage(withCapInsets: capInsets,
+                                                                resizingMode: .stretch)
+        }
         setNeedsLayout()
     }
 
@@ -154,9 +158,7 @@ class ChatBubbleCell: UITableViewCell {
         if self.contentWidth == contentWidth {
             return
         }
-
         self.contentWidth = contentWidth
-
         setNeedsLayout()
     }
 
@@ -164,33 +166,32 @@ class ChatBubbleCell: UITableViewCell {
         if self.avatarSize == avatarSize {
             return
         }
-
         self.avatarSize = avatarSize
-
         setNeedsLayout()
     }
 
     func setAvatarCornerRadius(_ avatarCornerRadius: CGFloat) {
-        if self.avatarCornerRadius == avatarCornerRadius {
+        guard self.avatarCornerRadius != avatarCornerRadius else {
             return
         }
         self.avatarCornerRadius = avatarCornerRadius
 
-        avatarImageView.layer.cornerRadius = self.avatarCornerRadius
-        avatarImageView.layer.masksToBounds = true
+        avatarImageView?.layer.cornerRadius = self.avatarCornerRadius
+        avatarImageView?.layer.masksToBounds = true
+
         setNeedsLayout()
     }
 
     // MARK: - Public
     class func requiredHeight(
-        forCellDisplayingMessage message: BPNChatMessageProtocol?,
+        forCellDisplayingMessage message: ChatMessage?,
         avatarHeight: CGFloat,
         videoFilePlaceholderImage: UIImage?,
         otherFilePlaceholderImage: UIImage?,
         messageFont: UIFont?,
         timeStamp timeStampFont: UIFont?,
         senderNameFont: UIFont?,
-        timeStamp alignment: BPNTimeStampLabelAlignment,
+        timeStamp alignment: TimeStampLabelAlignment,
         limitedByWidth width: CGFloat
     ) -> CGFloat {
         let timeStampHeight = Self.p_calculateSizeOfText(
@@ -202,23 +203,30 @@ class ChatBubbleCell: UITableViewCell {
             message?.senderName,
             using: senderNameFont,
             limitedByWidth: width).height
+        let avatarOffsetY = avatarHeight != 0.0 ? avatarHeight + Self.kAvatarMarginY : 0.0
+        let messageSize: CGSize
 
-        let avatarOffsetY = avatarHeight != 0.0 ? avatarHeight + kAvatarMarginY : 0.0
-
-        var messageSize: CGSize
-
-        if message?.attachment.data {
-            if let uti = (message?.attachment.uti) as? CFString? {
-                if UTTypeConformsTo(uti, kUTTypeImage) {
-                    var messageImage: UIImage? = nil
-                    if let data = message?.attachment.data {
-                        messageImage = UIImage(data: data)
-                    }
+        if let messageAttachment = message?.attachment,
+           messageAttachment.data != nil,
+           let uti = messageAttachment.uti {
+            if UTTypeConformsTo(uti as CFString, kUTTypeImage) {
+                if let data = messageAttachment.data,
+                   let messageImage = UIImage(data: data) {
                     messageSize = Self.p_sizeOf(messageImage)
-                } else if UTTypeConformsTo(uti, kUTTypeMovie) {
+                } else {
+                    messageSize = .zero
+                }
+            } else if UTTypeConformsTo(uti as CFString, kUTTypeMovie) {
+                if let videoFilePlaceholderImage = videoFilePlaceholderImage {
                     messageSize = Self.p_sizeOf(videoFilePlaceholderImage)
                 } else {
+                    messageSize = .zero
+                }
+            } else {
+                if let otherFilePlaceholderImage = otherFilePlaceholderImage {
                     messageSize = Self.p_sizeOf(otherFilePlaceholderImage)
+                } else {
+                    messageSize = .zero
                 }
             }
         } else {
@@ -229,100 +237,113 @@ class ChatBubbleCell: UITableViewCell {
         }
 
         let height: CGFloat
-        if kBPNTimeStampCenterAligned == alignment {
-            height = ceilf(kTimeStampMarginY + timeStampHeight + CGFloat(max(messageSize.height, avatarOffsetY)) + userNameHeight) + kContentIndentY
+        if TimeStampLabelAlignment.kBPNTimeStampCenterAligned == alignment {
+            height = ceil(kTimeStampMarginY + timeStampHeight + CGFloat(max(messageSize.height, avatarOffsetY)) + userNameHeight) + kContentIndentY
         } else {
-            height = ceilf(kTimeStampMarginY + max(timeStampHeight, max(messageSize.height, avatarOffsetY)) + userNameHeight)
+            height = ceil(kTimeStampMarginY + max(timeStampHeight, max(messageSize.height, avatarOffsetY)) + userNameHeight)
         }
         return height
     }
 
     func p_resizeControls() {
-        var messageFrame: CGRect
-
-        var avatarOffsetX: CGFloat = 0.0
+        let messageFrame: CGRect
+        let avatarOffsetX: CGFloat
         //CGFloat labelOffset = kContentIndentX;
-        if avatarImage {
+        if avatarImage != nil {
             //labelOffset += kAvatarMarginX + _avatarSize;
             avatarOffsetX = avatarSize + kAvatarMarginX + 2 * kContentIndentX
+        } else {
+            avatarOffsetX = 0
         }
 
-        let titleSize = BPNChatBubbleCell.p_calculateSizeOfText(
-            message.senderName,
-            usingFont: nameLabel.font,
+        let titleSize = Self.p_calculateSizeOfText(
+            message?.senderName,
+            using: nameLabel?.font,
             limitedByWidth: contentWidth)
 
-        if kBPNMessageMine == message.type {
+        if MessageType.kBPNMessageMine == message?.type {
             let timeStampSize = p_timeStampSizeLimited(byWidth: frame.width)
-            timeStampLabel.frame = CGRect(
+            timeStampLabel?.frame = CGRect(
                 x: 0,
                 y: 0,
                 width: frame.width,
                 height: timeStampSize.height)
 
-            nameLabel.frame = CGRect(
+            nameLabel?.frame = CGRect(
                 x: frame.width - titleSize.width - kContentIndentX,
-                y: frame.height - titleSize.height + timeStampSize.height / 3 - kAvatarMarginY - kContentIndentY,
+                y: frame.height - titleSize.height + timeStampSize.height / 3 - Self.kAvatarMarginY - Self.kContentIndentY,
                 width: titleSize.width,
                 height: titleSize.height)
-            messageLabel.changeTextColor(to: UIColor.white)
 
-            if avatarImage {
+            messageLabel?.changeTextColor(to: .white)
+
+            if avatarImage != nil,
+               let avatarImageView = avatarImageView {
                 avatarImageView.frame = CGRect(
                     x: frame.width - kContentIndentX - avatarSize,
-                    y: frame.height - titleSize.height - kAvatarMarginY - avatarSize - kContentIndentY,
+                    y: frame.height - titleSize.height - Self.kAvatarMarginY - avatarSize - Self.kContentIndentY,
                     width: avatarSize,
                     height: avatarSize)
             }
 
-            bubbleImageView.frame = CGRect(
-                x: frame.width - messageSize.width - avatarOffsetX - kContentIndentX,
-                y: frame.height - titleSize.height - messageSize.height + timeStampSize.height / 2 - kContentIndentY,
-                width: messageSize.width - kNippleMarginX,
-                height: messageSize.height - kImageIndentY - 2.0)
+            if let bubbleImageView = bubbleImageView {
+                bubbleImageView.frame = CGRect(
+                    x: frame.width - messageSize.width - avatarOffsetX - kContentIndentX,
+                    y: frame.height - titleSize.height - messageSize.height + timeStampSize.height / 2 - Self.kContentIndentY,
+                    width: messageSize.width - Self.kNippleMarginX,
+                    height: messageSize.height - Self.kImageIndentY - 2.0)
 
-            messageFrame = CGRect(
-                x: bubbleImageView.frame.minX + kMyBubbleContentIndentX,
-                y: bubbleImageView.frame.minY + kImageIndentY - 2.0,
-                width: messageSize.width - 2 * kNippleMarginX,
-                height: messageSize.height - 3 * kImageIndentY)
+                messageFrame = CGRect(
+                    x: bubbleImageView.frame.minX + kMyBubbleContentIndentX,
+                    y: bubbleImageView.frame.minY + Self.kImageIndentY - 2.0,
+                    width: messageSize.width - 2 * Self.kNippleMarginX,
+                    height: messageSize.height - 3 * Self.kImageIndentY)
+            } else {
+                messageFrame = CGRect.zero
+            }
         } else {
-            nameLabel.frame = CGRect(
+            nameLabel?.frame = CGRect(
                 x: 3 * kContentIndentX + 2.0,
-                y: frame.height - titleSize.height - kContentIndentY,
+                y: frame.height - titleSize.height - Self.kContentIndentY,
                 width: titleSize.width,
                 height: titleSize.height)
-            messageLabel.changeTextColor(to: UIColor.black)
 
-            if avatarImage {
-                let avatarOffsetY: CGFloat = avatarSize + kAvatarMarginY
-                avatarImageView.frame = CGRect(
+            messageLabel?.changeTextColor(to: .black)
+
+            if avatarImage != nil {
+                let avatarOffsetY: CGFloat = avatarSize + Self.kAvatarMarginY
+                avatarImageView?.frame = CGRect(
                     x: 3 * kContentIndentX,
-                    y: frame.height - titleSize.height - avatarOffsetY - kContentIndentY,
+                    y: frame.height - titleSize.height - avatarOffsetY - Self.kContentIndentY,
                     width: avatarSize,
                     height: avatarSize)
             }
 
-            bubbleImageView.frame = CGRect(
-                x: avatarOffsetX + 3 * kContentIndentX + 2.0,
-                y: frame.height - titleSize.height - messageSize.height - kContentIndentY,
-                width: messageSize.width - kNippleMarginX,
-                height: messageSize.height - kImageIndentY - 2.0)
+            if let bubbleImageView = bubbleImageView {
+                bubbleImageView.frame = CGRect(
+                    x: avatarOffsetX + 3 * kContentIndentX + 2.0,
+                    y: frame.height - titleSize.height - messageSize.height - Self.kContentIndentY,
+                    width: messageSize.width - Self.kNippleMarginX,
+                    height: messageSize.height - Self.kImageIndentY - 2.0)
 
-            messageFrame = CGRect(
-                x: bubbleImageView.frame.minX + kOtherBubbleContentIndentX,
-                y: bubbleImageView.frame.minY + kImageIndentY - 2.0,
-                width: messageSize.width - 2.0 * kNippleMarginX,
-                height: messageSize.height - 3.0 * kImageIndentY)
+                messageFrame = CGRect(
+                    x: bubbleImageView.frame.minX + kOtherBubbleContentIndentX,
+                    y: bubbleImageView.frame.minY + Self.kImageIndentY - 2.0,
+                    width: messageSize.width - 2.0 * Self.kNippleMarginX,
+                    height: messageSize.height - 3.0 * Self.kImageIndentY)
+            } else {
+                messageFrame = CGRect.zero
+            }
 
-            if kBPNTimeStampCenterAligned == timeStampLabelAlignment {
+            if TimeStampLabelAlignment.kBPNTimeStampCenterAligned == timeStampLabelAlignment {
                 let timeStampSize = p_timeStampSizeLimited(byWidth: frame.width)
-                timeStampLabel.frame = CGRect(
+                timeStampLabel?.frame = CGRect(
                     x: 0,
                     y: 0,
                     width: frame.width,
                     height: timeStampSize.height)
-            } else {
+            } else if let bubbleImageView = bubbleImageView,
+                      let timeStampLabel = timeStampLabel {
                 let timeStampSize = p_timeStampSizeLimited(byWidth: frame.width - bubbleImageView.frame.width - kTimeStampMarginX)
 
                 timeStampLabel.frame = CGRect(
@@ -333,72 +354,90 @@ class ChatBubbleCell: UITableViewCell {
             }
         }
 
-        if message.attachment.data != nil {
+        if message?.attachment?.data != nil {
             messageImageView?.frame = messageFrame
-            messageLabel.hidden = true
+            messageLabel?.isHidden = true
             messageImageView?.isHidden = false
             bubbleImageView?.image = nil
         } else {
-            messageLabel.frame = messageFrame
-            messageLabel.hidden = false
+            messageLabel?.frame = messageFrame
+            messageLabel?.isHidden = false
             messageImageView?.isHidden = true
         }
     }
 
-    func p_handleImageTap(_ recognizer: UITapGestureRecognizer?) {
-        delegate.bubbleCellImageTapped(self, containingMessage: message)
+    @objc func p_handleImageTap(_ recognizer: UITapGestureRecognizer?) {
+        delegate?.bubbleCellImageTapped(self, containingMessage: message)
     }
 
-    class func p_sizeOf(_ image: UIImage?) -> CGSize {
-        let size = image?.size
-        if (size?.width ?? 0.0) > kMaxImageWidth {
-            size?.height /= (size?.width ?? 0.0) / kMaxImageWidth
-            size?.width = kMaxImageWidth
+    class func p_sizeOf(_ image: UIImage) -> CGSize {
+        if image.size.width > kMaxImageWidth {
+            return CGSize(width: Self.kMaxImageWidth,
+                          height: image.size.height * Self.kMaxImageWidth / image.size.width)
+        } else {
+            return image.size
         }
-        return size ?? CGSize.zero
     }
 
     func p_timeStampSizeLimited(byWidth limitWidth: CGFloat) -> CGSize {
-        if !timeStampLabel.text.length || timeStampLabel.hidden {
-            return CGSize.zero
+        guard let timeStampLabel = timeStampLabel else {
+            return .zero
         }
 
-        let timeStampSize = timeStampLabel.text.boundingRect(
-            with: CGSize(width: frame.width, height: limitWidth),
-            options: .usesLineFragmentOrigin,
-            attributes: [
-                NSAttributedString.Key.font: timeStampLabel.font
-            ],
-            context: nil).size
+        guard timeStampLabel.text?.count ?? 0 > 0 ||
+            timeStampLabel.isHidden == false else {
+            return .zero
+        }
 
-        return CGSize(width: ceilf(timeStampSize.width), height: ceilf(timeStampSize.height + kTimeStampMarginY))
+        let timeStampSize: CGSize
+        if let font = timeStampLabel.font {
+            timeStampSize = timeStampLabel.text?.boundingRect(
+                    with: CGSize(width: frame.width, height: limitWidth),
+                    options: .usesLineFragmentOrigin,
+                    attributes: [
+                        NSAttributedString.Key.font: font
+                    ],
+                    context: nil).size ?? .zero
+        } else {
+            timeStampSize = .zero
+        }
+
+        return CGSize(width: ceil(timeStampSize.width),
+                      height: ceil(timeStampSize.height + Self.kTimeStampMarginY))
     }
 
     func p_setupCell() {
-        selectionStyle = EKCalendarChooserSelectionStyle(rawValue: UITableViewCell.SelectionStyle.none.rawValue)
+        selectionStyle = UITableViewCell.SelectionStyle.none
         backgroundColor = UIColor.clear
 
-        messageLabel = BPNLinkLabel(frame: CGRect.zero)
+        let messageLabel = LinkLabel(frame: .zero)
         messageLabel.isUserInteractionEnabled = true
         messageLabel.numberOfLines = 0
         messageLabel.lineBreakMode = .byWordWrapping
         messageLabel.backgroundColor = UIColor.clear
 
-        nameLabel = UILabel(frame: CGRect.zero)
-        nameLabel.backgroundColor = UIColor.clear
+        self.messageLabel = messageLabel
 
-        timeStampLabel = UILabel(frame: CGRect.zero)
+        let nameLabel = UILabel(frame: .zero)
+        nameLabel.backgroundColor = UIColor.clear
+        self.nameLabel = nameLabel
+
+        let timeStampLabel = UILabel(frame: CGRect.zero)
         timeStampLabel.backgroundColor = UIColor.clear
         timeStampLabel.textAlignment = .center
         timeStampLabel.lineBreakMode = .byWordWrapping
         timeStampLabel.numberOfLines = 0
+        self.timeStampLabel = timeStampLabel
 
-        bubbleImageView = UIImageView(frame: CGRect.zero)
-        avatarImageView = UIImageView(frame: CGRect.zero)
-        messageImageView = UIImageView(frame: CGRect.zero)
+        let bubbleImageView = UIImageView(frame: CGRect.zero)
+        self.bubbleImageView = bubbleImageView
+        let avatarImageView = UIImageView(frame: CGRect.zero)
+        self.avatarImageView = avatarImageView
+        let messageImageView = UIImageView(frame: CGRect.zero)
         messageImageView.layer.cornerRadius = 5.0
         messageImageView.layer.masksToBounds = true
         messageImageView.isUserInteractionEnabled = true
+        self.messageImageView = messageImageView
 
         contentView.addSubview(bubbleImageView)
         contentView.addSubview(avatarImageView)
@@ -410,48 +449,57 @@ class ChatBubbleCell: UITableViewCell {
         bubbleImageView.isUserInteractionEnabled = false
         contentView.bringSubviewToFront(messageLabel)
 
-        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(p_handleImageTap(_:)))
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(p_handleImageTap))
         messageImageView.addGestureRecognizer(tapRecognizer)
     }
 
     // MARK: - Private
     class func p_calculateSizeOfMessage(
-        _ message: BPNChatMessageProtocol?,
+        _ message: ChatMessage?,
         messageFont: UIFont?,
         limitedByWidth width: CGFloat
     ) -> CGSize {
-        let labelSize = BPNChatBubbleCell.p_calculateSizeOfText(
+        let labelSize = Self.p_calculateSizeOfText(
             message?.text,
             using: messageFont,
             limitedByWidth: width)
 
         let messageSize = CGSize(
-            width: ceilf(labelSize.width) + 2.0 * kNippleMarginX,
-            height: ceilf(labelSize.height) + 3.0 * kImageIndentY)
+            width: ceil(labelSize.width) + 2.0 * Self.kNippleMarginX,
+            height: ceil(labelSize.height) + 3.0 * kImageIndentY)
 
         return messageSize
     }
 
     class func p_calculateSizeOfText(_ text: String?, using font: UIFont?, limitedByWidth width: CGFloat) -> CGSize {
-        if text == nil || font == nil {
+        guard text != nil && font != nil else {
             return CGSize.zero
         }
 
-        var size: CGSize? = nil
+        let size: CGSize
         if let font = font {
             size = text?.boundingRect(
-                with: CGSize(width: width, height: CGFLOAT_MAX),
+                with: CGSize(width: width, height: CGFloat.greatestFiniteMagnitude),
                 options: .usesLineFragmentOrigin,
                 attributes: [
                     NSAttributedString.Key.font: font
                 ],
-                context: nil).size
+                context: nil).size ?? .zero
+        } else {
+            size = .zero
         }
 
-        return CGSize(width: ceilf(size?.width) + 14.0, height: ceilf(size?.height))
+        return CGSize(width: ceil(size.width) + 14.0, height: ceil(size.height))
     }
 
     func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesBegan(touches, with: event)
     }
+}
+
+extension ChatBubbleCell: UITableCellIdentifiable {
+    static var reuseIdentifier: String {
+        "\(ChatBubbleCell.self)"
+    }
+
 }

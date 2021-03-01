@@ -97,6 +97,10 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="6Fx-T0-FDc">
                                 <rect key="frame" x="16" y="0.0" width="343" height="647"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="IaW-CQ-Gty" id="sNh-9b-K5e"/>
+                                    <outlet property="delegate" destination="IaW-CQ-Gty" id="Zs9-6G-Tk4"/>
+                                </connections>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -108,6 +112,9 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="HeN-ME-CF9"/>
+                    <connections>
+                        <outlet property="chatTableView" destination="6Fx-T0-FDc" id="zbs-V6-MS3"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xu7-7x-XcY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
