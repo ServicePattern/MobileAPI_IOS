@@ -13,12 +13,13 @@ public struct ContactCenterErrorResponse: Decodable {
 
 extension ContactCenterErrorResponse {
     func toModel() -> ContactCenterError? {
-        if error_code == "5005" {
+        switch error_code {
+        case "5005":
             return .chatSessionNotFound
-        }
-        else if error_code == "406" {
+        case "406":
             return .chatSessionCaseNotSpecified
+        default:
+            return nil
         }
-        return nil
     }
 }
