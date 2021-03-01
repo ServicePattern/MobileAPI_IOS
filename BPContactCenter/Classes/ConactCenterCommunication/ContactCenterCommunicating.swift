@@ -38,6 +38,11 @@ public protocol ContactCenterCommunicating {
     ///   - chatID: The current chat ID
     ///   - completion: Chat client and server events [ContactCenterEvent](x-source-tag://ContactCenterEvent) or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
     func getChatHistory(chatID: String, with completion: @escaping ((Result<[ContactCenterEvent], Error>) -> Void))
+    /// Returns all client events and all server events for all sessions related to the CRM case defined by the scenario which handles a current chat session. For each session, multiple event objects can be returned; each event's timestamp attribute can be used to restore the correct message order.
+    /// - Parameters:
+    ///   - chatID: The current chat ID
+    ///   - completion: Chat client and server events [ContactCenterEvent](x-source-tag://ContactCenterEvent) or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    func getCaseHistory(chatID: String, with completion: @escaping ((Result<[ContactCenterChatSession], Error>) -> Void))
     /// Request Chat initiates a chat session. It provides values of all or some of the expected parameters, and it may also contain the phone number of the mobile device. Note that if the mobile scenario entry is not configured for automatic callback, the agent can still use this number to call the mobile user manually, either upon the agent's own initiative or when asked to do this via a chat message from the mobile user.
     /// - Parameters:
     ///   - phoneNumber: phone number for callback, if necessary

@@ -105,6 +105,23 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
         }
     }
 
+    public func getCaseHistory(chatID: String, with completion: @escaping ((Result<[ContactCenterChatSession], Error>) -> Void)) {
+        do {
+            let urlRequest = try httpGetRequest(with: .getCaseHistory(chatID: chatID))
+            networkService.dataTask(using: urlRequest) { (result: Result<ChatSessionCaseHistoryDto, Error>) -> Void in
+                switch result {
+                case .success(let sessionsContainer):
+                    completion(.success(sessionsContainer.sessions))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        } catch {
+            log.error("Failed to getChatHistory: \(error) chatID: \(chatID)")
+            completion(.failure(error))
+        }
+    }
+
     public func requestChat(phoneNumber: String, from: String, parameters: [String: String], with completion: @escaping ((Result<ContactCenterChatSessionProperties, Error>) -> Void)) {
         do {
             let requestChatBodyParameters = RequestChatParameters(phoneNumber: phoneNumber, from: from, parameters: parameters)

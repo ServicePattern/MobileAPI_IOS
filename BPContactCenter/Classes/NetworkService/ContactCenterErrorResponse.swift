@@ -16,6 +16,9 @@ extension ContactCenterErrorResponse {
         if error_code == "5005" {
             return .chatSessionNotFound
         }
+        else if error_code == "406" {
+            return .chatSessionCaseNotSpecified
+        }
         return nil
     }
 }
