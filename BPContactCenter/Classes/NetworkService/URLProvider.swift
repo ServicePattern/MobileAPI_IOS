@@ -29,10 +29,12 @@ class URLProvider {
     enum Endpoint {
         case checkAvailability
         case getChatHistory(chatID: String)
+        case getCaseHistory(chatID: String)
         case getNewChatEvents(chatID: String)
         case requestChat
         case sendEvents(chatID: String)
         case subscribeForNotifications(chatID: String)
+        case closeCase(chatID: String)
 
         var endpointPathString: String {
             switch self {
@@ -40,6 +42,8 @@ class URLProvider {
                 return "availability"
             case .getChatHistory(let chatID):
                 return "chats/\(chatID)/history"
+            case .getCaseHistory(let chatID):
+                return "chats/\(chatID)/casehistory"
             case .getNewChatEvents(let chatID):
                 return "chats/\(chatID)/events"
             case .requestChat:
@@ -48,6 +52,8 @@ class URLProvider {
                 return "chats/\(chatID)/events"
             case .subscribeForNotifications(let chatID):
                 return "chats/\(chatID)/notifications"
+            case .closeCase(let chatID):
+                return "chats/\(chatID)/closecase"
             }
         }
     }

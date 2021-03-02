@@ -27,9 +27,9 @@ extension ChatSessionPartyTypeDto {
 struct ChatSessionPartyJoinedDto: Codable {
     let event: ContactCenterEventTypeDto
     let partyID: String
-    let firstName: String
-    let lastName: String
-    let displayName: String
+    let firstName: String?
+    let lastName: String?
+    let displayName: String?
     let type: ChatSessionPartyTypeDto
     let timestamp: Date
 
@@ -43,7 +43,7 @@ struct ChatSessionPartyJoinedDto: Codable {
         case timestamp
     }
 
-    init(partyID: String, firstName: String, lastName: String, displayName: String, type: ChatSessionPartyTypeDto, timestamp: Date) {
+    init(partyID: String, firstName: String?, lastName: String?, displayName: String?, type: ChatSessionPartyTypeDto, timestamp: Date) {
         self.event = .chatSessionPartyJoined
         self.partyID = partyID
         self.firstName = firstName

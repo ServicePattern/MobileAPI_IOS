@@ -7,6 +7,7 @@ import Foundation
 /// - Tag: ContactCenterEventTypeDto
 enum ContactCenterEventTypeDto: String, Codable, CaseIterable {
     case chatSessionStatus = "chat_session_status"
+    case chatSessionCaseSet = "chat_session_case_set"
     case chatSessionMessage = "chat_session_message"
     case chatSessionMessageDelivered = "chat_session_message_delivered"
     case chatSessionMessageRead = "chat_session_message_read"
@@ -27,6 +28,8 @@ enum ContactCenterEventTypeDto: String, Codable, CaseIterable {
         switch self {
         case .chatSessionStatus:
             return ChatSessionStatusDto.self
+        case .chatSessionCaseSet:
+            return ChatSessionCaseSetDto.self
         case .chatSessionMessage:
             return ChatSessionMessageDto.self
         case .chatSessionMessageDelivered:

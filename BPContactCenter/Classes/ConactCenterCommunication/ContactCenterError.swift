@@ -15,4 +15,5 @@ public enum ContactCenterError: Error {
     case dataEmpty
     case failedToCast(String)
     case chatSessionNotFound
+    case chatSessionCaseNotSpecified
 }

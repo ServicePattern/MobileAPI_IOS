@@ -107,13 +107,28 @@ extension ViewController {
         contactCenterService.getChatHistory(chatID: chatID) { [weak self] eventsResult in
             switch eventsResult {
             case .success(let events):
-                print("Received chat history")
+                print("Received chat history: \(events)")
                 DispatchQueue.main.async {
                     self?.currentChatID = chatID
                     self?.processSessionEvents(chatID: chatID, events: events)
                 }
             case .failure(let error):
                 print("Failed to getChatHistory: \(error)")
+            }
+        }
+    }
+
+    private func getCaseHistory(chatID: String) {
+        contactCenterService.getCaseHistory(chatID: chatID) { [weak self] eventsResult in
+            switch eventsResult {
+            case .success(let sessions):
+                print("Received case history: \(sessions)")
+                DispatchQueue.main.async {
+//                    self?.currentChatID = chatID
+//                    self?.processSessionEvents(chatID: chatID, events: events)
+                }
+            case .failure(let error):
+                print("Failed to getCaseHistory: \(error)")
             }
         }
     }
@@ -198,6 +213,17 @@ extension ViewController {
         }
     }
 
+    private func closeCase(chatID: String) {
+        contactCenterService.closeCase(chatID: chatID) { result in
+            switch result {
+            case .success(_):
+                print("closeCase confirmed")
+            case .failure(let error):
+                print("closeCase error: \(error)")
+            }
+        }
+    }
+
     private func processSessionEvents(chatID: String, events: [ContactCenterEvent]) {
         for e in events {
             switch e {
@@ -208,9 +234,19 @@ extension ViewController {
             case .chatSessionStatus(let state, let estimatedWaitTime):
                 if state == .connected {
                     print("Connected to a chat: \(chatID)")
-                } else {
+                } else if state == .queued {
                     print("Waiting in a queue: \(chatID) estimated wait time: \(estimatedWaitTime)")
                 }
+            case .chatSessionCaseSet(let caseID, let timestamp):
+                guard let chatID = self.currentChatID else {
+                    return
+                }
+                self.getCaseHistory(chatID: chatID)
+            case .chatSessionPartyLeft(let partyID, let timestamp):
+                guard let chatID = self.currentChatID else {
+                    return
+                }
+                self.closeCase(chatID: chatID)
             default:()
             }
         }
