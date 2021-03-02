@@ -125,7 +125,7 @@ class LinkDetectorTextStorage: NSTextStorage {
                          value: UIColor.blue,
                          range: result.range)
             addAttribute(.underlineStyle,
-                         value: NSUnderlineStyle.single,
+                         value: NSUnderlineStyle.styleSingle,
                          range: result.range)
             linkRanges.append(result)
         }

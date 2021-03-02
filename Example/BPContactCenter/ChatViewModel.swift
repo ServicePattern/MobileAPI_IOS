@@ -19,6 +19,14 @@ class ChatViewModel {
         }
     }
     weak var delegate: ChatViewModelUpdatable?
+    private let defaultAvatarSize = CGFloat(50)
+    private let defaultAvatarCornerRadius = CGFloat(25)
+
+    private let defaultMessageFont = UIFont.systemFont(ofSize: 17.0)
+    private var lastMessageWithDateDisplayed: ChatMessage? = nil
+    private let timeStampFont = UIFont.systemFont(ofSize: 11)
+    private let timeStampInterval = TimeInterval(60)
+    private let bubbleWidth = CGFloat(200)
 
     init(service: ServiceDependencyProtocol, currentChatID: String) {
         self.service = service
@@ -37,6 +45,51 @@ class ChatViewModel {
 
     func chatMessage(at index: Int) -> ChatMessage {
         messages[index]
+    }
+
+    private func avatarImage(at indexPath: IndexPath) -> UIImage? {
+        return nil
+    }
+
+    private func avatarSize(at indexPath: IndexPath) -> CGFloat {
+        return defaultAvatarSize
+    }
+
+    private func messageFont(at indexPath: IndexPath) -> UIFont {
+        return defaultMessageFont
+    }
+
+    func heightForRow(at indexPath: IndexPath) -> CGFloat {
+        let message = messages[indexPath.row]
+        let avatar = avatarImage(at: indexPath)
+        let avatarSizeValue = (avatar != nil) ? avatarSize(at: indexPath): 0
+        let messageFontValue = messageFont(at: indexPath)
+
+        if 0 == indexPath.row {
+            lastMessageWithDateDisplayed = nil
+        }
+
+        switch message.type {
+        case .messageMine, .messageSomeone:
+            let timeStampFont: UIFont?
+            if let time = lastMessageWithDateDisplayed?.time {
+                if let timeDiff = message.time?.timeIntervalSince(time),
+                   timeDiff >= timeStampInterval {
+                    timeStampFont = self.timeStampFont
+                } else {
+                    timeStampFont = nil
+                }
+                lastMessageWithDateDisplayed = message
+            } else {
+                lastMessageWithDateDisplayed = message
+                timeStampFont = self.timeStampFont
+            }
+            return ChatBubbleCell.requiredHeight(forCellDisplayingMessage: message, avatarHeight: avatarSizeValue, videoFilePlaceholderImage: nil, otherFilePlaceholderImage: nil, messageFont: messageFontValue, timeStamp: timeStampFont, senderNameFont: nil, timeStamp: .timeStampSideAligned, limitedByWidth: bubbleWidth)
+        case .messageTypingMine,
+             .messageTypingSomeone,
+             .messageStatus:
+            return 0
+        }
     }
 }
 
@@ -59,7 +112,7 @@ extension ChatViewModel {
                     print("chatID is empty")
                     continue
                 }
-                messages.append(ChatMessage(type: .kBPNMessageMine, text: message, attachment: nil, senderName: nil, time: timestamp, profileImage: nil, chatID: chatID))
+                messages.append(ChatMessage(type: .messageMine, text: message, attachment: nil, senderName: nil, time: timestamp, profileImage: nil, chatID: chatID))
                 chatMessageDelivered(chatID: chatID, messageID: messageID)
                 chatMessageRead(chatID: chatID, messageID: messageID)
             case .chatSessionStatus(let state, let estimatedWaitTime):

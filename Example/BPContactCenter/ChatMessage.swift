@@ -6,17 +6,17 @@ import Foundation
 
 enum TimeStampLabelAlignment : Int {
     ///  Timestamp labels will be horizontally aligned on the cell.
-    case kBPNTimeStampCenterAligned
+    case timeStampCenterAligned
     ///  Timestamp libels will be shown at the left or right side of the bubble.
-    case kBPNTimeStampSideAligned
+    case timeStampSideAligned
 }
 
 enum MessageType : Int {
-    case kBPNMessageMine
-    case kBPNMessageSomeone
-    case kBPNMessageTypingMine
-    case kBPNMessageTypingSomeone
-    case kBPNMessageStatus
+    case messageMine
+    case messageSomeone
+    case messageTypingMine
+    case messageTypingSomeone
+    case messageStatus
 }
 
 struct ChatAttachment {

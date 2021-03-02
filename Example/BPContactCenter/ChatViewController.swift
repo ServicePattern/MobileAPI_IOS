@@ -39,16 +39,21 @@ extension ChatViewController: UITableViewDataSource {
 
             return UITableViewCell()
         }
-
-
         let message = viewModel.chatMessage(at: indexPath.row)
         configure(cell, at: indexPath, with: message)
-        cell.message = message
-
         return cell
     }
 
-    func configure(_ cell: ChatBubbleCell, at: IndexPath, with message: ChatMessage) {
+    private func configure(_ cell: ChatBubbleCell, at: IndexPath, with message: ChatMessage) {
+        cell.bubbleImage = #imageLiteral(resourceName: "bubbleMine")
+        cell.message = message
+    }
+}
+
+extension ChatViewController: UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        viewModel.heightForRow(at: indexPath)
     }
 }
 

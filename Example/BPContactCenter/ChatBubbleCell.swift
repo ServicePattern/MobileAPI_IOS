@@ -129,7 +129,7 @@ class ChatBubbleCell: UITableViewCell {
         }
 
         if let message = self.messageValue,
-           MessageType.kBPNMessageMine == message.type,
+           MessageType.messageMine == message.type,
            let messageTime = message.time,
            let timeStampLabel = timeStampLabel {
             timeStampLabel.text = DateFormatter.localizedString(
@@ -237,7 +237,7 @@ class ChatBubbleCell: UITableViewCell {
         }
 
         let height: CGFloat
-        if TimeStampLabelAlignment.kBPNTimeStampCenterAligned == alignment {
+        if .timeStampCenterAligned == alignment {
             height = ceil(kTimeStampMarginY + timeStampHeight + CGFloat(max(messageSize.height, avatarOffsetY)) + userNameHeight) + kContentIndentY
         } else {
             height = ceil(kTimeStampMarginY + max(timeStampHeight, max(messageSize.height, avatarOffsetY)) + userNameHeight)
@@ -261,7 +261,7 @@ class ChatBubbleCell: UITableViewCell {
             using: nameLabel?.font,
             limitedByWidth: contentWidth)
 
-        if MessageType.kBPNMessageMine == message?.type {
+        if MessageType.messageMine == message?.type {
             let timeStampSize = p_timeStampSizeLimited(byWidth: frame.width)
             timeStampLabel?.frame = CGRect(
                 x: 0,
@@ -335,7 +335,7 @@ class ChatBubbleCell: UITableViewCell {
                 messageFrame = CGRect.zero
             }
 
-            if TimeStampLabelAlignment.kBPNTimeStampCenterAligned == timeStampLabelAlignment {
+            if TimeStampLabelAlignment.timeStampCenterAligned == timeStampLabelAlignment {
                 let timeStampSize = p_timeStampSizeLimited(byWidth: frame.width)
                 timeStampLabel?.frame = CGRect(
                     x: 0,
@@ -447,7 +447,7 @@ class ChatBubbleCell: UITableViewCell {
         contentView.addSubview(timeStampLabel)
 
         bubbleImageView.isUserInteractionEnabled = false
-        contentView.bringSubviewToFront(messageLabel)
+        contentView.bringSubview(toFront: messageLabel)
 
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(p_handleImageTap))
         messageImageView.addGestureRecognizer(tapRecognizer)
