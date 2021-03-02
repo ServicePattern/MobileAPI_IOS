@@ -222,6 +222,16 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
         }
     }
 
+    public func closeCase(chatID: String, with completion: @escaping ((Result<Void, Error>) -> Void)) {
+        do {
+            let urlRequest = try httpPostRequest(with: .closeCase(chatID: chatID), body: nil)
+            networkService.dataTask(using: urlRequest, with: completion)
+        } catch {
+            log.error("Failed to getChatHistory: \(error) chatID: \(chatID)")
+            completion(.failure(error))
+        }
+    }
+
     public func disconnectChat(chatID: String, with completion: @escaping ((Result<Void, Error>) -> Void)) {
         do {
             let urlRequest = try httpSendEventsPostRequest(chatID: chatID,
@@ -293,7 +303,7 @@ extension ContactCenterCommunicator: HttpRequestBuilding {
         return urlRequest
     }
 
-    private func httpPostRequest(with endpoint: URLProvider.Endpoint, body: Encodable) throws -> URLRequest {
+    private func httpPostRequest(with endpoint: URLProvider.Endpoint, body: Encodable?) throws -> URLRequest {
         guard let urlRequest = try networkService.createRequest(method: .post,
                                                                 baseURL: baseURL,
                                                                 endpoint: endpoint,

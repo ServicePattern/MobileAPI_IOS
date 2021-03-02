@@ -34,6 +34,7 @@ class URLProvider {
         case requestChat
         case sendEvents(chatID: String)
         case subscribeForNotifications(chatID: String)
+        case closeCase(chatID: String)
 
         var endpointPathString: String {
             switch self {
@@ -51,6 +52,8 @@ class URLProvider {
                 return "chats/\(chatID)/events"
             case .subscribeForNotifications(let chatID):
                 return "chats/\(chatID)/notifications"
+            case .closeCase(let chatID):
+                return "chats/\(chatID)/closecase"
             }
         }
     }
