@@ -2,11 +2,11 @@ use_frameworks!
 
 platform :ios, '12.0'
 
-target 'BPContactCenter_Example' do
-  pod 'BPContactCenter', :path => '../'
+target 'BPMobileMessaging_Example' do
+  pod 'BPMobileMessaging', :path => '../'
   pod 'Firebase/Messaging'
 
-  target 'BPContactCenter_Tests' do
+  target 'BPMobileMessaging_Tests' do
     inherit! :search_paths
 
     

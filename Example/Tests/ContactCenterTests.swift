@@ -1,5 +1,5 @@
 import XCTest
-@testable import BPContactCenter
+@testable import BPMobileMessaging
 
 class ContactCenterTests: XCTestCase {
     let jsonDecoder = ContactCenterCommunicator.JSONCoder.decoder()
