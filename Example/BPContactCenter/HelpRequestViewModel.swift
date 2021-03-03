@@ -1,78 +1,74 @@
 //
-//  ViewController.swift
-//  BPContactCenter
-//
-//  Created by BrightPattern on 02/12/2021.
-//  Copyright (c) 2021 BrightPattern. All rights reserved.
-//
+// Copyright © 2021 BrightPattern. All rights reserved.
+    
 
-import UIKit
+import Foundation
 import BPContactCenter
 
-enum ExampleAppError: Error {
-    case deviceTokenNotSet
+protocol HelpRequestUpdatable: class {
+    func update()
+    func showChat()
 }
 
-extension UIViewController {
-    var appDelegate: AppDelegate {
-        UIApplication.shared.delegate as! AppDelegate
-    }
-}
-
-extension DefaultStringInterpolation {
-    /// Allows to print optional values without a prefix.
-    /// ```
-    /// let x: Int? = 1
-    /// print("\(x)") // > 1
-    /// ```
-    mutating func appendInterpolation<T>(_ optional: T?) {
-        appendInterpolation(String(describing: optional))
-    }
-}
-
-class ViewController: UIViewController {
-
-    var contactCenterService: ContactCenterCommunicating {
-        appDelegate.contactCenterService!
-    }
-    var deviceToken: String? {
-        appDelegate.deviceToken
-    }
-
-    var bundleIdentifier: String {
-        Bundle.main.bundleIdentifier ?? ""
-    }
-
-    var useFirebase: Bool {
-        appDelegate.useFirebase
-    }
-
+class HelpRequestViewModel {
+    let service: ServiceDependencyProtocol
     var currentChatID: String?
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        appDelegate.deviceTokenDelegate = self
-        appDelegate.contactCenterService?.delegate = self
+    let bottomSpace = CGFloat(105)
+    var isChatAvailable: Bool = false {
+        didSet {
+            delegate?.update()
+        }
     }
-}
+    var isRequestInProgress: Bool = false {
+        didSet {
+            delegate?.update()
+        }
+    }
+    weak var delegate: HelpRequestUpdatable?
 
-extension ViewController: DeviceTokenDelegateProtocol {
-    func received(token _: String) {
+    init(service: ServiceDependencyProtocol) {
+        self.service = service
+
+        NotificationCenter.default.addObserver(self, selector: #selector(receivedEvents), name: NotificationName.contactCenterEventsReceived.name, object: nil)
         checkChatAvailability()
     }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    func helpMePressed() {
+        requestChat()
+    }
+
+    func pastConversationsPressed() {
+        guard let chatID = currentChatID else {
+            print("chatID is empty")
+            return
+        }
+        getChatHistory(chatID: chatID)
+    }
+
+    @objc
+    private func receivedEvents(notification: Notification) {
+        guard let events = notification.userInfo?[NotificationUserInfoKey.contactCenterEvents] as? [ContactCenterEvent] else {
+            print("Failed to get contact center events: \(notification)")
+            return
+        }
+        processSessionEvents(events: events)
+    }
 }
 
-extension ViewController {
+extension HelpRequestViewModel {
     private func checkChatAvailability() {
-        contactCenterService.checkAvailability { [weak self] serviceAvailabilityResult in
+        isRequestInProgress = true
+        service.contactCenterService.checkAvailability { [weak self] serviceAvailabilityResult in
             DispatchQueue.main.async {
+                self?.isRequestInProgress = false
                 switch serviceAvailabilityResult {
                 case .success(let serviceAvailability):
                     print("Chat is \(serviceAvailability.chat)")
-                    if serviceAvailability.chat == .available {
-                        self?.requestChat()
-                    }
+                    self?.isChatAvailable = serviceAvailability.chat == .available
                 case .failure(let error):
                     print("Failed to check availability: \(error)")
                 }
@@ -80,12 +76,14 @@ extension ViewController {
         }
     }
     private func requestChat() {
-        contactCenterService.requestChat(phoneNumber: "12345", from: "54321", parameters: [:]) { [weak self] chatPropertiesResult in
-            switch chatPropertiesResult {
-            case .success(let chatProperties):
-                print("Chat properties: \(chatProperties)")
-                DispatchQueue.main.async {
-                    self?.getChatHistory(chatID: chatProperties.chatID)
+        isRequestInProgress = true
+        service.contactCenterService.requestChat(phoneNumber: "12345", from: "54321", parameters: [:]) { [weak self] chatPropertiesResult in
+            DispatchQueue.main.async {
+                self?.isRequestInProgress = false
+                switch chatPropertiesResult {
+                case .success(let chatProperties):
+                    print("Chat properties: \(chatProperties)")
+                    self?.currentChatID = chatProperties.chatID
                     self?.subscribeForNotifications(chatID: chatProperties.chatID) { subscribeResult in
                         DispatchQueue.main.async {
                             switch subscribeResult {
@@ -96,30 +94,32 @@ extension ViewController {
                             }
                         }
                     }
+                case .failure(let error):
+                    print("\(error)")
                 }
-            case .failure(let error):
-                print("\(error)")
             }
         }
     }
 
     private func getChatHistory(chatID: String) {
-        contactCenterService.getChatHistory(chatID: chatID) { [weak self] eventsResult in
-            switch eventsResult {
-            case .success(let events):
-                print("Received chat history: \(events)")
-                DispatchQueue.main.async {
-                    self?.currentChatID = chatID
-                    self?.processSessionEvents(chatID: chatID, events: events)
+        isRequestInProgress = true
+        service.contactCenterService.getChatHistory(chatID: chatID) { [weak self] eventsResult in
+            DispatchQueue.main.async {
+                self?.isRequestInProgress = false
+                switch eventsResult {
+                case .success(let events):
+                    print("Received chat history")
+                        self?.currentChatID = chatID
+                        self?.processSessionEvents(events: events)
+                case .failure(let error):
+                    print("Failed to getChatHistory: \(error)")
                 }
-            case .failure(let error):
-                print("Failed to getChatHistory: \(error)")
             }
         }
     }
 
     private func getCaseHistory(chatID: String) {
-        contactCenterService.getCaseHistory(chatID: chatID) { [weak self] eventsResult in
+        service.contactCenterService.getCaseHistory(chatID: chatID) { [weak self] eventsResult in
             switch eventsResult {
             case .success(let sessions):
                 print("Received case history: \(sessions)")
@@ -139,25 +139,25 @@ extension ViewController {
     }
 
     private func subscribeForNotifications(chatID: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        guard let deviceToken = deviceToken else {
+        guard let deviceToken = service.deviceToken else {
             print("Device token is not set")
             completion(.failure(ExampleAppError.deviceTokenNotSet))
             return
         }
 
-        if useFirebase {
-            contactCenterService.subscribeForRemoteNotificationsFirebase(chatID: chatID,
+        if service.useFirebase {
+            service.contactCenterService.subscribeForRemoteNotificationsFirebase(chatID: chatID,
                                                                          deviceToken: deviceToken,
                                                                          with: completion)
         } else {
-            contactCenterService.subscribeForRemoteNotificationsAPNs(chatID: chatID,
+            service.contactCenterService.subscribeForRemoteNotificationsAPNs(chatID: chatID,
                                                                      deviceToken: deviceToken,
                                                                      with: completion)
         }
     }
 
     private func sendChatMessage(chatID: String, message: String) {
-        contactCenterService.sendChatMessage(chatID: chatID, message: "Hello") { chatMessageResult in
+        service.contactCenterService.sendChatMessage(chatID: chatID, message: "Hello") { chatMessageResult in
             switch chatMessageResult {
             case .success(let messageID):
                 print("MessageID: \(messageID)")
@@ -170,7 +170,7 @@ extension ViewController {
     }
 
     private func chatMessageDelivered(chatID: String, messageID: String) {
-        contactCenterService.chatMessageDelivered(chatID: chatID, messageID: messageID) { result in
+        service.contactCenterService.chatMessageDelivered(chatID: chatID, messageID: messageID) { result in
             switch result {
             case .success(_):
                 print("chatMessageDelivered confirmed")
@@ -181,7 +181,7 @@ extension ViewController {
     }
 
     private func chatMessageRead(chatID: String, messageID: String) {
-        contactCenterService.chatMessageRead(chatID: chatID, messageID: messageID) { result in
+        service.contactCenterService.chatMessageRead(chatID: chatID, messageID: messageID) { result in
             switch result {
             case .success(_):
                 print("chatMessageRead confirmed")
@@ -192,7 +192,7 @@ extension ViewController {
     }
 
     private func disconnectChat(chatID: String) {
-        contactCenterService.disconnectChat(chatID: chatID) { result in
+        service.contactCenterService.disconnectChat(chatID: chatID) { result in
             switch result {
             case .success(_):
                 print("disconnectChat confirmed")
@@ -203,7 +203,7 @@ extension ViewController {
     }
 
     private func endChat(chatID: String) {
-        contactCenterService.endChat(chatID: chatID) { result in
+        service.contactCenterService.endChat(chatID: chatID) { result in
             switch result {
             case .success(_):
                 print("endChat confirmed")
@@ -214,7 +214,7 @@ extension ViewController {
     }
 
     private func closeCase(chatID: String) {
-        contactCenterService.closeCase(chatID: chatID) { result in
+        service.contactCenterService.closeCase(chatID: chatID) { result in
             switch result {
             case .success(_):
                 print("closeCase confirmed")
@@ -224,17 +224,30 @@ extension ViewController {
         }
     }
 
-    private func processSessionEvents(chatID: String, events: [ContactCenterEvent]) {
+    private func processSessionEvents(events: [ContactCenterEvent]) {
         for e in events {
             switch e {
             case .chatSessionMessage(let messageID, let partyID, let message, let timestamp):
                 print("\(timestamp): message: \(message) from party \(partyID)")
+                guard let chatID = self.currentChatID else {
+                    print("chatID is empty")
+                    continue
+                }
                 self.chatMessageDelivered(chatID: chatID, messageID: messageID)
                 self.chatMessageRead(chatID: chatID, messageID: messageID)
             case .chatSessionStatus(let state, let estimatedWaitTime):
                 if state == .connected {
+                    self.delegate?.showChat()
+                    guard let chatID = self.currentChatID else {
+                        print("chatID is empty")
+                        continue
+                    }
                     print("Connected to a chat: \(chatID)")
                 } else if state == .queued {
+                    guard let chatID = self.currentChatID else {
+                        print("chatID is empty")
+                        continue
+                    }
                     print("Waiting in a queue: \(chatID) estimated wait time: \(estimatedWaitTime)")
                 }
             case .chatSessionCaseSet(let caseID, let timestamp):
@@ -249,24 +262,6 @@ extension ViewController {
                 self.closeCase(chatID: chatID)
             default:()
             }
-        }
-    }
-}
-
-extension ViewController: ContactCenterEventsDelegating {
-    func chatSessionEvents(result: Result<[ContactCenterEvent], Error>) {
-        switch result {
-        case .success(let events):
-            print("Received events from delegate")
-            guard let chatID = self.currentChatID else {
-                print("ChatID is not set")
-                return
-            }
-            DispatchQueue.main.async {
-                self.processSessionEvents(chatID: chatID, events: events)
-            }
-        case .failure(let error):
-            print("chatSessionEvents failed: \(error)")
         }
     }
 }

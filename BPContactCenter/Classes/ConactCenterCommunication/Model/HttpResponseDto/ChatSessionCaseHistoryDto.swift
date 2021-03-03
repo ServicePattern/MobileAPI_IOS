@@ -58,10 +58,7 @@ struct ChatSessionCaseHistoryDto: Codable {
 
         while !sessionsContainer.isAtEnd {
             do {
-                guard let dtoConvertible = try ChatSessionDto.init(from: sessionsContainer.superDecoder()) as? ChatSessionDto else {
-                    throw ContactCenterError.failedToCast("to: \(sessionsContainer.self)")
-                }
-
+                let dtoConvertible = try ChatSessionDto.init(from: sessionsContainer.superDecoder())
                 self.sessions.append(dtoConvertible.toModel())
             } catch {
                 log.error("Failed to parse chat session: \(error)")

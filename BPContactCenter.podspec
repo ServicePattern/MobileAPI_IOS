@@ -20,7 +20,7 @@ The Bright Pattern Contact Center Mobile/Web API is a RESTful API that allows de
   s.author           = { 'https://www.brightpattern.com' => 'https://www.brightpattern.com' }
   s.source           = { :git => 'https://github.com/ServicePattern/MobileAPI_IOS.git', :tag => s.version.to_s }
 
-  s.ios.deployment_target = '11.0'
+  s.ios.deployment_target = '12.0'
 
   s.source_files = 'BPContactCenter/Classes/**/*'
   

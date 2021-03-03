@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="vXZ-lx-hvc">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="vXZ-lx-hvc">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Help Request View Controller-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
-                <viewController id="vXZ-lx-hvc" customClass="ViewController" customModule="BrightPatternContactCenter_Example" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="HelpRequestViewController" id="vXZ-lx-hvc" customClass="HelpRequestViewController" customModule="BPContactCenter_Example" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
                         <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
@@ -20,11 +19,118 @@
                     <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="u7j-tX-Q0K">
+                                <rect key="frame" x="52" y="392" width="271" height="55"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="55" id="UQQ-n7-k9t"/>
+                                </constraints>
+                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="21" translatesAutoresizingMaskIntoConstraints="NO" id="qnB-sF-GTT">
+                                <rect key="frame" x="16" y="473" width="343" height="89"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Abn-8Y-zcD">
+                                        <rect key="frame" x="138" y="0.0" width="67" height="34"/>
+                                        <state key="normal" title="Help me"/>
+                                        <state key="disabled">
+                                            <color key="titleColor" systemColor="systemGray3Color"/>
+                                            <color key="titleShadowColor" systemColor="systemBackgroundColor"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="helpMePressed:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="myk-P6-11n"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Oae-rE-sxe">
+                                        <rect key="frame" x="95.5" y="55" width="152" height="34"/>
+                                        <state key="normal" title="Past conversations"/>
+                                        <connections>
+                                            <action selector="pastConversationsPressed:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="tBs-qx-GVj"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                            <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SAa-V9-qoz">
+                                <rect key="frame" x="331" y="408.5" width="24" height="22"/>
+                                <state key="normal" image="camera"/>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBlueColor"/>
+                        <gestureRecognizers/>
+                        <constraints>
+                            <constraint firstItem="u7j-tX-Q0K" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="6tT-ks-Mqf"/>
+                            <constraint firstItem="SAa-V9-qoz" firstAttribute="leading" secondItem="u7j-tX-Q0K" secondAttribute="trailing" constant="8" symbolic="YES" id="DIQ-hf-pk5"/>
+                            <constraint firstItem="u7j-tX-Q0K" firstAttribute="width" secondItem="qnB-sF-GTT" secondAttribute="width" multiplier="0.790087" id="N69-pw-tvF"/>
+                            <constraint firstItem="SAa-V9-qoz" firstAttribute="centerY" secondItem="u7j-tX-Q0K" secondAttribute="centerY" id="YpB-Bv-I2T"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="qnB-sF-GTT" secondAttribute="bottom" constant="105" id="h0I-5C-rCq"/>
+                            <constraint firstItem="qnB-sF-GTT" firstAttribute="trailing" secondItem="kh9-bI-dsS" secondAttribute="trailingMargin" id="pt4-bi-4G8"/>
+                            <constraint firstItem="qnB-sF-GTT" firstAttribute="top" secondItem="u7j-tX-Q0K" secondAttribute="bottom" constant="26" id="rxd-DR-hgF"/>
+                            <constraint firstItem="qnB-sF-GTT" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" id="uM1-yv-7Hg"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="helpMeButton" destination="Abn-8Y-zcD" id="Bgo-QK-ZIo"/>
+                        <outlet property="pastConversationsBottomConstraint" destination="h0I-5C-rCq" id="mPg-nV-Xas"/>
+                        <outlet property="textView" destination="u7j-tX-Q0K" id="SoP-eS-psq"/>
+                        <segue destination="IaW-CQ-Gty" kind="show" identifier="ChatViewController" id="AwS-ke-KXU"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="-244" y="97.601199400299862"/>
+        </scene>
+        <!--Chat View Controller-->
+        <scene sceneID="Vra-1i-wFq">
+            <objects>
+                <viewController id="IaW-CQ-Gty" customClass="ChatViewController" customModule="BPContactCenter_Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="gPk-H8-cZw"/>
+                        <viewControllerLayoutGuide type="bottom" id="9IT-24-EsM"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="MAG-LS-APN">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="6Fx-T0-FDc">
+                                <rect key="frame" x="16" y="0.0" width="343" height="647"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="IaW-CQ-Gty" id="sNh-9b-K5e"/>
+                                    <outlet property="delegate" destination="IaW-CQ-Gty" id="Zs9-6G-Tk4"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="6Fx-T0-FDc" firstAttribute="top" secondItem="gPk-H8-cZw" secondAttribute="bottom" id="AfM-1l-hfi"/>
+                            <constraint firstItem="9IT-24-EsM" firstAttribute="top" secondItem="6Fx-T0-FDc" secondAttribute="bottom" id="TOe-SA-QUh"/>
+                            <constraint firstItem="6Fx-T0-FDc" firstAttribute="leading" secondItem="MAG-LS-APN" secondAttribute="leadingMargin" id="kin-0p-D7l"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="6Fx-T0-FDc" secondAttribute="trailing" id="mhV-k4-EOd"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="HeN-ME-CF9"/>
+                    <connections>
+                        <outlet property="chatTableView" destination="6Fx-T0-FDc" id="zbs-V6-MS3"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="xu7-7x-XcY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="790" y="98"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="camera" width="24" height="18.5"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBlueColor">
+            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemGray3Color">
+            <color red="0.7803921568627451" green="0.7803921568627451" blue="0.80000000000000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
 </document>
