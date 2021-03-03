@@ -1,5 +1,5 @@
 PODS:
-  - BPContactCenter (0.1.0)
+  - BPMobileMessaging (0.1.0)
   - Firebase/CoreOnly (7.6.0):
     - FirebaseCore (= 7.6.0)
   - Firebase/Messaging (7.6.0):
@@ -58,7 +58,7 @@ PODS:
   - PromisesObjC (1.2.12)
 
 DEPENDENCIES:
-  - BPContactCenter (from `../`)
+  - BPMobileMessaging (from `../`)
   - Firebase/Messaging
 
 SPEC REPOS:
@@ -75,11 +75,11 @@ SPEC REPOS:
     - PromisesObjC
 
 EXTERNAL SOURCES:
-  BPContactCenter:
+  BPMobileMessaging:
     :path: "../"
 
 SPEC CHECKSUMS:
-  BPContactCenter: ef481a9c24d85f7c9a1ea63988dd005e7d267e2f
+  BPMobileMessaging: 6410000b3c59e89e291d512dc921c3abe4c475d8
   Firebase: e1e089d9aac215a52442583f818ab61de3c4581b
   FirebaseCore: 0a43b7f1c5b36f3358cd703011ca4c7e0df55870
   FirebaseCoreDiagnostics: ee1184d51da3293335b83355aad20f537acc24cf
@@ -91,6 +91,6 @@ SPEC CHECKSUMS:
   nanopb: 59221d7f958fb711001e6a449489542d92ae113e
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
 
-PODFILE CHECKSUM: 7d30f522d1339a6ed87e420a69003ed50c6b515d
+PODFILE CHECKSUM: 6e47b7fed93e3f9b6350afb1ccf921590956a00c
 
 COCOAPODS: 1.10.1

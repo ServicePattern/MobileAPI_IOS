@@ -3,4 +3,8 @@
 /Example/Pods/Target[[:space:]]Support[[:space:]]Files/Pods-BPContactCenter_Example/Pods-BPContactCenter_Example-acknowledgements.plist filter=lfs diff=lfs merge=lfs -text
 /Example/BPContactCenter/Images.xcassets/AppIcon.appiconset/icon2-1.png filter=lfs diff=lfs merge=lfs -text
 /Example/BPContactCenter/Images.xcassets/Demo[[:space:]]images/Apple-logo1.imageset/Apple-logo1.png filter=lfs diff=lfs merge=lfs -text
+/Example/BPMobileMessaging/Images.xcassets/AppIcon.appiconset/icon2-1.png filter=lfs diff=lfs merge=lfs -text
+/Example/BPMobileMessaging/Images.xcassets/Demo[[:space:]]images/Apple-logo1.imageset/Apple-logo1.png filter=lfs diff=lfs merge=lfs -text
+/Example/Pods/Target[[:space:]]Support[[:space:]]Files/Pods-BPMobileMessaging_Example/Pods-BPMobileMessaging_Example-acknowledgements.markdown filter=lfs diff=lfs merge=lfs -text
+/Example/Pods/Target[[:space:]]Support[[:space:]]Files/Pods-BPMobileMessaging_Example/Pods-BPMobileMessaging_Example-acknowledgements.plist filter=lfs diff=lfs merge=lfs -text
 Example/libs/WebRTC.xcframework/** filter=lfs diff=lfs merge=lfs -text

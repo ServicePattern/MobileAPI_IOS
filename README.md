@@ -1,9 +1,9 @@
-# BPContactCenter
+# BPMobileMessaging
 
-[![CI Status](https://img.shields.io/travis/brightpattern.com/BPContactCenter.svg?style=flat)](https://travis-ci.org/brightpattern.com/BPContactCenter)
-[![Version](https://img.shields.io/cocoapods/v/BPContactCenter.svg?style=flat)](https://cocoapods.org/pods/BPContactCenter)
-[![License](https://img.shields.io/cocoapods/l/BPContactCenter.svg?style=flat)](https://cocoapods.org/pods/BPContactCenter)
-[![Platform](https://img.shields.io/cocoapods/p/BPContactCenter.svg?style=flat)](https://cocoapods.org/pods/BPContactCenter)
+[![CI Status](https://img.shields.io/travis/brightpattern.com/BPMobileMessaging.svg?style=flat)](https://travis-ci.org/brightpattern.com/BPMobileMessaging)
+[![Version](https://img.shields.io/cocoapods/v/BPMobileMessaging.svg?style=flat)](https://cocoapods.org/pods/BPMobileMessaging)
+[![License](https://img.shields.io/cocoapods/l/BPMobileMessaging.svg?style=flat)](https://cocoapods.org/pods/BPMobileMessaging)
+[![Platform](https://img.shields.io/cocoapods/p/BPMobileMessaging.svg?style=flat)](https://cocoapods.org/pods/BPMobileMessaging)
 
 ## Example
 
@@ -13,11 +13,11 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 ## Installation
 
-BPContactCenter is available through [CocoaPods](https://cocoapods.org). To install
+BPMobileMessaging is available through [CocoaPods](https://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'BPContactCenter'
+pod 'BPMobileMessaging'
 ```
 
 ## Author
@@ -26,4 +26,4 @@ pod 'BPContactCenter'
 
 ## License
 
-BPContactCenter is available under the MIT license. See the LICENSE file for more info.
+BPMobileMessaging is available under the MIT license. See the LICENSE file for more info.
