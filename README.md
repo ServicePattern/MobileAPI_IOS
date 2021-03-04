@@ -62,7 +62,7 @@ func application(_ application: UIApplication,
 
 ```
 
-5.3. If using Google Firebase, implement implement MessagingDelegate extension:
+5.3. If using Google Firebase, implement MessagingDelegate extension:
 
 ```
 extension AppDelegate: MessagingDelegate {

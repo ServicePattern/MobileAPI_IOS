@@ -31,7 +31,7 @@ public protocol ContactCenterCommunicating {
     // MARK: - Client events delegate
     /// Chat events delegate
     /// If successful returns an array of chat events [ContactCenterEvent](x-source-tag://ContactCenterEvent) for the current session that came from the server or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
-    /// - Tag: ContactCenterEventsDelegating
+    /// - Tag: DelegateContactCenter
     var delegate: ContactCenterEventsDelegating? { get set }
     // MARK:- Chat
     /// Checks the current status of configured services
