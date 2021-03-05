@@ -4,6 +4,7 @@
 
 import Foundation
 
+/// Enumeration of allowed chat session state values.
 /// - Tag: ContactCenterChatSessionState
 public enum ContactCenterChatSessionState {
     case queued
@@ -14,6 +15,7 @@ public enum ContactCenterChatSessionState {
     case completed
 }
 
+/// Describes the properties of the current chat session.
 /// - Tag: ContactCenterChatSessionProperties
 public struct ContactCenterChatSessionProperties {
     public let chatID: String
