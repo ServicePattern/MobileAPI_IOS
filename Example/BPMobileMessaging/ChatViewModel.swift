@@ -4,6 +4,7 @@
 
 import Foundation
 import BPMobileMessaging
+import MessageKit
 
 protocol ChatViewModelUpdatable: class {
     func update()
@@ -19,14 +20,18 @@ class ChatViewModel {
         }
     }
     weak var delegate: ChatViewModelUpdatable?
-    private let defaultAvatarSize = CGFloat(50)
-    private let defaultAvatarCornerRadius = CGFloat(25)
-
-    private let defaultMessageFont = UIFont.systemFont(ofSize: 17.0)
-    private var lastMessageWithDateDisplayed: ChatMessage? = nil
-    private let timeStampFont = UIFont.systemFont(ofSize: 11)
-    private let timeStampInterval = TimeInterval(60)
-    private let bubbleWidth = CGFloat(200)
+    var currentSender: SenderType {
+        ChatUser(senderId: "", displayName: "")
+    }
+    var messagesEmpty: Bool {
+        messages.count == 0
+    }
+    var lastMessageIndexPath: IndexPath? {
+        guard messages.count > 0 else {
+            return nil
+        }
+        return IndexPath(item: 0, section: messages.count - 1)
+    }
 
     init(service: ServiceDependencyProtocol, currentChatID: String) {
         self.service = service
@@ -39,56 +44,48 @@ class ChatViewModel {
         NotificationCenter.default.removeObserver(self)
     }
 
-    func numberOfRows(section: Int) -> Int {
-        return messages.count
+    func chatMessagesCount() -> Int {
+        messages.count
     }
 
     func chatMessage(at index: Int) -> ChatMessage {
         messages[index]
     }
 
-    private func avatarImage(at indexPath: IndexPath) -> UIImage? {
-        return nil
-    }
-
-    private func avatarSize(at indexPath: IndexPath) -> CGFloat {
-        return defaultAvatarSize
-    }
-
-    private func messageFont(at indexPath: IndexPath) -> UIFont {
-        return defaultMessageFont
-    }
-
-    func heightForRow(at indexPath: IndexPath) -> CGFloat {
-        let message = messages[indexPath.row]
-        let avatar = avatarImage(at: indexPath)
-        let avatarSizeValue = (avatar != nil) ? avatarSize(at: indexPath): 0
-        let messageFontValue = messageFont(at: indexPath)
-
-        if 0 == indexPath.row {
-            lastMessageWithDateDisplayed = nil
+    func userEnteredData(_ data: [Any], with completion : (() -> Void)?) {
+        guard let chatID = currentChatID else {
+            return
+        }
+        var messages = [ChatMessage]()
+        data.forEach { component in
+            let user = ChatUser(senderId: "", displayName: "")
+            if let str = component as? String {
+                messages.append(ChatMessage(text: str, user: user, messageId: UUID().uuidString, date: Date()))
+            }
         }
 
-        switch message.type {
-        case .messageMine, .messageSomeone:
-            let timeStampFont: UIFont?
-            if let time = lastMessageWithDateDisplayed?.time {
-                if let timeDiff = message.time?.timeIntervalSince(time),
-                   timeDiff >= timeStampInterval {
-                    timeStampFont = self.timeStampFont
-                } else {
-                    timeStampFont = nil
+        let dipatchGroup = DispatchGroup()
+        DispatchQueue.global(qos: .default).async { [weak self] in
+            for message in messages {
+                guard case .text(let messageText) = message.kind else {
+                    continue
                 }
-                lastMessageWithDateDisplayed = message
-            } else {
-                lastMessageWithDateDisplayed = message
-                timeStampFont = self.timeStampFont
+                dipatchGroup.enter()
+                self?.service.contactCenterService.sendChatMessage(chatID: chatID,
+                                                             message: messageText) { result in
+                    dipatchGroup.leave()
+                    switch result {
+                    case .success:()
+                    case .failure:()
+                    }
+                }
             }
-            return ChatBubbleCell.requiredHeight(forCellDisplayingMessage: message, avatarHeight: avatarSizeValue, videoFilePlaceholderImage: nil, otherFilePlaceholderImage: nil, messageFont: messageFontValue, timeStamp: timeStampFont, senderNameFont: nil, timeStamp: .timeStampSideAligned, limitedByWidth: bubbleWidth)
-        case .messageTypingMine,
-             .messageTypingSomeone,
-             .messageStatus:
-            return 0
+            dipatchGroup.wait()
+
+            DispatchQueue.main.async { [weak self] in
+                completion?()
+                self?.messages.append(contentsOf: messages)
+            }
         }
     }
 }
@@ -112,7 +109,15 @@ extension ChatViewModel {
                     print("chatID is empty")
                     continue
                 }
-                messages.append(ChatMessage(type: .messageMine, text: message, attachment: nil, senderName: nil, time: timestamp, profileImage: nil, chatID: chatID))
+                guard let partyID = partyID, let timestamp = timestamp else {
+                    print("partyID or timestamp empty")
+                    return
+                }
+                let chatUser = ChatUser(senderId: partyID, displayName: "")
+                messages.append(ChatMessage(text: message,
+                                            user: chatUser,
+                                            messageId: messageID,
+                                            date: timestamp))
                 chatMessageDelivered(chatID: chatID, messageID: messageID)
                 chatMessageRead(chatID: chatID, messageID: messageID)
             case .chatSessionStatus(let state, let estimatedWaitTime):
