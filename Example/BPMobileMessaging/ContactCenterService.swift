@@ -6,6 +6,15 @@ import Foundation
 import BPMobileMessaging
 import Firebase
 
+extension PartialKeyPath where Root == ServiceManager {
+    var stringValue: String {
+        switch self {
+        case \ServiceManager.clientID: return "clientID"
+        default: fatalError("Unexpected keyPath")
+        }
+    }
+}
+
 @objc
 final class ServiceManager: NSObject, ServiceDependencyProtocol {
     var useFirebase = true
@@ -14,7 +23,16 @@ final class ServiceManager: NSObject, ServiceDependencyProtocol {
     var appID: String {
         useFirebase ? "FirebaseApple": "apns"
     }
-    let clientID = "D3577669-EB4B-4565-B9C6-27DD857CE8E5"
+    var clientID: String {
+        let defaults = UserDefaults.standard
+        let key = \ServiceManager.clientID
+        guard let id = defaults.string(forKey: key.stringValue) else {
+            let id = UUID().uuidString
+            defaults.set(id, forKey: key.stringValue)
+            return id
+        }
+        return id
+    }
     var deviceToken: String?
     lazy var contactCenterService: ContactCenterCommunicating = {
         ContactCenterCommunicator(baseURL: baseURL, tenantURL: tenantURL, appID: appID, clientID: clientID)
