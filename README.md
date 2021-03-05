@@ -21,16 +21,16 @@ it, simply add the following line to your Podfile:
 pod 'BPMobileMessaging'
 ```
 2. Add the following line into your project's AppDelegate.swift file:
-```
+```swift
 import BPMobileMessaging
 ```
 3. Generate the unique `clientID` for your application. The `clientID` should be generated when application runs for the first time on the  mobile device and saved in the local storage. The application should use same value until it is deleted from the device. The `clientID` should be unique for the application / device combination.
-```
+```swift
 var clientID = UUID().uuidString
 ```
 
 4. Create instance of the `ContactCenterCommunicator` class which would handle communications with the BPCC server:
-```
+```swift
 let clientID = "D3577669-EB4B-4565-B9C6-27DD857CE8E5"
 let baseURL = URL(string: "https://<your server URL>")!
 let tenantURL = URL(string: "<your tenant URL>")!
@@ -45,12 +45,12 @@ var contactCenterService: ContactCenterCommunicating = {
 
 5.1. Define a variable to store the device token
 
-```
+```swift
 var deviceToken: String?
 ```
 
 5.2. If using APNs, implement the function to handle the APNs device token result:
-```
+```swift
 var deviceToken: String?
 
 func application(_ application: UIApplication,
@@ -64,7 +64,7 @@ func application(_ application: UIApplication,
 
 5.3. If using Google Firebase, implement MessagingDelegate extension:
 
-```
+```swift
 extension AppDelegate: MessagingDelegate {
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         guard let fcmToken = fcmToken else {
@@ -79,7 +79,7 @@ extension AppDelegate: MessagingDelegate {
 
 5.4. Implement UNUserNotificationCenterDelegate extension to handle push notifications:
 
-```
+```swift
 extension AppDelegate : UNUserNotificationCenterDelegate {
 
   func userNotificationCenter(_ center: UNUserNotificationCenter,
@@ -95,14 +95,14 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
 
 5.5. Set the delegates for APNs and Firebase frameworks:
 
-```
+```swift
 UNUserNotificationCenter.current().delegate = self
 Messaging.messaging().delegate = self
 ```
 
 5.6. Request permissions to receive push notifications:
 
-```
+```swift
 let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
 UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { (authorized, error) in
     guard authorized else {
@@ -120,7 +120,7 @@ UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { 
 
 6. Implement `ContactCenterEventsDelegating` extension to receive the chat events:
 
-```
+```swift
 extension AppDelegate: ContactCenterEventsDelegating {
     func chatSessionEvents(result: Result<[ContactCenterEvent], Error>) {
         switch result {
@@ -138,7 +138,7 @@ extension AppDelegate: ContactCenterEventsDelegating {
 
 7. To verify that a chat service is available, call getChatAvailability method:
 
-```
+```swift
 contactCenterService.checkAvailability { [weak self] serviceAvailabilityResult in
     DispatchQueue.main.async {
         switch serviceAvailabilityResult {
@@ -154,7 +154,7 @@ contactCenterService.checkAvailability { [weak self] serviceAvailabilityResult i
 
 7. To request a new chat session, call requestChat method and subscribe for push notifications for the newly created chat session:
 
-```
+```swift
 contactCenterService.requestChat(phoneNumber: "12345", from: "54321", parameters: [:]) { [weak self] chatPropertiesResult in
     DispatchQueue.main.async {
         switch chatPropertiesResult {
