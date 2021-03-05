@@ -1,57 +1,41 @@
 //
 // Copyright © 2021 BrightPattern. All rights reserved. 
-    
 
-import Foundation
+import UIKit
+import MessageKit
 
-enum TimeStampLabelAlignment : Int {
-    ///  Timestamp labels will be horizontally aligned on the cell.
-    case timeStampCenterAligned
-    ///  Timestamp libels will be shown at the left or right side of the bubble.
-    case timeStampSideAligned
+struct ChatUser: SenderType, Equatable {
+    var senderId: String
+    var displayName: String
 }
 
-enum MessageType : Int {
-    case messageMine
-    case messageSomeone
-    case messageTypingMine
-    case messageTypingSomeone
-    case messageStatus
-}
+internal struct ChatMessage: MessageType {
 
-struct ChatAttachment {
-    let fileId: String?
-    let data: Data?
-    let uti: String?
-    let as_attachment: Bool
-}
+    var messageId: String
+    var sender: SenderType {
+        return user
+    }
+    var sentDate: Date
+    var kind: MessageKind
 
-extension ChatAttachment: Hashable {
-}
+    var user: ChatUser
 
-struct ChatProfileImage {
-    let partyId: String?
-    let data: Data?
-}
+    private init(kind: MessageKind, user: ChatUser, messageId: String, date: Date) {
+        self.kind = kind
+        self.user = user
+        self.messageId = messageId
+        self.sentDate = date
+    }
 
-extension ChatProfileImage: Hashable {
-}
+    init(custom: Any?, user: ChatUser, messageId: String, date: Date) {
+        self.init(kind: .custom(custom), user: user, messageId: messageId, date: date)
+    }
 
-struct ChatMessage {
-    let type: MessageType
-    let text: String?
-    let attachment: ChatAttachment?
-    let senderName: String?
-    let time: Date?
-    let profileImage: ChatProfileImage?
-    let chatID: String?
-}
+    init(text: String, user: ChatUser, messageId: String, date: Date) {
+        self.init(kind: .text(text), user: user, messageId: messageId, date: date)
+    }
 
-extension ChatMessage: Hashable {
-    static func == (lhs: ChatMessage, rhs: ChatMessage) -> Bool {
-        lhs.type == rhs.type &&
-            lhs.text == rhs.text &&
-            lhs.time == rhs.time &&
-            lhs.chatID == rhs.chatID
+    init(attributedText: NSAttributedString, user: ChatUser, messageId: String, date: Date) {
+        self.init(kind: .attributedText(attributedText), user: user, messageId: messageId, date: date)
     }
 }

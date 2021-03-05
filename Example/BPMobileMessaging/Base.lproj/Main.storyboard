@@ -11,7 +11,7 @@
         <!--Help Request View Controller-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
-                <viewController storyboardIdentifier="HelpRequestViewController" id="vXZ-lx-hvc" customClass="HelpRequestViewController" customModule="BPContactCenter_Example" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="HelpRequestViewController" id="vXZ-lx-hvc" customClass="HelpRequestViewController" customModule="BPMobileMessaging_Example" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
                         <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
@@ -85,7 +85,7 @@
         <!--Chat View Controller-->
         <scene sceneID="Vra-1i-wFq">
             <objects>
-                <viewController id="IaW-CQ-Gty" customClass="ChatViewController" customModule="BPContactCenter_Example" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="IaW-CQ-Gty" customClass="ChatViewController" customModule="BPMobileMessaging_Example" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="gPk-H8-cZw"/>
                         <viewControllerLayoutGuide type="bottom" id="9IT-24-EsM"/>
@@ -93,28 +93,9 @@
                     <view key="view" contentMode="scaleToFill" id="MAG-LS-APN">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="6Fx-T0-FDc">
-                                <rect key="frame" x="16" y="0.0" width="343" height="647"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <connections>
-                                    <outlet property="dataSource" destination="IaW-CQ-Gty" id="sNh-9b-K5e"/>
-                                    <outlet property="delegate" destination="IaW-CQ-Gty" id="Zs9-6G-Tk4"/>
-                                </connections>
-                            </tableView>
-                        </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <constraints>
-                            <constraint firstItem="6Fx-T0-FDc" firstAttribute="top" secondItem="gPk-H8-cZw" secondAttribute="bottom" id="AfM-1l-hfi"/>
-                            <constraint firstItem="9IT-24-EsM" firstAttribute="top" secondItem="6Fx-T0-FDc" secondAttribute="bottom" id="TOe-SA-QUh"/>
-                            <constraint firstItem="6Fx-T0-FDc" firstAttribute="leading" secondItem="MAG-LS-APN" secondAttribute="leadingMargin" id="kin-0p-D7l"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="6Fx-T0-FDc" secondAttribute="trailing" id="mhV-k4-EOd"/>
-                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="HeN-ME-CF9"/>
-                    <connections>
-                        <outlet property="chatTableView" destination="6Fx-T0-FDc" id="zbs-V6-MS3"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xu7-7x-XcY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
