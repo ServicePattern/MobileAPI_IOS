@@ -250,10 +250,6 @@ extension ChatViewModel {
             switch eventsResult {
             case .success(let sessions):
                 print("Received case history: \(sessions)")
-                DispatchQueue.main.async {
-//                    self?.currentChatID = chatID
-//                    self?.processSessionEvents(chatID: chatID, events: events)
-                }
             case .failure(let error):
                 print("Failed to getCaseHistory: \(error)")
             }
