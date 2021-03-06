@@ -5,4 +5,5 @@ import Foundation
 
 enum ExampleAppError: Error {
     case deviceTokenNotSet
+    case chatIdNotSet
 }
