@@ -63,11 +63,7 @@ class ChatViewModel {
     }
     
     func getParty(partyID: String) -> ChatUser {
-        var party = self.parties[partyID]
-        if party == nil {
-            return ChatUser(senderId: "", displayName: "")
-        }
-        return party!
+       parties[partyID] ?? ChatUser(senderId: "", displayName: "")
     }
 
     func chatMessagesCount() -> Int {
