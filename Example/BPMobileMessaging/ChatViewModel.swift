@@ -170,7 +170,7 @@ extension ChatViewModel {
                                             date: timestamp))
             case .chatSessionMessage(let messageID, let partyID, let message, let timestamp):
                 print("\(timestamp): message: \(message) from party \(partyID)")
-                guard let partyID = partyID, let timestamp = timestamp else {
+                guard let partyID = partyID, let timestamp = timestamp, let messageID = messageID else {
                     print("partyID or timestamp empty")
                     return
                 }

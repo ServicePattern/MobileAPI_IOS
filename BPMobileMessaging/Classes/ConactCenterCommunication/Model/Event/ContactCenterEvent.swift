@@ -24,7 +24,7 @@ public enum ContactCenterChatSessionPartyType {
 public enum ContactCenterEvent {
     /// Contains a new chat message
     /// Direction: S<->C
-    case chatSessionMessage(messageID: String, partyID: String?, message: String, timestamp: Date?)
+    case chatSessionMessage(messageID: String?, partyID: String?, message: String, timestamp: Date?)
     /// Indicates that a message has been delivered
     /// Direction: S<->C
     case chatSessionMessageDelivered(messageID: String, partyID: String?, timestamp: Date?)

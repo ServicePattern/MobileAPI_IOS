@@ -7,7 +7,7 @@ import Foundation
 /// - Tag: ChatSessionMessageDto
 struct ChatSessionMessageDto: Codable {
     let event: ContactCenterEventTypeDto
-    let messageID: String
+    let messageID: String?
     let partyID: String?
     let message: String
     let timestamp: Date?
@@ -20,7 +20,7 @@ struct ChatSessionMessageDto: Codable {
         case timestamp
     }
 
-    init(messageID: String, partyID: String?, message: String, timestamp: Date?) {
+    init(messageID: String?, partyID: String?, message: String, timestamp: Date?) {
         self.event = .chatSessionMessage
         self.messageID = messageID
         self.partyID = partyID
