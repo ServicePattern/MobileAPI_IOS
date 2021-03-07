@@ -6,7 +6,7 @@ import MessageKit
 import InputBarAccessoryView
 
 extension UIColor {
-    static let primaryColor = UIColor(red: 69/255, green: 193/255, blue: 89/255, alpha: 1)
+    static let primaryColor = UIColor.systemBlue
 }
 
 /// A base class for the example controllers
@@ -52,16 +52,29 @@ class ChatViewController: MessagesViewController, MessagesDataSource, ServiceDep
         messagesCollectionView.messagesDisplayDelegate = self
         scrollsToBottomOnKeyboardBeginsEditing = true
         maintainPositionOnKeyboardFrameChanged = true
+
+        guard let flowLayout = messagesCollectionView.collectionViewLayout as? MessagesCollectionViewFlowLayout else {
+            print("Failed to get flowLayout")
+            return
+        }
+        if #available(iOS 13.0, *) {
+            flowLayout.collectionView?.backgroundColor = .systemBackground
+        }
     }
 
     func configureMessageInputBar() {
         messageInputBar.delegate = self
-        messageInputBar.inputTextView.tintColor = .primaryColor
         messageInputBar.sendButton.setTitleColor(.primaryColor, for: .normal)
         messageInputBar.sendButton.setTitleColor(
             UIColor.primaryColor.withAlphaComponent(0.3),
             for: .highlighted
         )
+        // Prepare for a dark mode
+        if #available(iOS 13.0, *) {
+            messageInputBar.inputTextView.textColor = .label
+            messageInputBar.inputTextView.placeholderLabel.textColor = .secondaryLabel
+            messageInputBar.backgroundView.backgroundColor = .systemBackground
+        }
     }
 
     // MARK: - Helpers
@@ -89,13 +102,13 @@ class ChatViewController: MessagesViewController, MessagesDataSource, ServiceDep
 
     func cellTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
         if indexPath.section % 3 == 0 {
-            return NSAttributedString(string: MessageKitDateFormatter.shared.string(from: message.sentDate), attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 10), NSAttributedString.Key.foregroundColor: UIColor.darkGray])
+            return NSAttributedString(string: MessageKitDateFormatter.shared.string(from: message.sentDate), attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 10), NSAttributedString.Key.foregroundColor: UIColor.systemGray])
         }
         return nil
     }
 
     func cellBottomLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
-        NSAttributedString(string: "Read", attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 10), NSAttributedString.Key.foregroundColor: UIColor.darkGray])
+        NSAttributedString(string: "Read", attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 10), NSAttributedString.Key.foregroundColor: UIColor.systemGray])
     }
 
     func messageTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
@@ -116,7 +129,7 @@ extension ChatViewController: MessagesDisplayDelegate {
     // MARK: - Text Messages
 
     func textColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
-        return isFromCurrentSender(message: message) ? .white : .darkText
+        return isFromCurrentSender(message: message) ? UIColor.white : .darkText
     }
 
     func detectorAttributes(for detector: DetectorType, and message: MessageType, at indexPath: IndexPath) -> [NSAttributedString.Key: Any] {
@@ -133,7 +146,7 @@ extension ChatViewController: MessagesDisplayDelegate {
     // MARK: - All Messages
 
     func backgroundColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
-        return isFromCurrentSender(message: message) ? .primaryColor : UIColor(red: 230/255, green: 230/255, blue: 230/255, alpha: 1)
+        return isFromCurrentSender(message: message) ? .primaryColor : UIColor.gray
     }
 
     func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
