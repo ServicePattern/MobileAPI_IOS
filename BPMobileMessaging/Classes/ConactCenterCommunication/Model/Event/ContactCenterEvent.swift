@@ -27,10 +27,10 @@ public enum ContactCenterEvent {
     case chatSessionMessage(messageID: String?, partyID: String?, message: String, timestamp: Date?)
     /// Indicates that a message has been delivered
     /// Direction: S<->C
-    case chatSessionMessageDelivered(messageID: String, partyID: String?, timestamp: Date?)
+    case chatSessionMessageDelivered(messageID: String?, partyID: String?, timestamp: Date?)
     /// Indicates that a message has been read
     /// Direction: S<->C
-    case chatSessionMessageRead(messageID: String, partyID: String?, timestamp: Date?)
+    case chatSessionMessageRead(messageID: String?, partyID: String?, timestamp: Date?)
     /// Updates the current state of the chat session. If the state is failed, the client application shall assume that the chat session no longer exists.
     /// Direction: S->C
     case chatSessionStatus(state: ContactCenterChatSessionState, estimatedWaitTime: Int)

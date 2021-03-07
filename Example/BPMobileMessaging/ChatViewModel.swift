@@ -8,6 +8,8 @@ import MessageKit
 
 protocol ChatViewModelUpdatable: class {
     func update()
+    func goBack()
+    func showPastConversations()
 }
 
 class ChatViewModel {
@@ -34,6 +36,12 @@ class ChatViewModel {
             return nil
         }
         return IndexPath(item: 0, section: messages.count - 1)
+    }
+    var pastConversationsEvents = [ContactCenterEvent]()
+    var showPastConversationsButtonEnabled = false {
+        didSet {
+            delegate?.update()
+        }
     }
 
     init(service: ServiceDependencyProtocol, currentChatID: String) {
@@ -106,6 +114,52 @@ class ChatViewModel {
             DispatchQueue.main.async { [weak self] in
                 completion?()
                 self?.messages.append(contentsOf: messages)
+            }
+        }
+    }
+
+    func endCurrentChatPressed() {
+        guard let currentChatID = currentChatID else {
+            print("Failed to end chat. Current chat ID is empty")
+            delegate?.goBack()
+            return
+        }
+        service.contactCenterService.disconnectChat(chatID: currentChatID) { [weak self] result in
+            switch result {
+            case .success:
+                self?.service.contactCenterService.endChat(chatID: currentChatID) { [weak self] result in
+                    DispatchQueue.main.async {
+                        self?.delegate?.goBack()
+                    }
+                    switch result {
+                    case .success:
+                        print("Successfully ended chat with id: \(currentChatID)")
+                    case .failure:
+                        print("Failed to end chat with id: \(currentChatID)")
+                    }
+                }
+            case .failure:
+                print("Failed to end chat with id: \(currentChatID)")
+                DispatchQueue.main.async {
+                    self?.delegate?.goBack()
+                }
+            }
+        }
+    }
+
+    func showPastConversationsPressed() {
+        guard let currentChatID = currentChatID else {
+            print("Failed to get past conversations. ChatID is empty.")
+            return
+        }
+        service.contactCenterService.getChatHistory(chatID: currentChatID) { [weak self] result in
+            switch result {
+            case .success(let chatEvents):
+                DispatchQueue.main.async {
+                    self?.pastConversationsEvents = chatEvents
+                    self?.delegate?.showPastConversations()
+                }
+            case .failure: ()
             }
         }
     }
@@ -186,8 +240,8 @@ extension ChatViewModel {
                 } else {
                     print("Waiting in a queue: \(chatID) estimated wait time: \(estimatedWaitTime)")
                 }
-            case .chatSessionCaseSet(let caseID, let timestamp):
-                self.getCaseHistory(chatID: chatID)
+            case .chatSessionCaseSet:
+                showPastConversationsButtonEnabled = true
             case .chatSessionTimeoutWarning(let message, let timestamp):
                 messages.append(ChatMessage(text: message,
                                             user: self.systemParty,
@@ -204,6 +258,9 @@ extension ChatViewModel {
                                             messageId: "",
                                             date: Date()))
 //                self.closeCase(chatID: chatID)
+            case let .chatSessionMessageRead(messageID, _, _):
+                var message = messages.first(where: { $0.messageId == messageID })
+                message?.read = true
             default:()
             }
         }

@@ -29,6 +29,7 @@ class ChatViewController: MessagesViewController, MessagesDataSource, ServiceDep
         formatter.dateStyle = .medium
         return formatter
     }()
+    private var showPastConversationsButton: UIBarButtonItem?
 
     // MARK: - Lifecycle
 
@@ -37,12 +38,38 @@ class ChatViewController: MessagesViewController, MessagesDataSource, ServiceDep
 
         configureMessageCollectionView()
         configureMessageInputBar()
+        configureNavigationBar()
 
         viewModel.delegate = self
     }
 
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
+
+        if let vc = segue.destination as? PastConversationsViewController {
+            vc.pastConversationsEvents = viewModel.pastConversationsEvents
+        }
+    }
+
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
+    }
+
+    private func configureNavigationBar() {
+        navigationController?.isNavigationBarHidden = false
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.isTranslucent = true
+        let showPastConversationsButton = UIBarButtonItem.init(title: "Past Conversations",
+                                                               style: .plain,
+                                                               target: self,
+                                                               action: #selector(showPastConversationsPressed))
+        let endCurrentChatButton = UIBarButtonItem.init(title: "Cancel",
+                                                        style: .done,
+                                                        target: self,
+                                                        action: #selector(endCurrentChatPressed))
+        navigationItem.rightBarButtonItems = [endCurrentChatButton, showPastConversationsButton]
+        self.showPastConversationsButton = showPastConversationsButton
     }
 
     func configureMessageCollectionView() {
@@ -77,6 +104,16 @@ class ChatViewController: MessagesViewController, MessagesDataSource, ServiceDep
         }
     }
 
+    @objc
+    private func endCurrentChatPressed(_ sender: UITabBarItem) {
+        viewModel.endCurrentChatPressed()
+    }
+
+    @objc
+    private func showPastConversationsPressed(_ sender: UITabBarItem) {
+        viewModel.showPastConversationsPressed()
+    }
+
     // MARK: - Helpers
 
     func isLastSectionVisible() -> Bool {
@@ -108,7 +145,9 @@ class ChatViewController: MessagesViewController, MessagesDataSource, ServiceDep
     }
 
     func cellBottomLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
-        NSAttributedString(string: "Read", attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 10), NSAttributedString.Key.foregroundColor: UIColor.systemGray])
+        (message as? ChatMessage)?.read == true ?
+            NSAttributedString(string: "Read", attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 10), NSAttributedString.Key.foregroundColor: UIColor.systemGray]) :
+            NSAttributedString(string: "")
     }
 
     func messageTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
@@ -213,6 +252,7 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
     }
 }
 
+// MARK: - View model delegate
 extension ChatViewController: ChatViewModelUpdatable {
     func update() {
         guard viewModel.chatMessagesCount() > 0 else {
@@ -229,5 +269,14 @@ extension ChatViewController: ChatViewModelUpdatable {
                 self?.messagesCollectionView.scrollToBottom(animated: true)
             }
         })
+        showPastConversationsButton?.isEnabled = viewModel.showPastConversationsButtonEnabled
+    }
+
+    func goBack() {
+        performSegue(withIdentifier: "unwidnToHelpRequest", sender: self)
+    }
+
+    func showPastConversations() {
+        performSegue(withIdentifier: "\(PastConversationsViewController.self)", sender: self)
     }
 }
