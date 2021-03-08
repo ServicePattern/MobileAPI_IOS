@@ -7,7 +7,7 @@ import BPMobileMessaging
 import MessageKit
 
 protocol ChatViewModelUpdatable: class {
-    func update()
+    func update(messageInsertedCount: Int, _ completion: (() -> Void)?)
     func goBack()
     func showPastConversations()
 }
@@ -19,9 +19,15 @@ class ChatViewModel {
     private var systemParty = ChatUser(senderId: "", displayName: "")
     private var myParty = ChatUser(senderId: "", displayName: "Me")
     private var parties: [String: ChatUser] = [:]
+    private var messagesValue: [ChatMessage]
     private var messages: [ChatMessage] {
-        didSet {
-            delegate?.update()
+        get {
+            messagesValue
+        }
+        set {
+            let messageInsertedCount = newValue.count - messagesValue.count
+            messagesValue = newValue
+            update(messageInsertedCount: max(messageInsertedCount, 0))
         }
     }
     weak var delegate: ChatViewModelUpdatable?
@@ -40,9 +46,10 @@ class ChatViewModel {
     var pastConversationsEvents = [ContactCenterEvent]()
     var showPastConversationsButtonEnabled = false {
         didSet {
-            delegate?.update()
+            update()
         }
     }
+    private var batchUpdate = false
 
     init(service: ServiceDependencyProtocol, currentChatID: String) {
         self.service = service
@@ -50,7 +57,7 @@ class ChatViewModel {
         //  My party ID is the same as the chat ID
         self.myParty = ChatUser(senderId: currentChatID, displayName: "Me")
         self.parties[myParty.senderId] = myParty
-        self.messages = []
+        self.messagesValue = []
         
         NotificationCenter.default.addObserver(self, selector: #selector(receivedEvents), name: NotificationName.contactCenterEventsReceived.name, object: nil)
 
@@ -201,6 +208,11 @@ extension ChatViewModel {
     }
 
     private func processSessionEvents(events: [ContactCenterEvent]) {
+        beginUpdate()
+        let messagesCount = messagesValue.count
+        defer {
+            endUpdate(messageInsertedCount: max(messagesValue.count - messagesCount, 0))
+        }
         for e in events {
             guard let chatID = self.currentChatID else {
                 print("chatID is empty")
@@ -356,6 +368,25 @@ extension ChatViewModel {
             case .failure(let error):
                 print("endChat error: \(error)")
             }
+        }
+    }
+
+    private func update(messageInsertedCount: Int = 0) {
+        if !self.batchUpdate {
+            delegate?.update(messageInsertedCount: messageInsertedCount) {
+                print("UI updated")
+            }
+        }
+    }
+
+    private func beginUpdate() {
+        batchUpdate = true
+    }
+
+    private func endUpdate(messageInsertedCount: Int) {
+        if batchUpdate {
+            batchUpdate = false
+            update(messageInsertedCount: messageInsertedCount)
         }
     }
 }

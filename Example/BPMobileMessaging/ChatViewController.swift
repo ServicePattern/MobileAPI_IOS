@@ -64,7 +64,7 @@ class ChatViewController: MessagesViewController, MessagesDataSource, ServiceDep
                                                                style: .plain,
                                                                target: self,
                                                                action: #selector(showPastConversationsPressed))
-        let endCurrentChatButton = UIBarButtonItem.init(title: "Cancel",
+        let endCurrentChatButton = UIBarButtonItem.init(title: "End",
                                                         style: .done,
                                                         target: self,
                                                         action: #selector(endCurrentChatPressed))
@@ -254,22 +254,29 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
 
 // MARK: - View model delegate
 extension ChatViewController: ChatViewModelUpdatable {
-    func update() {
-        guard viewModel.chatMessagesCount() > 0 else {
+    func update(messageInsertedCount: Int, _ completion: (() -> Void)?) {
+        showPastConversationsButton?.isEnabled = viewModel.showPastConversationsButtonEnabled
+        // Reload last section to update header/footer labels and insert a new one
+        guard messageInsertedCount > 0 else {
+            completion?()
             return
         }
-        // Reload last section to update header/footer labels and insert a new one
         messagesCollectionView.performBatchUpdates({
-            messagesCollectionView.insertSections([viewModel.chatMessagesCount() - 1])
-            if viewModel.chatMessagesCount() >= 2 {
-                messagesCollectionView.reloadSections([viewModel.chatMessagesCount() - 2])
+            let messagesCount = viewModel.chatMessagesCount()
+            guard messagesCount > 0 else {
+                return
+            }
+            let sectionsToInsert = IndexSet(messagesCount - messageInsertedCount..<messagesCount)
+            messagesCollectionView.insertSections(sectionsToInsert)
+            if messagesCount - messageInsertedCount > 0 {
+                messagesCollectionView.reloadSections([messagesCount - messageInsertedCount - 1])
             }
         }, completion: { [weak self] _ in
             if self?.isLastSectionVisible() == true {
                 self?.messagesCollectionView.scrollToBottom(animated: true)
             }
+            completion?()
         })
-        showPastConversationsButton?.isEnabled = viewModel.showPastConversationsButtonEnabled
     }
 
     func goBack() {
