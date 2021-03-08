@@ -48,6 +48,7 @@ class HelpRequestViewController: ViewController, ServiceDependencyProviding {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleImageTap))
         backgroundImage.isUserInteractionEnabled = true
         backgroundImage.addGestureRecognizer(tapGesture)
+        textView.backgroundColor = .white
 //        textView.attributedPlaceholder = NSAttributedString(string: "Type your message here",
 //                                                            attributes: [NSAttributedStringKey.font: textView.font,
 //                                                                         NSAttributedStringKey.foregroundColor: UIColor.lightGray])
@@ -128,6 +129,9 @@ class HelpRequestViewController: ViewController, ServiceDependencyProviding {
         if let chatVC = segue.destination as? ChatViewController {
             chatVC.currentChatID = viewModel.currentChatID
         }
+    }
+
+    @IBAction func unwind(_ segue: UIStoryboardSegue) {
     }
 }
 

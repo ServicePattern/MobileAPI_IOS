@@ -19,6 +19,7 @@ internal struct ChatMessage: MessageType {
     var kind: MessageKind
 
     var user: ChatUser
+    var read: Bool = false
 
     private init(kind: MessageKind, user: ChatUser, messageId: String, date: Date) {
         self.kind = kind

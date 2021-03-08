@@ -7,7 +7,9 @@ import BPMobileMessaging
 import MessageKit
 
 protocol ChatViewModelUpdatable: class {
-    func update()
+    func update(messageInsertedCount: Int, _ completion: (() -> Void)?)
+    func goBack()
+    func showPastConversations()
 }
 
 class ChatViewModel {
@@ -17,9 +19,15 @@ class ChatViewModel {
     private var systemParty = ChatUser(senderId: "", displayName: "")
     private var myParty = ChatUser(senderId: "", displayName: "Me")
     private var parties: [String: ChatUser] = [:]
+    private var messagesValue: [ChatMessage]
     private var messages: [ChatMessage] {
-        didSet {
-            delegate?.update()
+        get {
+            messagesValue
+        }
+        set {
+            let messageInsertedCount = newValue.count - messagesValue.count
+            messagesValue = newValue
+            update(messageInsertedCount: max(messageInsertedCount, 0))
         }
     }
     weak var delegate: ChatViewModelUpdatable?
@@ -35,6 +43,13 @@ class ChatViewModel {
         }
         return IndexPath(item: 0, section: messages.count - 1)
     }
+    var pastConversationsEvents = [ContactCenterEvent]()
+    var showPastConversationsButtonEnabled = false {
+        didSet {
+            update()
+        }
+    }
+    private var batchUpdate = false
 
     init(service: ServiceDependencyProtocol, currentChatID: String) {
         self.service = service
@@ -42,7 +57,7 @@ class ChatViewModel {
         //  My party ID is the same as the chat ID
         self.myParty = ChatUser(senderId: currentChatID, displayName: "Me")
         self.parties[myParty.senderId] = myParty
-        self.messages = []
+        self.messagesValue = []
         
         NotificationCenter.default.addObserver(self, selector: #selector(receivedEvents), name: NotificationName.contactCenterEventsReceived.name, object: nil)
 
@@ -109,6 +124,52 @@ class ChatViewModel {
             }
         }
     }
+
+    func endCurrentChatPressed() {
+        guard let currentChatID = currentChatID else {
+            print("Failed to end chat. Current chat ID is empty")
+            delegate?.goBack()
+            return
+        }
+        service.contactCenterService.disconnectChat(chatID: currentChatID) { [weak self] result in
+            switch result {
+            case .success:
+                self?.service.contactCenterService.endChat(chatID: currentChatID) { [weak self] result in
+                    DispatchQueue.main.async {
+                        self?.delegate?.goBack()
+                    }
+                    switch result {
+                    case .success:
+                        print("Successfully ended chat with id: \(currentChatID)")
+                    case .failure:
+                        print("Failed to end chat with id: \(currentChatID)")
+                    }
+                }
+            case .failure:
+                print("Failed to end chat with id: \(currentChatID)")
+                DispatchQueue.main.async {
+                    self?.delegate?.goBack()
+                }
+            }
+        }
+    }
+
+    func showPastConversationsPressed() {
+        guard let currentChatID = currentChatID else {
+            print("Failed to get past conversations. ChatID is empty.")
+            return
+        }
+        service.contactCenterService.getChatHistory(chatID: currentChatID) { [weak self] result in
+            switch result {
+            case .success(let chatEvents):
+                DispatchQueue.main.async {
+                    self?.pastConversationsEvents = chatEvents
+                    self?.delegate?.showPastConversations()
+                }
+            case .failure: ()
+            }
+        }
+    }
 }
 
 extension ChatViewModel {
@@ -147,6 +208,11 @@ extension ChatViewModel {
     }
 
     private func processSessionEvents(events: [ContactCenterEvent]) {
+        beginUpdate()
+        let messagesCount = messagesValue.count
+        defer {
+            endUpdate(messageInsertedCount: max(messagesValue.count - messagesCount, 0))
+        }
         for e in events {
             guard let chatID = self.currentChatID else {
                 print("chatID is empty")
@@ -186,8 +252,8 @@ extension ChatViewModel {
                 } else {
                     print("Waiting in a queue: \(chatID) estimated wait time: \(estimatedWaitTime)")
                 }
-            case .chatSessionCaseSet(let caseID, let timestamp):
-                self.getCaseHistory(chatID: chatID)
+            case .chatSessionCaseSet:
+                showPastConversationsButtonEnabled = true
             case .chatSessionTimeoutWarning(let message, let timestamp):
                 messages.append(ChatMessage(text: message,
                                             user: self.systemParty,
@@ -204,6 +270,9 @@ extension ChatViewModel {
                                             messageId: "",
                                             date: Date()))
 //                self.closeCase(chatID: chatID)
+            case let .chatSessionMessageRead(messageID, _, _):
+                var message = messages.first(where: { $0.messageId == messageID })
+                message?.read = true
             default:()
             }
         }
@@ -299,6 +368,25 @@ extension ChatViewModel {
             case .failure(let error):
                 print("endChat error: \(error)")
             }
+        }
+    }
+
+    private func update(messageInsertedCount: Int = 0) {
+        if !self.batchUpdate {
+            delegate?.update(messageInsertedCount: messageInsertedCount) {
+                print("UI updated")
+            }
+        }
+    }
+
+    private func beginUpdate() {
+        batchUpdate = true
+    }
+
+    private func endUpdate(messageInsertedCount: Int) {
+        if batchUpdate {
+            batchUpdate = false
+            update(messageInsertedCount: messageInsertedCount)
         }
     }
 }

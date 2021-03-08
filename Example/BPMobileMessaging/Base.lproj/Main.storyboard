@@ -22,7 +22,7 @@
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="u7j-tX-Q0K">
                                 <rect key="frame" x="52" y="392" width="271" height="55"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="55" id="UQQ-n7-k9t"/>
                                 </constraints>
@@ -35,9 +35,11 @@
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Abn-8Y-zcD">
                                         <rect key="frame" x="138" y="0.0" width="67" height="34"/>
-                                        <state key="normal" title="Help me"/>
+                                        <state key="normal" title="Help me">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
                                         <state key="disabled">
-                                            <color key="titleColor" systemColor="systemGray3Color"/>
+                                            <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <color key="titleShadowColor" systemColor="systemBackgroundColor"/>
                                         </state>
                                         <connections>
@@ -46,7 +48,12 @@
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Oae-rE-sxe">
                                         <rect key="frame" x="95.5" y="55" width="152" height="34"/>
-                                        <state key="normal" title="Past conversations"/>
+                                        <state key="normal" title="Past conversations">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <state key="disabled">
+                                            <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
                                         <connections>
                                             <action selector="pastConversationsPressed:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="tBs-qx-GVj"/>
                                         </connections>
@@ -96,10 +103,34 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
                     <navigationItem key="navigationItem" id="HeN-ME-CF9"/>
+                    <connections>
+                        <segue destination="SEi-fy-3co" kind="unwind" identifier="unwidnToHelpRequest" unwindAction="unwind:" id="nCp-bs-hOB"/>
+                        <segue destination="1Td-pa-skt" kind="show" identifier="PastConversationsViewController" id="ifd-kP-v3L"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xu7-7x-XcY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <exit id="SEi-fy-3co" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="790" y="98"/>
+        </scene>
+        <!--Past Conversations View Controller-->
+        <scene sceneID="Xx5-oU-BsJ">
+            <objects>
+                <viewController id="1Td-pa-skt" customClass="PastConversationsViewController" customModule="BPMobileMessaging_Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="ad0-oP-kaY"/>
+                        <viewControllerLayoutGuide type="bottom" id="xt9-Yb-Ni3"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Tfh-zS-UxB">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="SZ5-8Z-quy"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fTK-gb-fPT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1866" y="98"/>
         </scene>
     </scenes>
     <resources>
@@ -109,9 +140,6 @@
         </systemColor>
         <systemColor name="systemBlueColor">
             <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-        <systemColor name="systemGray3Color">
-            <color red="0.7803921568627451" green="0.7803921568627451" blue="0.80000000000000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

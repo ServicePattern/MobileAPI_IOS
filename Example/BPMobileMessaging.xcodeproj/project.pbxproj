@@ -29,6 +29,8 @@
 		F1A15BAE25ED22E700191AAB /* LinkLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A15BAD25ED22E700191AAB /* LinkLabel.swift */; };
 		F1A15C1E25ED85A700191AAB /* LinkDetectorTextStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A15C1D25ED85A700191AAB /* LinkDetectorTextStorage.swift */; };
 		F1A15C3325EE2AA000191AAB /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A15C3225EE2AA000191AAB /* ChatMessage.swift */; };
+		F1CADB9A25F55BE100CA074E /* PastConversationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1CADB9925F55BE100CA074E /* PastConversationsViewController.swift */; };
+		F1CADBA125F55C3F00CA074E /* PastConversationsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1CADBA025F55C3F00CA074E /* PastConversationsViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +77,8 @@
 		F1A15BAD25ED22E700191AAB /* LinkLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkLabel.swift; sourceTree = "<group>"; };
 		F1A15C1D25ED85A700191AAB /* LinkDetectorTextStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkDetectorTextStorage.swift; sourceTree = "<group>"; };
 		F1A15C3225EE2AA000191AAB /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
+		F1CADB9925F55BE100CA074E /* PastConversationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastConversationsViewController.swift; sourceTree = "<group>"; };
+		F1CADBA025F55C3F00CA074E /* PastConversationsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastConversationsViewModel.swift; sourceTree = "<group>"; };
 		F681B50D64B48541F780AC7E /* Pods-BPMobileMessaging_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BPMobileMessaging_Example.debug.xcconfig"; path = "Target Support Files/Pods-BPMobileMessaging_Example/Pods-BPMobileMessaging_Example.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -155,6 +159,7 @@
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
+				F1CADB9F25F55C2900CA074E /* PastConversations */,
 			);
 			name = "Example for BPMobileMessaging";
 			path = BPMobileMessaging;
@@ -225,6 +230,15 @@
 				F1A15C3225EE2AA000191AAB /* ChatMessage.swift */,
 			);
 			name = ChatView;
+			sourceTree = "<group>";
+		};
+		F1CADB9F25F55C2900CA074E /* PastConversations */ = {
+			isa = PBXGroup;
+			children = (
+				F1CADB9925F55BE100CA074E /* PastConversationsViewController.swift */,
+				F1CADBA025F55C3F00CA074E /* PastConversationsViewModel.swift */,
+			);
+			name = PastConversations;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -428,6 +442,7 @@
 			files = (
 				F101270025E8301B00AC0B5D /* UIViewController+Extension.swift in Sources */,
 				F101272725E863ED00AC0B5D /* NotificationNamesKeys.swift in Sources */,
+				F1CADB9A25F55BE100CA074E /* PastConversationsViewController.swift in Sources */,
 				F10126F925E82F3600AC0B5D /* ViewController+ServiceDependency.swift in Sources */,
 				F1A15C3325EE2AA000191AAB /* ChatMessage.swift in Sources */,
 				607FACD81AFB9204008FA782 /* HelpRequestViewController.swift in Sources */,
@@ -435,6 +450,7 @@
 				F101271325E83A5900AC0B5D /* ContactCenterService.swift in Sources */,
 				F101270425E8305600AC0B5D /* DefaultStringInterpolation+Extension.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
+				F1CADBA125F55C3F00CA074E /* PastConversationsViewModel.swift in Sources */,
 				F101270F25E8313300AC0B5D /* HelpRequestViewModel.swift in Sources */,
 				F1A15A2B25E9B3A100191AAB /* ChatViewController.swift in Sources */,
 				F1A15BAE25ED22E700191AAB /* LinkLabel.swift in Sources */,

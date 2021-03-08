@@ -6,7 +6,7 @@ import MessageKit
 import InputBarAccessoryView
 
 extension UIColor {
-    static let primaryColor = UIColor(red: 69/255, green: 193/255, blue: 89/255, alpha: 1)
+    static let primaryColor = UIColor.systemBlue
 }
 
 /// A base class for the example controllers
@@ -29,6 +29,7 @@ class ChatViewController: MessagesViewController, MessagesDataSource, ServiceDep
         formatter.dateStyle = .medium
         return formatter
     }()
+    private var showPastConversationsButton: UIBarButtonItem?
 
     // MARK: - Lifecycle
 
@@ -37,12 +38,38 @@ class ChatViewController: MessagesViewController, MessagesDataSource, ServiceDep
 
         configureMessageCollectionView()
         configureMessageInputBar()
+        configureNavigationBar()
 
         viewModel.delegate = self
     }
 
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
+
+        if let vc = segue.destination as? PastConversationsViewController {
+            vc.pastConversationsEvents = viewModel.pastConversationsEvents
+        }
+    }
+
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
+    }
+
+    private func configureNavigationBar() {
+        navigationController?.isNavigationBarHidden = false
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.isTranslucent = true
+        let showPastConversationsButton = UIBarButtonItem.init(title: "Past Conversations",
+                                                               style: .plain,
+                                                               target: self,
+                                                               action: #selector(showPastConversationsPressed))
+        let endCurrentChatButton = UIBarButtonItem.init(title: "End",
+                                                        style: .done,
+                                                        target: self,
+                                                        action: #selector(endCurrentChatPressed))
+        navigationItem.rightBarButtonItems = [endCurrentChatButton, showPastConversationsButton]
+        self.showPastConversationsButton = showPastConversationsButton
     }
 
     func configureMessageCollectionView() {
@@ -52,16 +79,39 @@ class ChatViewController: MessagesViewController, MessagesDataSource, ServiceDep
         messagesCollectionView.messagesDisplayDelegate = self
         scrollsToBottomOnKeyboardBeginsEditing = true
         maintainPositionOnKeyboardFrameChanged = true
+
+        guard let flowLayout = messagesCollectionView.collectionViewLayout as? MessagesCollectionViewFlowLayout else {
+            print("Failed to get flowLayout")
+            return
+        }
+        if #available(iOS 13.0, *) {
+            flowLayout.collectionView?.backgroundColor = .systemBackground
+        }
     }
 
     func configureMessageInputBar() {
         messageInputBar.delegate = self
-        messageInputBar.inputTextView.tintColor = .primaryColor
         messageInputBar.sendButton.setTitleColor(.primaryColor, for: .normal)
         messageInputBar.sendButton.setTitleColor(
             UIColor.primaryColor.withAlphaComponent(0.3),
             for: .highlighted
         )
+        // Prepare for a dark mode
+        if #available(iOS 13.0, *) {
+            messageInputBar.inputTextView.textColor = .label
+            messageInputBar.inputTextView.placeholderLabel.textColor = .secondaryLabel
+            messageInputBar.backgroundView.backgroundColor = .systemBackground
+        }
+    }
+
+    @objc
+    private func endCurrentChatPressed(_ sender: UITabBarItem) {
+        viewModel.endCurrentChatPressed()
+    }
+
+    @objc
+    private func showPastConversationsPressed(_ sender: UITabBarItem) {
+        viewModel.showPastConversationsPressed()
     }
 
     // MARK: - Helpers
@@ -89,13 +139,15 @@ class ChatViewController: MessagesViewController, MessagesDataSource, ServiceDep
 
     func cellTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
         if indexPath.section % 3 == 0 {
-            return NSAttributedString(string: MessageKitDateFormatter.shared.string(from: message.sentDate), attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 10), NSAttributedString.Key.foregroundColor: UIColor.darkGray])
+            return NSAttributedString(string: MessageKitDateFormatter.shared.string(from: message.sentDate), attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 10), NSAttributedString.Key.foregroundColor: UIColor.systemGray])
         }
         return nil
     }
 
     func cellBottomLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
-        NSAttributedString(string: "Read", attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 10), NSAttributedString.Key.foregroundColor: UIColor.darkGray])
+        (message as? ChatMessage)?.read == true ?
+            NSAttributedString(string: "Read", attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 10), NSAttributedString.Key.foregroundColor: UIColor.systemGray]) :
+            NSAttributedString(string: "")
     }
 
     func messageTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
@@ -116,7 +168,7 @@ extension ChatViewController: MessagesDisplayDelegate {
     // MARK: - Text Messages
 
     func textColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
-        return isFromCurrentSender(message: message) ? .white : .darkText
+        return isFromCurrentSender(message: message) ? UIColor.white : .darkText
     }
 
     func detectorAttributes(for detector: DetectorType, and message: MessageType, at indexPath: IndexPath) -> [NSAttributedString.Key: Any] {
@@ -133,7 +185,7 @@ extension ChatViewController: MessagesDisplayDelegate {
     // MARK: - All Messages
 
     func backgroundColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
-        return isFromCurrentSender(message: message) ? .primaryColor : UIColor(red: 230/255, green: 230/255, blue: 230/255, alpha: 1)
+        return isFromCurrentSender(message: message) ? .primaryColor : UIColor.gray
     }
 
     func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
@@ -200,21 +252,38 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
     }
 }
 
+// MARK: - View model delegate
 extension ChatViewController: ChatViewModelUpdatable {
-    func update() {
-        guard viewModel.chatMessagesCount() > 0 else {
+    func update(messageInsertedCount: Int, _ completion: (() -> Void)?) {
+        showPastConversationsButton?.isEnabled = viewModel.showPastConversationsButtonEnabled
+        // Reload last section to update header/footer labels and insert a new one
+        guard messageInsertedCount > 0 else {
+            completion?()
             return
         }
-        // Reload last section to update header/footer labels and insert a new one
         messagesCollectionView.performBatchUpdates({
-            messagesCollectionView.insertSections([viewModel.chatMessagesCount() - 1])
-            if viewModel.chatMessagesCount() >= 2 {
-                messagesCollectionView.reloadSections([viewModel.chatMessagesCount() - 2])
+            let messagesCount = viewModel.chatMessagesCount()
+            guard messagesCount > 0 else {
+                return
+            }
+            let sectionsToInsert = IndexSet(messagesCount - messageInsertedCount..<messagesCount)
+            messagesCollectionView.insertSections(sectionsToInsert)
+            if messagesCount - messageInsertedCount > 0 {
+                messagesCollectionView.reloadSections([messagesCount - messageInsertedCount - 1])
             }
         }, completion: { [weak self] _ in
             if self?.isLastSectionVisible() == true {
                 self?.messagesCollectionView.scrollToBottom(animated: true)
             }
+            completion?()
         })
+    }
+
+    func goBack() {
+        performSegue(withIdentifier: "unwidnToHelpRequest", sender: self)
+    }
+
+    func showPastConversations() {
+        performSegue(withIdentifier: "\(PastConversationsViewController.self)", sender: self)
     }
 }
