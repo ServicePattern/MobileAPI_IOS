@@ -152,14 +152,14 @@
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				F10126F825E82F3600AC0B5D /* ViewController+ServiceDependency.swift */,
 				F101271225E83A5900AC0B5D /* ContactCenterService.swift */,
-				F1A15A3225E9B3DB00191AAB /* ChatView */,
 				F101270B25E830DC00AC0B5D /* HelpRequest */,
+				F1A15A3225E9B3DB00191AAB /* ChatView */,
+				F1CADB9F25F55C2900CA074E /* PastConversations */,
 				F101270725E8308900AC0B5D /* ExampleAppError.swift */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
-				F1CADB9F25F55C2900CA074E /* PastConversations */,
 			);
 			name = "Example for BPMobileMessaging";
 			path = BPMobileMessaging;
