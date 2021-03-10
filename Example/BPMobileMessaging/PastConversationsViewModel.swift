@@ -37,56 +37,64 @@ class PastConversationsViewModel {
         return IndexPath(item: 0, section: messages.count - 1)
     }
 
-    init(events: [ContactCenterEvent]) {
+    init(sessions: [ContactCenterChatSession]) {
         var messages = [ChatMessage]()
-        events.forEach { event in
-            switch event {
-            case .chatSessionPartyJoined(let partyID, let firstName, let lastName, let displayName, _, let timestamp):
-                let chatUser = ChatUser(senderId: partyID, displayName: displayName ?? ((firstName ?? "") + " " + (lastName ?? "")))
-                self.parties[partyID] = chatUser
-                messages.append(ChatMessage(text: "Joined the session",
-                                            user: chatUser,
+        sessions.forEach { session in
+            if session.events.count > 0 {
+                messages.append(ChatMessage(text: "Session started",
+                                            user: self.systemParty,
                                             messageId: "",
-                                            date: timestamp))
-            case .chatSessionPartyLeft(let partyID, let timestamp):
-                guard let user = parties[partyID] else {
-                    print("partyID is empty")
-                    return
+                                            date: session.createdTime))
+            }
+            session.events.forEach { event in
+                switch event {
+                case .chatSessionPartyJoined(let partyID, let firstName, let lastName, let displayName, _, let timestamp):
+                    let chatUser = ChatUser(senderId: partyID, displayName: displayName ?? ((firstName ?? "") + " " + (lastName ?? "")))
+                    self.parties[partyID] = chatUser
+                    messages.append(ChatMessage(text: "Joined the session",
+                                                user: chatUser,
+                                                messageId: "",
+                                                date: timestamp))
+                case .chatSessionPartyLeft(let partyID, let timestamp):
+                    guard let user = parties[partyID] else {
+                        print("partyID is empty")
+                        return
+                    }
+                    messages.append(ChatMessage(text: "Left the session",
+                                                user: user,
+                                                messageId: "",
+                                                date: timestamp))
+                case .chatSessionMessage(let messageID, let partyID, let message, let timestamp):
+                    guard let partyID = partyID, let user = parties[partyID], let timestamp = timestamp, let messageID = messageID else {
+                        print("partyID or timestamp empty")
+                        return
+                    }
+                    messages.append(ChatMessage(text: message,
+                                                user: user,
+                                                messageId: messageID,
+                                                date: timestamp))
+                case .chatSessionStatus:()
+                case .chatSessionCaseSet: ()
+                case .chatSessionTimeoutWarning(let message, let timestamp):
+                    messages.append(ChatMessage(text: message,
+                                                user: self.systemParty,
+                                                messageId: "",
+                                                date: timestamp))
+                case .chatSessionInactivityTimeout(let message, let timestamp):
+                    messages.append(ChatMessage(text: message,
+                                                user: self.systemParty,
+                                                messageId: "",
+                                                date: timestamp))
+                case .chatSessionEnded:
+                    messages.append(ChatMessage(text: "The session has ended",
+                                                user: self.systemParty,
+                                                messageId: "",
+                                                date: Date()))
+                case let .chatSessionMessageRead(messageID, _, _):
+                    var message = messages.first(where: { $0.messageId == messageID })
+                    message?.read = true
+                default:()
                 }
-                messages.append(ChatMessage(text: "Left the session",
-                                            user: user,
-                                            messageId: "",
-                                            date: timestamp))
-            case .chatSessionMessage(let messageID, let partyID, let message, let timestamp):
-                guard let partyID = partyID, let user = parties[partyID], let timestamp = timestamp, let messageID = messageID else {
-                    print("partyID or timestamp empty")
-                    return
-                }
-                messages.append(ChatMessage(text: message,
-                                            user: user,
-                                            messageId: messageID,
-                                            date: timestamp))
-            case .chatSessionStatus:()
-            case .chatSessionCaseSet: ()
-            case .chatSessionTimeoutWarning(let message, let timestamp):
-                messages.append(ChatMessage(text: message,
-                                            user: self.systemParty,
-                                            messageId: "",
-                                            date: timestamp))
-            case .chatSessionInactivityTimeout(let message, let timestamp):
-                messages.append(ChatMessage(text: message,
-                                            user: self.systemParty,
-                                            messageId: "",
-                                            date: timestamp))
-            case .chatSessionEnded:
-                messages.append(ChatMessage(text: "The session has ended",
-                                            user: self.systemParty,
-                                            messageId: "",
-                                            date: Date()))
-            case let .chatSessionMessageRead(messageID, _, _):
-                var message = messages.first(where: { $0.messageId == messageID })
-                message?.read = true
-            default:()
             }
         }
         self.messages = messages

@@ -45,7 +45,7 @@ class ChatViewController: MessagesViewController, MessagesDataSource, ServiceDep
         super.prepare(for: segue, sender: sender)
 
         if let vc = segue.destination as? PastConversationsViewController {
-            vc.pastConversationsEvents = viewModel.pastConversationsEvents
+            vc.chatSessions = viewModel.chatSessions
         }
     }
 

@@ -8,9 +8,9 @@ import BPMobileMessaging
 class PastConversationsViewController: MessagesViewController, ServiceDependencyProviding {
 
     var service: ServiceDependencyProtocol?
-    var pastConversationsEvents = [ContactCenterEvent]()
+    var chatSessions = [ContactCenterChatSession]()
     lazy var viewModel: PastConversationsViewModel = {
-        PastConversationsViewModel(events: pastConversationsEvents)
+        PastConversationsViewModel(sessions: chatSessions)
     }()
 
     override var inputAccessoryView: UIView? {
