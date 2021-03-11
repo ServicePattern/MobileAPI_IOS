@@ -56,23 +56,22 @@ class PastConversationsViewModel {
                                                 messageId: "",
                                                 date: timestamp))
                 case .chatSessionPartyLeft(let partyID, let timestamp):
-                    guard let user = parties[partyID] else {
-                        print("partyID is empty")
-                        return
-                    }
+                    let user = getParty(partyID: partyID)
                     messages.append(ChatMessage(text: "Left the session",
                                                 user: user,
                                                 messageId: "",
                                                 date: timestamp))
                 case .chatSessionMessage(let messageID, let partyID, let message, let timestamp):
-                    guard let partyID = partyID, let user = parties[partyID], let timestamp = timestamp, let messageID = messageID else {
-                        print("partyID or timestamp empty")
+                    guard let partyID = partyID,
+                          let messageID = messageID else {
+                        print("partyID, timestamp or messageID empty")
                         return
                     }
+                    let user = getParty(partyID: partyID)
                     messages.append(ChatMessage(text: message,
                                                 user: user,
                                                 messageId: messageID,
-                                                date: timestamp))
+                                                date: timestamp ?? Date()))
                 case .chatSessionStatus:()
                 case .chatSessionCaseSet: ()
                 case .chatSessionTimeoutWarning(let message, let timestamp):
@@ -106,5 +105,9 @@ class PastConversationsViewModel {
 
     func chatMessage(at index: Int) -> ChatMessage {
         messages[index]
+    }
+
+    func getParty(partyID: String) -> ChatUser {
+       parties[partyID] ?? systemParty
     }
 }

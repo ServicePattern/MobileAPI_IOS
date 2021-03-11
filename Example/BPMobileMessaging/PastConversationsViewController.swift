@@ -57,7 +57,7 @@ extension PastConversationsViewController: MessagesDataSource {
     }
 
     func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {
-        viewModel.chatMessage(at: indexPath.row)
+        viewModel.chatMessage(at: indexPath.section)
     }
 
     func numberOfSections(in messagesCollectionView: MessagesCollectionView) -> Int {
