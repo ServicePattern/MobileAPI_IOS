@@ -66,7 +66,7 @@ class HelpRequestViewController: ViewController, ServiceDependencyProviding {
     }
 
     @IBAction func helpMePressed(_ sender: UIButton) {
-        viewModel.helpMePressed()
+        viewModel.helpMePressed(problemDescription: textView.text)
     }
     @IBAction func pastConversationsPressed(_ sender: UIButton) {
         viewModel.pastConversationsPressed()
