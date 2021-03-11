@@ -93,27 +93,29 @@ class ChatViewModel {
         guard let chatID = currentChatID else {
             return
         }
-        var messages = [ChatMessage]()
+        var messageTexts = [String]()
         data.forEach { component in
-            if let str = component as? String {
-                messages.append(ChatMessage(text: str, user: myParty, messageId: UUID().uuidString, date: Date()))
+            if let text = component as? String {
+                messageTexts.append(text)
             }
         }
 
         let dipatchGroup = DispatchGroup()
-        DispatchQueue.global(qos: .default).async { [weak self] in
-            for message in messages {
-                guard case .text(let messageText) = message.kind else {
-                    continue
-                }
+        DispatchQueue.global(qos: .default).async { [myParty, weak self] in
+            var messages = [ChatMessage]()
+            for text in messageTexts {
                 dipatchGroup.enter()
                 self?.service.contactCenterService.sendChatMessage(chatID: chatID,
-                                                             message: messageText) { result in
-                    dipatchGroup.leave()
+                                                             message: text) { result in
                     switch result {
-                    case .success:()
+                    case .success(let messageID):
+                        messages.append(ChatMessage(text: text,
+                                                    user: myParty,
+                                                    messageId: messageID,
+                                                    date: Date()))
                     case .failure:()
                     }
+                    dipatchGroup.leave()
                 }
             }
             dipatchGroup.wait()
