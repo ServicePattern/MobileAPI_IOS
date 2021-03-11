@@ -17,7 +17,7 @@ struct ChatSessionMessageReadDto: Codable {
 
     enum CodingKeys: String, CodingKey {
         case event
-        case messageID = "msg_id"
+        case messageID = "ref_msg_id"
         case partyID = "party_id"
         case timestamp
     }
