@@ -34,7 +34,7 @@ public enum ContactCenterEvent {
     /// Updates the current state of the chat session. If the state is failed, the client application shall assume that the chat session no longer exists.
     /// Direction: S->C
     case chatSessionStatus(state: ContactCenterChatSessionState, estimatedWaitTime: Int)
-    /// Informs that a CRM case has been set or cleared for the chat session. Once case is set, application may use chatGetCaseHistory and chatCloseCase() methods.
+    /// Informs that a CRM case has been set or cleared for the chat session. Once case is set, application may use [getCaseHistory](x-source-tag://getCaseHistory) and [closeCase](x-source-tag://closeCase) methods.
     /// Direction: S->C
     case chatSessionCaseSet(caseID: String?, timestamp: Date)
     /// Indicates that a new party (a new agent) has joined the chat session.

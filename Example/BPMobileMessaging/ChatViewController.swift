@@ -17,9 +17,7 @@ class ChatViewController: MessagesViewController, MessagesDataSource, ServiceDep
         guard let service = service, let currentChatID = currentChatID else {
             fatalError("ChatViewModel parameters empty")
         }
-        let model = ChatViewModel(service: service, currentChatID: currentChatID)
-        model.delegate = self
-        return model
+        return ChatViewModel(service: service, currentChatID: currentChatID)
     }()
 
     // MARK: - Private properties
@@ -27,6 +25,7 @@ class ChatViewController: MessagesViewController, MessagesDataSource, ServiceDep
     private let formatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
+        formatter.timeStyle = .medium
         return formatter
     }()
     private var showPastConversationsButton: UIBarButtonItem?
@@ -47,7 +46,7 @@ class ChatViewController: MessagesViewController, MessagesDataSource, ServiceDep
         super.prepare(for: segue, sender: sender)
 
         if let vc = segue.destination as? PastConversationsViewController {
-            vc.pastConversationsEvents = viewModel.pastConversationsEvents
+            vc.chatSessions = viewModel.chatSessions
         }
     }
 
@@ -116,7 +115,7 @@ class ChatViewController: MessagesViewController, MessagesDataSource, ServiceDep
 
     // MARK: - Helpers
 
-    func isLastSectionVisible() -> Bool {
+    func lastSectionVisible() -> Bool {
         guard let lastIndexPath = viewModel.lastMessageIndexPath else {
             return false
         }
@@ -272,7 +271,7 @@ extension ChatViewController: ChatViewModelUpdatable {
                 messagesCollectionView.reloadSections([messagesCount - messageInsertedCount - 1])
             }
         }, completion: { [weak self] _ in
-            if self?.isLastSectionVisible() == true {
+            if self?.lastSectionVisible() == true {
                 self?.messagesCollectionView.scrollToBottom(animated: true)
             }
             completion?()

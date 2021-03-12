@@ -21,7 +21,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="u7j-tX-Q0K">
-                                <rect key="frame" x="52" y="392" width="271" height="55"/>
+                                <rect key="frame" x="52" y="447" width="271" height="55"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="55" id="UQQ-n7-k9t"/>
@@ -31,7 +31,7 @@
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="21" translatesAutoresizingMaskIntoConstraints="NO" id="qnB-sF-GTT">
-                                <rect key="frame" x="16" y="473" width="343" height="89"/>
+                                <rect key="frame" x="16" y="528" width="343" height="34"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Abn-8Y-zcD">
                                         <rect key="frame" x="138" y="0.0" width="67" height="34"/>
@@ -46,22 +46,10 @@
                                             <action selector="helpMePressed:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="myk-P6-11n"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Oae-rE-sxe">
-                                        <rect key="frame" x="95.5" y="55" width="152" height="34"/>
-                                        <state key="normal" title="Past conversations">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </state>
-                                        <state key="disabled">
-                                            <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="pastConversationsPressed:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="tBs-qx-GVj"/>
-                                        </connections>
-                                    </button>
                                 </subviews>
                             </stackView>
                             <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SAa-V9-qoz">
-                                <rect key="frame" x="331" y="408.5" width="24" height="22"/>
+                                <rect key="frame" x="331" y="463.5" width="24" height="22"/>
                                 <state key="normal" image="camera"/>
                             </button>
                         </subviews>

@@ -117,8 +117,6 @@ class PollRequestService: PollRequestServiceable {
                             default:()
                             }
                         }
-                        // Check and start new getNewChatEvents request if needed
-                        self.startPollingIfNeeded()
                     case .failure(let error):
                         if let contactCenterError = error as? ContactCenterError,
                            case .chatSessionNotFound = contactCenterError {
@@ -127,6 +125,8 @@ class PollRequestService: PollRequestServiceable {
                             self.chatIDs.remove(chatID)
                         }
                     }
+                    // Check and start new getNewChatEvents request if needed
+                    self.startPollingIfNeeded()
                     pollRequestsGroup.leave()
                 }
             })

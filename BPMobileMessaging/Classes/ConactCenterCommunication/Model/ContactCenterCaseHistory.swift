@@ -11,11 +11,11 @@ import Foundation
 /// - Tag: ContactCenterChatSession
 public struct ContactCenterChatSession {
     /// ID of the chat session.
-    let chatID: String
+    public let chatID: String
     /// Timestamp of the chat session creation.
-    let createdTime: Date
+    public let createdTime: Date
     /// Array of the events [ContactCenterEvent](x-source-tag://ContactCenterEvent) within the chat session.
-    let events: [ContactCenterEvent]
+    public let events: [ContactCenterEvent]
 }
 
 extension ContactCenterChatSession {

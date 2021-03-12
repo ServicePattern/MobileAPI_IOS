@@ -43,7 +43,7 @@ class ChatViewModel {
         }
         return IndexPath(item: 0, section: messages.count - 1)
     }
-    var pastConversationsEvents = [ContactCenterEvent]()
+    var chatSessions = [ContactCenterChatSession]()
     var showPastConversationsButtonEnabled = false {
         didSet {
             update()
@@ -78,7 +78,7 @@ class ChatViewModel {
     }
     
     func getParty(partyID: String) -> ChatUser {
-       parties[partyID] ?? ChatUser(senderId: "", displayName: "")
+       parties[partyID] ?? systemParty
     }
 
     func chatMessagesCount() -> Int {
@@ -93,27 +93,29 @@ class ChatViewModel {
         guard let chatID = currentChatID else {
             return
         }
-        var messages = [ChatMessage]()
+        var messageTexts = [String]()
         data.forEach { component in
-            if let str = component as? String {
-                messages.append(ChatMessage(text: str, user: myParty, messageId: UUID().uuidString, date: Date()))
+            if let text = component as? String {
+                messageTexts.append(text)
             }
         }
 
         let dipatchGroup = DispatchGroup()
-        DispatchQueue.global(qos: .default).async { [weak self] in
-            for message in messages {
-                guard case .text(let messageText) = message.kind else {
-                    continue
-                }
+        DispatchQueue.global(qos: .default).async { [myParty, weak self] in
+            var messages = [ChatMessage]()
+            for text in messageTexts {
                 dipatchGroup.enter()
                 self?.service.contactCenterService.sendChatMessage(chatID: chatID,
-                                                             message: messageText) { result in
-                    dipatchGroup.leave()
+                                                             message: text) { result in
                     switch result {
-                    case .success:()
+                    case .success(let messageID):
+                        messages.append(ChatMessage(text: text,
+                                                    user: myParty,
+                                                    messageId: messageID,
+                                                    date: Date()))
                     case .failure:()
                     }
+                    dipatchGroup.leave()
                 }
             }
             dipatchGroup.wait()
@@ -156,14 +158,14 @@ class ChatViewModel {
 
     func showPastConversationsPressed() {
         guard let currentChatID = currentChatID else {
-            print("Failed to get past conversations. ChatID is empty.")
+            print("Failed getCaseHistory. currentChatID is empty.")
             return
         }
-        service.contactCenterService.getChatHistory(chatID: currentChatID) { [weak self] result in
+        service.contactCenterService.getCaseHistory(chatID: currentChatID) { [weak self] result in
             switch result {
             case .success(let chatEvents):
                 DispatchQueue.main.async {
-                    self?.pastConversationsEvents = chatEvents
+                    self?.chatSessions = chatEvents
                     self?.delegate?.showPastConversations()
                 }
             case .failure: ()
@@ -252,8 +254,10 @@ extension ChatViewModel {
                 } else {
                     print("Waiting in a queue: \(chatID) estimated wait time: \(estimatedWaitTime)")
                 }
-            case .chatSessionCaseSet:
-                showPastConversationsButtonEnabled = true
+            case .chatSessionCaseSet(let caseID, _):
+                if caseID != nil {
+                    showPastConversationsButtonEnabled = true
+                }
             case .chatSessionTimeoutWarning(let message, let timestamp):
                 messages.append(ChatMessage(text: message,
                                             user: self.systemParty,

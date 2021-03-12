@@ -35,8 +35,8 @@ class HelpRequestViewModel {
     deinit {
     }
 
-    func helpMePressed() {
-        requestChat()
+    func helpMePressed(problemDescription: String) {
+        requestChat(problemDescription: problemDescription)
     }
 
     func pastConversationsPressed() {
@@ -64,9 +64,13 @@ extension HelpRequestViewModel {
             }
         }
     }
-    private func requestChat() {
+    private func requestChat(problemDescription: String) {
         isRequestInProgress = true
-        service.contactCenterService.requestChat(phoneNumber: "12345", from: "54321", parameters: ["email":"mobilecustomer@example.com"]) { [weak self] chatPropertiesResult in
+        service.contactCenterService.requestChat(phoneNumber: "12345",
+                                                 from: "54321",
+                                                 parameters:
+                                                    ["email": "mobilecustomer@example.com",
+                                                     "problem_description": problemDescription]) { [weak self] chatPropertiesResult in
             DispatchQueue.main.async {
                 self?.isRequestInProgress = false
                 switch chatPropertiesResult {
