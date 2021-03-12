@@ -121,30 +121,33 @@ extension PastConversationsViewController: MessagesDisplayDelegate {
 
     // MARK: - Text Messages
 
-    func textColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
-        return isFromCurrentSender(message: message) ? UIColor.white : .darkText
+    func textColor(for messageType: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
+        viewModel.textColor(for: messageType, isFromCurrentSender: isFromCurrentSender(message: messageType))
     }
 
     func detectorAttributes(for detector: DetectorType, and message: MessageType, at indexPath: IndexPath) -> [NSAttributedString.Key: Any] {
         switch detector {
-        case .hashtag, .mention: return [.foregroundColor: UIColor.blue]
-        default: return MessageLabel.defaultAttributes
+        case .hashtag, .mention:
+            return [.foregroundColor: UIColor.blue]
+        default:
+            return MessageLabel.defaultAttributes
         }
     }
 
-    func enabledDetectors(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> [DetectorType] {
-        return [.url, .address, .phoneNumber, .date, .transitInformation, .mention, .hashtag]
+    func enabledDetectors(for messageType: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> [DetectorType] {
+        [.url, .address, .phoneNumber, .date, .transitInformation, .mention, .hashtag]
     }
 
     // MARK: - All Messages
 
-    func backgroundColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
-        return isFromCurrentSender(message: message) ? .primaryColor : UIColor.gray
+    func backgroundColor(for messageType: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
+        viewModel.backgroundColor(for: messageType,
+                                  isFromCurrentSender: isFromCurrentSender(message: messageType))
     }
 
-    func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
+    func messageStyle(for messageType: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
 
-        let tail: MessageStyle.TailCorner = isFromCurrentSender(message: message) ? .bottomRight : .bottomLeft
+        let tail: MessageStyle.TailCorner = isFromCurrentSender(message: messageType) ? .bottomRight : .bottomLeft
         return .bubbleTail(tail, .curved)
     }
 }

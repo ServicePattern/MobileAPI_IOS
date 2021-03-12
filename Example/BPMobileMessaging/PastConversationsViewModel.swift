@@ -111,4 +111,18 @@ class PastConversationsViewModel {
     func getParty(partyID: String) -> ChatUser {
        parties[partyID] ?? systemParty
     }
+
+    func backgroundColor(for messageType: MessageType, isFromCurrentSender: Bool) -> UIColor {
+        guard messageType.sender.senderId != systemParty.senderId else {
+            return UIColor.darkGray
+        }
+        return isFromCurrentSender ? .primaryColor : UIColor.gray
+    }
+
+    func textColor(for messageType: MessageType, isFromCurrentSender: Bool) -> UIColor {
+        guard messageType.sender.senderId != systemParty.senderId else {
+            return UIColor.white
+        }
+        return isFromCurrentSender ? UIColor.white : .darkText
+    }
 }
