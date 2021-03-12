@@ -24,7 +24,7 @@ pod 'BPMobileMessaging'
 ```swift
 import BPMobileMessaging
 ```
-3. Generate the unique `clientID` for your application. The `clientID` should be generated when application runs for the first time on the  mobile device and saved in the local storage. The application should use same value until it is deleted from the device. The `clientID` should be unique for the application / device combination.
+3. Generate the unique `clientID` string value. The `clientID` should be generated when application runs for the first time on the mobile device and saved in the local storage. The application should use same value until it is deleted from the device. The `clientID` should be unique for the application / device combination.
 ```swift
 var clientID = UUID().uuidString
 ```
