@@ -25,6 +25,7 @@ class ChatViewController: MessagesViewController, MessagesDataSource, ServiceDep
     private let formatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
+        formatter.timeStyle = .medium
         return formatter
     }()
     private var showPastConversationsButton: UIBarButtonItem?

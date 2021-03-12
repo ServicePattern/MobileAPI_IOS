@@ -12,10 +12,10 @@ protocol PastConversationsViewModelUpdatable: class {
 class PastConversationsViewModel {
     weak var delegate: PastConversationsViewModelUpdatable?
     private var systemParty = ChatUser(senderId: "", displayName: "")
-    private var myParty = ChatUser(senderId: "", displayName: "Me")
+    private var myParty = ChatUser(senderId: "me", displayName: "Me")
     private var parties: [String: ChatUser] = [:]
     var currentSender: SenderType {
-        myParty
+          myParty
     }
     private var messagesValue = [ChatMessage]()
     private var messages: [ChatMessage] {
@@ -62,12 +62,13 @@ class PastConversationsViewModel {
                                                 messageId: "",
                                                 date: timestamp))
                 case .chatSessionMessage(let messageID, let partyID, let message, let timestamp):
-                    guard let partyID = partyID,
-                          let messageID = messageID else {
-                        print("partyID, timestamp or messageID empty")
+                    guard let partyID = partyID else {
+                        print("partyID empty")
                         return
                     }
-                    let user = getParty(partyID: partyID)
+                    let user = partyID == session.chatID ? self.myParty : getParty(partyID: partyID)
+                    let messageID = messageID ?? ""
+                    print("Rendering message \(message) from user \(user.displayName)")
                     messages.append(ChatMessage(text: message,
                                                 user: user,
                                                 messageId: messageID,
