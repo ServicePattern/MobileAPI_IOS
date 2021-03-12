@@ -19,18 +19,6 @@ class PollRequestService: PollRequestServiceable {
                 chatIDsValue
             }
         }
-        set {
-            readerWriterQueue.async(flags: .barrier) { [weak self] in
-                guard self?.chatIDsValue != newValue else {
-                    log.debug("No changes made to chatIDs, so don't stop poll action")
-                    return
-                }
-                self?.chatIDsValue = newValue
-                // Wait until all network tasks have finished
-                self?.stopPolling(synchronously: true)
-                self?.startPollingIfNeeded()
-            }
-        }
     }
 
     private var isForegroundValue: Bool = true
@@ -74,12 +62,33 @@ class PollRequestService: PollRequestServiceable {
     deinit {
         NotificationCenter.default.removeObserver(self)
         // Make sure that no additional poll request will be made by cleaning up all chat IDs
-        chatIDs.removeAll()
-        stopPolling(synchronously: true)
+        removeAllChatIDs()
     }
 
     func addChatID(_ chatID: String) {
-        chatIDs.insert(chatID)
+        readerWriterQueue.async(flags: .barrier) { [weak self] in
+            self?.chatIDsValue.insert(chatID)
+            // Wait until all network tasks have finished
+            self?.stopPolling()
+            self?.startPollingIfNeeded()
+        }
+    }
+
+    func removeChatID(_ chatID: String) {
+        readerWriterQueue.async(flags: .barrier) { [weak self] in
+            self?.chatIDsValue.remove(chatID)
+            // Wait until all network tasks have finished
+            self?.stopPolling()
+            self?.startPollingIfNeeded()
+        }
+    }
+
+    func removeAllChatIDs() {
+        readerWriterQueue.async(flags: .barrier) { [weak self] in
+            self?.chatIDsValue.removeAll()
+            // Wait until all network tasks have finished
+            self?.stopPolling()
+        }
     }
 
     private func pollAction() {
@@ -112,7 +121,7 @@ class PollRequestService: PollRequestServiceable {
                         for e in eventsContainer.events {
                             switch e {
                             case .chatSessionEnded:
-                                self.chatIDs.remove(chatID)
+                                self.removeChatID(chatID)
                                 break
                             default:()
                             }
@@ -122,7 +131,7 @@ class PollRequestService: PollRequestServiceable {
                            case .chatSessionNotFound = contactCenterError {
                             // If the backend says that a chat id does not exist then remove it
                             // To prevent another poll request with this chatID
-                            self.chatIDs.remove(chatID)
+                            self.removeChatID(chatID)
                         }
                     }
                     // Check and start new getNewChatEvents request if needed
@@ -141,21 +150,16 @@ class PollRequestService: PollRequestServiceable {
     }
 
     private func startPolling() {
-        pollRequestQueue.asyncAfter(deadline: .now() + pollInterval) { [weak self] in
+        pollRequestQueue.async(flags: .barrier) { [weak self] in
             self?.pollAction()
         }
     }
 
-    private func stopPolling(synchronously: Bool = false) {
-        let stopPollingBlock = { [weak self] in
+    private func stopPolling() {
+        pollRequestQueue.async(flags: .barrier) { [weak self] in
             guard let self = self else { return }
             self.pollRequestDataTask.forEach { $0.cancel() }
             self.pollRequestDataTask.removeAll()
-        }
-        if synchronously {
-            pollRequestQueue.sync(execute: stopPollingBlock)
-        } else {
-            pollRequestQueue.async(execute: stopPollingBlock)
         }
     }
 

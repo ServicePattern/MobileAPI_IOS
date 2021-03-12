@@ -275,8 +275,10 @@ extension ChatViewModel {
                                             date: Date()))
 //                self.closeCase(chatID: chatID)
             case let .chatSessionMessageRead(messageID, _, _):
-                var message = messages.first(where: { $0.messageId == messageID })
-                message?.read = true
+                if let index = messages.firstIndex(where: { $0.messageId == messageID }) {
+                    messages[index].read = true
+                    update(messageInsertedCount: 0)
+                }
             default:()
             }
         }
@@ -319,7 +321,7 @@ extension ChatViewModel {
     }
     
     private func getCaseHistory(chatID: String) {
-        service.contactCenterService.getCaseHistory(chatID: chatID) { [weak self] eventsResult in
+        service.contactCenterService.getCaseHistory(chatID: chatID) { eventsResult in
             switch eventsResult {
             case .success(let sessions):
                 print("Received case history: \(sessions)")

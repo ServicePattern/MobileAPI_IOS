@@ -255,18 +255,16 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
 extension ChatViewController: ChatViewModelUpdatable {
     func update(messageInsertedCount: Int, _ completion: (() -> Void)?) {
         showPastConversationsButton?.isEnabled = viewModel.showPastConversationsButtonEnabled
-        // Reload last section to update header/footer labels and insert a new one
-        guard messageInsertedCount > 0 else {
-            completion?()
-            return
-        }
+        // Reload last section to update header/footer labels and insert
         messagesCollectionView.performBatchUpdates({
             let messagesCount = viewModel.chatMessagesCount()
             guard messagesCount > 0 else {
                 return
             }
-            let sectionsToInsert = IndexSet(messagesCount - messageInsertedCount..<messagesCount)
-            messagesCollectionView.insertSections(sectionsToInsert)
+            if messageInsertedCount > 0 {
+                let sectionsToInsert = IndexSet(messagesCount - messageInsertedCount..<messagesCount)
+                messagesCollectionView.insertSections(sectionsToInsert)
+            }
             if messagesCount - messageInsertedCount > 0 {
                 messagesCollectionView.reloadSections([messagesCount - messageInsertedCount - 1])
             }
