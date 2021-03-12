@@ -31,7 +31,6 @@ var clientID = UUID().uuidString
 
 4. Create instance of the `ContactCenterCommunicator` class which would handle communications with the BPCC server:
 ```swift
-let clientID = "D3577669-EB4B-4565-B9C6-27DD857CE8E5"
 let baseURL = URL(string: "https://<your server URL>")!
 let tenantURL = URL(string: "<your tenant URL>")!
 var appID: "<your messaging scenario entry ID>"
