@@ -1,0 +1,16 @@
+{
+  "aps" : {
+     "alert" : {
+        "title" : "New Chat Message",
+        "title-loc-key" : "notificationTitle",
+        "subtitle" : "From John Doe",
+        "subtitle-loc-key" : "notificationSubtitle",
+        "body" : "Please provide your DOB",
+     },
+     "badge" : 1,
+     "sound" : "default",
+     "category" : "NEW_CHAT_MESSAGE"
+  },
+  "chatID" : "12345678",
+  "Simulator Target Bundle": "com.BP.contactcenter.BPMobileMessaging-Example"
+}
