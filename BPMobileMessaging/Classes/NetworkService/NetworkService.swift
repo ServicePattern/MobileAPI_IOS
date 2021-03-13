@@ -50,7 +50,7 @@ class NetworkService: NetworkServiceable {
             return try decoder.decode(T.self, from: data)
         } catch {
             log.error("Failed to decode: \(error)")
-            throw ContactCenterError.failedToCodeJCON(nestedErrors: [error])
+            throw ContactCenterError.failedToCodeJSON(nestedErrors: [error])
         }
     }
 }
