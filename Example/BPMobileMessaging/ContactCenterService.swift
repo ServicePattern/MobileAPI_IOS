@@ -9,7 +9,13 @@ import Firebase
 extension PartialKeyPath where Root == ServiceManager {
     var stringValue: String {
         switch self {
+        case \ServiceManager.baseURL: return "baseURL"
+        case \ServiceManager.tenantURL: return "tenantURL"
+        case \ServiceManager.appID: return "appID"
         case \ServiceManager.clientID: return "clientID"
+        case \ServiceManager.firstName: return "firstName"
+        case \ServiceManager.lastName: return "lastName"
+        case \ServiceManager.phoneNumber: return "phoneNumber"
         default: fatalError("Unexpected keyPath")
         }
     }
@@ -18,21 +24,6 @@ extension PartialKeyPath where Root == ServiceManager {
 @objc
 final class ServiceManager: NSObject, ServiceDependencyProtocol {
     var useFirebase = true
-    let baseURL = URL(string: "http://alvm.bugfocus.com")!
-    let tenantURL = URL(string: "devs.alvm.bugfocus.com")!
-    var appID: String {
-        useFirebase ? "FirebaseApple": "apns"
-    }
-    var clientID: String {
-        let defaults = UserDefaults.standard
-        let key = \ServiceManager.clientID
-        guard let id = defaults.string(forKey: key.stringValue) else {
-            let id = UUID().uuidString
-            defaults.set(id, forKey: key.stringValue)
-            return id
-        }
-        return id
-    }
     var deviceToken: String?
     lazy var contactCenterService: ContactCenterCommunicating = {
         ContactCenterCommunicator(baseURL: baseURL, tenantURL: tenantURL, appID: appID, clientID: clientID)
@@ -114,5 +105,47 @@ extension ServiceManager: MessagingDelegate {
         }
         print("Received fcm token from Firebase: \(fcmToken)")
         self.deviceToken = fcmToken
+    }
+}
+
+// MARK:- Server settings
+extension ServiceManager {
+    func value<T>(for keyPath: PartialKeyPath<ServiceManager>, defaultValue: T) -> T {
+        let defaults = UserDefaults.standard
+        guard let value = defaults.value(forKey: keyPath.stringValue) as? T else {
+            defaults.set(defaultValue, forKey: keyPath.stringValue)
+            return defaultValue
+        }
+        return value
+    }
+    var baseURL: URL {
+        let urlString = value(for: \ServiceManager.baseURL,
+                              defaultValue: "http://alvm.bugfocus.com")
+        return URL(string: urlString)!
+    }
+    var tenantURL: URL {
+        let urlString: String = value(for: \ServiceManager.tenantURL,
+                                      defaultValue: "devs.alvm.bugfocus.com")
+        return URL(string: urlString)!
+    }
+    var appID: String {
+        value(for: \ServiceManager.appID,
+              defaultValue: useFirebase ? "FirebaseApple": "apns")
+    }
+    var clientID: String {
+        value(for: \ServiceManager.clientID,
+              defaultValue: UUID().uuidString)
+    }
+    var firstName: String {
+        value(for: \ServiceManager.firstName,
+              defaultValue: "Mobile")
+    }
+    var lastName: String {
+        value(for: \ServiceManager.lastName,
+              defaultValue: "Customer")
+    }
+    var phoneNumber: String {
+        value(for: \ServiceManager.phoneNumber,
+              defaultValue: "15550005555")
     }
 }

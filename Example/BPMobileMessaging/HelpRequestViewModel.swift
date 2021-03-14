@@ -66,10 +66,15 @@ extension HelpRequestViewModel {
     }
     private func requestChat(problemDescription: String) {
         isRequestInProgress = true
-        service.contactCenterService.requestChat(phoneNumber: "12345",
-                                                 from: "54321",
+        let phoneNumber = service.phoneNumber
+        let firstName = service.firstName
+        let lastName = service.lastName
+        service.contactCenterService.requestChat(phoneNumber: phoneNumber,
+                                                 from: phoneNumber,
                                                  parameters:
                                                     ["email": "mobilecustomer@example.com",
+                                                     "first_name": firstName,
+                                                     "last_name": lastName,
                                                      "problem_description": problemDescription]) { [weak self] chatPropertiesResult in
             DispatchQueue.main.async {
                 self?.isRequestInProgress = false
