@@ -253,20 +253,27 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
 
 // MARK: - View model delegate
 extension ChatViewController: ChatViewModelUpdatable {
-    func update(messageInsertedCount: Int, _ completion: (() -> Void)?) {
+    func update(appendedCount: Int, updatedCount: Int, _ completion: (() -> Void)?) {
         showPastConversationsButton?.isEnabled = viewModel.showPastConversationsButtonEnabled
-        // Reload last section to update header/footer labels and insert
         messagesCollectionView.performBatchUpdates({
             let messagesCount = viewModel.chatMessagesCount()
             guard messagesCount > 0 else {
                 return
             }
-            if messageInsertedCount > 0 {
-                let sectionsToInsert = IndexSet(messagesCount - messageInsertedCount..<messagesCount)
+            // There are two use cases:
+            //  a) One or more messages added
+            //  b) One or more messages updated(message has been read by a remote party)
+            // So, there are two group of messages: added and updated
+            // Insert sections for appended messages
+            if appendedCount > 0 {
+                let sectionsToInsert = IndexSet(messagesCount - appendedCount..<messagesCount)
                 messagesCollectionView.insertSections(sectionsToInsert)
             }
-            if messagesCount - messageInsertedCount > 0 {
-                messagesCollectionView.reloadSections([messagesCount - messageInsertedCount - 1])
+            // Reload sections with messages that were updated
+            let startingIndexToReload = messagesCount - appendedCount - updatedCount
+            if updatedCount > 0, startingIndexToReload >= 0 {
+                let sectionsToReload = IndexSet(startingIndexToReload..<messagesCount - appendedCount)
+                messagesCollectionView.reloadSections(sectionsToReload)
             }
         }, completion: { [weak self] _ in
             if self?.lastSectionVisible() == true {

@@ -7,7 +7,7 @@ import BPMobileMessaging
 import MessageKit
 
 protocol ChatViewModelUpdatable: class {
-    func update(messageInsertedCount: Int, _ completion: (() -> Void)?)
+    func update(appendedCount: Int, updatedCount: Int, _ completion: (() -> Void)?)
     func goBack()
     func showPastConversations()
 }
@@ -25,9 +25,9 @@ class ChatViewModel {
             messagesValue
         }
         set {
-            let messageInsertedCount = newValue.count - messagesValue.count
+            let appendedCount = max(newValue.count - messagesValue.count, 0)
             messagesValue = newValue
-            update(messageInsertedCount: max(messageInsertedCount, 0))
+            update(appendedCount: appendedCount, updatedCount: messagesValue.count)
         }
     }
     weak var delegate: ChatViewModelUpdatable?
@@ -212,8 +212,10 @@ extension ChatViewModel {
     private func processSessionEvents(events: [ContactCenterEvent]) {
         beginUpdate()
         let messagesCount = messagesValue.count
+        var messagesUpdated = false
         defer {
-            endUpdate(messageInsertedCount: max(messagesValue.count - messagesCount, 0))
+            endUpdate(appendedCount: max(messagesValue.count - messagesCount, 0),
+                      updatedCount: messagesUpdated ? messagesValue.count: 0)
         }
         for e in events {
             guard let chatID = self.currentChatID else {
@@ -222,7 +224,12 @@ extension ChatViewModel {
             }
 
             switch e {
-            case .chatSessionPartyJoined(let partyID, let firstName, let lastName, let displayName, let type, let timestamp):
+            case .chatSessionPartyJoined(let partyID,
+                                         let firstName,
+                                         let lastName,
+                                         let displayName,
+                                         _,
+                                         let timestamp):
                 print("\(timestamp): party: \(partyID) joined: \(firstName), \(lastName), \(displayName)")
                 let chatUser = ChatUser(senderId: partyID, displayName: displayName ?? ((firstName ?? "") + " " + (lastName ?? "")))
                 self.parties[partyID] = chatUser
@@ -277,7 +284,7 @@ extension ChatViewModel {
             case let .chatSessionMessageRead(messageID, _, _):
                 if let index = messages.firstIndex(where: { $0.messageId == messageID }) {
                     messages[index].read = true
-                    update(messageInsertedCount: 0)
+                    messagesUpdated = true
                 }
             default:()
             }
@@ -377,9 +384,9 @@ extension ChatViewModel {
         }
     }
 
-    private func update(messageInsertedCount: Int = 0) {
+    private func update(appendedCount: Int = 0, updatedCount: Int = 1) {
         if !self.batchUpdate {
-            delegate?.update(messageInsertedCount: messageInsertedCount) {
+            delegate?.update(appendedCount: appendedCount, updatedCount: updatedCount) {
                 print("UI updated")
             }
         }
@@ -389,10 +396,10 @@ extension ChatViewModel {
         batchUpdate = true
     }
 
-    private func endUpdate(messageInsertedCount: Int) {
+    private func endUpdate(appendedCount: Int = 0, updatedCount: Int = 1) {
         if batchUpdate {
             batchUpdate = false
-            update(messageInsertedCount: messageInsertedCount)
+            update(appendedCount: appendedCount, updatedCount: updatedCount)
         }
     }
 }

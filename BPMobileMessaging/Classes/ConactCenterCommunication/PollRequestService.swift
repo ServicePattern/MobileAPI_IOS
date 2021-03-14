@@ -150,13 +150,13 @@ class PollRequestService: PollRequestServiceable {
     }
 
     private func startPolling() {
-        pollRequestQueue.async(flags: .barrier) { [weak self] in
+        pollRequestQueue.async { [weak self] in
             self?.pollAction()
         }
     }
 
     private func stopPolling() {
-        pollRequestQueue.async(flags: .barrier) { [weak self] in
+        pollRequestQueue.async { [weak self] in
             guard let self = self else { return }
             self.pollRequestDataTask.forEach { $0.cancel() }
             self.pollRequestDataTask.removeAll()
