@@ -74,7 +74,7 @@
 			<key>Key</key>
 			<string>appID</string>
 			<key>DefaultValue</key>
-			<string>FirebaseApple</string>
+			<string></string>
 		</dict>
 		<dict>
 			<key>Type</key>
@@ -84,7 +84,7 @@
 			<key>Key</key>
 			<string>baseURL</string>
 			<key>DefaultValue</key>
-			<string>http://alvm.bugfocus.com</string>
+			<string></string>
 		</dict>
 		<dict>
 			<key>Type</key>
@@ -94,7 +94,17 @@
 			<key>Key</key>
 			<string>tenantURL</string>
 			<key>DefaultValue</key>
-			<string>devs.alvm.bugfocus.com</string>
+			<string></string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Use Firebase</string>
+			<key>Key</key>
+			<string>useFirebase</string>
+			<key>DefaultValue</key>
+			<string>YES</string>
 		</dict>
 	</array>
 	<key>StringsTable</key>

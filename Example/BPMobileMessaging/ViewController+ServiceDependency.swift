@@ -8,7 +8,7 @@ import BPMobileMessaging
 
 protocol ServiceDependencyProtocol: class {
     var contactCenterService: ContactCenterCommunicating { get set }
-    var useFirebase: Bool { get set }
+    var useFirebase: Bool { get }
     var deviceToken: String? { get set }
     var firstName: String { get }
     var lastName: String { get }

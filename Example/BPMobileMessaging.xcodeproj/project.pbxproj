@@ -24,6 +24,7 @@
 		F101271325E83A5900AC0B5D /* ContactCenterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F101271225E83A5900AC0B5D /* ContactCenterService.swift */; };
 		F101272725E863ED00AC0B5D /* NotificationNamesKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = F101272625E863ED00AC0B5D /* NotificationNamesKeys.swift */; };
 		F151455F25DBB78400D4AF7E /* eventsFixture.txt in Resources */ = {isa = PBXBuildFile; fileRef = F151455E25DBB78400D4AF7E /* eventsFixture.txt */; };
+		F18861472600073100B17B59 /* PartialKeyPath+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18861462600073100B17B59 /* PartialKeyPath+Extension.swift */; };
 		F19B0C4325FE6E9200799CAA /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F19B0C4225FE6E9200799CAA /* Settings.bundle */; };
 		F1A15A2B25E9B3A100191AAB /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A15A2A25E9B3A100191AAB /* ChatViewController.swift */; };
 		F1A15A2F25E9B3C800191AAB /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A15A2E25E9B3C800191AAB /* ChatViewModel.swift */; };
@@ -73,6 +74,7 @@
 		F101271225E83A5900AC0B5D /* ContactCenterService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactCenterService.swift; sourceTree = "<group>"; };
 		F101272625E863ED00AC0B5D /* NotificationNamesKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationNamesKeys.swift; sourceTree = "<group>"; };
 		F151455E25DBB78400D4AF7E /* eventsFixture.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = eventsFixture.txt; sourceTree = "<group>"; };
+		F18861462600073100B17B59 /* PartialKeyPath+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PartialKeyPath+Extension.swift"; sourceTree = "<group>"; };
 		F19B0C4225FE6E9200799CAA /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		F1A15A2A25E9B3A100191AAB /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		F1A15A2E25E9B3C800191AAB /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
@@ -163,6 +165,7 @@
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
 				F19B0C4625FE6EBA00799CAA /* Settings */,
+				F18861462600073100B17B59 /* PartialKeyPath+Extension.swift */,
 			);
 			name = "Example for BPMobileMessaging";
 			path = BPMobileMessaging;
@@ -466,6 +469,7 @@
 				F101270F25E8313300AC0B5D /* HelpRequestViewModel.swift in Sources */,
 				F1A15A2B25E9B3A100191AAB /* ChatViewController.swift in Sources */,
 				F1A15BAE25ED22E700191AAB /* LinkLabel.swift in Sources */,
+				F18861472600073100B17B59 /* PartialKeyPath+Extension.swift in Sources */,
 				F1A15A2F25E9B3C800191AAB /* ChatViewModel.swift in Sources */,
 				F101270825E8308900AC0B5D /* ExampleAppError.swift in Sources */,
 			);

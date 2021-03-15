@@ -6,30 +6,21 @@ import Foundation
 import BPMobileMessaging
 import Firebase
 
-extension PartialKeyPath where Root == ServiceManager {
-    var stringValue: String {
-        switch self {
-        case \ServiceManager.baseURL: return "baseURL"
-        case \ServiceManager.tenantURL: return "tenantURL"
-        case \ServiceManager.appID: return "appID"
-        case \ServiceManager.clientID: return "clientID"
-        case \ServiceManager.firstName: return "firstName"
-        case \ServiceManager.lastName: return "lastName"
-        case \ServiceManager.phoneNumber: return "phoneNumber"
-        default: fatalError("Unexpected keyPath")
-        }
-    }
-}
-
 @objc
 final class ServiceManager: NSObject, ServiceDependencyProtocol {
-    var useFirebase = true
     var deviceToken: String?
+    let baseURL: URL
+    let tenantURL: URL
+    let appID: String
     lazy var contactCenterService: ContactCenterCommunicating = {
         ContactCenterCommunicator(baseURL: baseURL, tenantURL: tenantURL, appID: appID, clientID: clientID)
     }()
 
-    override init() {
+    init(baseURL: URL, tenantURL: URL, appID: String) {
+        self.baseURL = baseURL
+        self.tenantURL = tenantURL
+        self.appID = appID
+
         super.init()
 
         if useFirebase {
@@ -110,42 +101,27 @@ extension ServiceManager: MessagingDelegate {
 
 // MARK:- Server settings
 extension ServiceManager {
-    func value<T>(for keyPath: PartialKeyPath<ServiceManager>, defaultValue: T) -> T {
+    func value<T>(for keyPath: PartialKeyPath<ServiceManager>) -> T? {
         let defaults = UserDefaults.standard
         guard let value = defaults.value(forKey: keyPath.stringValue) as? T else {
-            defaults.set(defaultValue, forKey: keyPath.stringValue)
-            return defaultValue
+            return nil
         }
         return value
     }
-    var baseURL: URL {
-        let urlString = value(for: \ServiceManager.baseURL,
-                              defaultValue: "http://alvm.bugfocus.com")
-        return URL(string: urlString)!
-    }
-    var tenantURL: URL {
-        let urlString: String = value(for: \ServiceManager.tenantURL,
-                                      defaultValue: "devs.alvm.bugfocus.com")
-        return URL(string: urlString)!
-    }
-    var appID: String {
-        value(for: \ServiceManager.appID,
-              defaultValue: useFirebase ? "FirebaseApple": "apns")
-    }
+
     var clientID: String {
-        value(for: \ServiceManager.clientID,
-              defaultValue: UUID().uuidString)
+        value(for: \ServiceManager.clientID) ??  UUID().uuidString
     }
     var firstName: String {
-        value(for: \ServiceManager.firstName,
-              defaultValue: "Mobile")
+        value(for: \ServiceManager.firstName) ?? ""
     }
     var lastName: String {
-        value(for: \ServiceManager.lastName,
-              defaultValue: "Customer")
+        value(for: \ServiceManager.lastName) ?? ""
     }
     var phoneNumber: String {
-        value(for: \ServiceManager.phoneNumber,
-              defaultValue: "15550005555")
+        value(for: \ServiceManager.phoneNumber) ?? ""
+    }
+    var useFirebase: Bool {
+        value(for: \ServiceManager.useFirebase) ?? true
     }
 }
