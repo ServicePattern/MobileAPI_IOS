@@ -4,7 +4,7 @@
 
 import Foundation
 
-/// Delegate an application should implement in order to receive events from the server.
+/// Implement this protocol in order to receive events from the server.
 /// - Tag: ContactCenterEventsDelegating
 public protocol ContactCenterEventsDelegating: class {
     /// Called when new events received from the server
