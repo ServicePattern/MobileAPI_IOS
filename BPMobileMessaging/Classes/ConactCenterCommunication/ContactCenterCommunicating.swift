@@ -102,7 +102,7 @@ public protocol ContactCenterCommunicating {
     ///   - completion: Returns `.success` or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
     /// - Tag: closeCase
     func closeCase(chatID: String, with completion: @escaping ((Result<Void, Error>) -> Void))
-    /// Request to disconnect chat conversation but keep the session active. Server may continue communicating with the client.
+    /// Request to disconnect from a chat conversation but keep the session active. Server may continue communicating with the client.
     /// - Parameters:
     ///   - chatID: The current chat ID
     ///   - completion: Returns `.success` or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
