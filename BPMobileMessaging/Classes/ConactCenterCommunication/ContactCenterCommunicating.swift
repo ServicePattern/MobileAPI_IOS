@@ -13,7 +13,8 @@ public protocol ContactCenterEventsDelegating: class {
 }
 
 /// Provides chat and voice interactions.
-/// This API can be used for development of rich contact applications, such as customer-facing mobile and web applications for advanced chat, voice, and video communications with Bright Pattern Contact Center-based contact centers.
+/// This API can be used for development of rich contact applications, such as customer-facing mobile and
+/// web applications for advanced chat, voice, and video communications with Bright Pattern Contact Center-based contact centers.
 /// Sends `poll` request to the backend repeatedly for get new chat events. The chat events are received through `delegate`
 public protocol ContactCenterCommunicating {
     // MARK: - Event delivery delegate
