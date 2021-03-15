@@ -19,7 +19,8 @@ public protocol ContactCenterEventsDelegating: class {
 public protocol ContactCenterCommunicating {
     // MARK: - Event delivery delegate
     /// Chat events delegate.
-    /// If successful returns an array of chat events [ContactCenterEvent](x-source-tag://ContactCenterEvent) for the current session that came from the server or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    /// If successful returns an array of chat events [ContactCenterEvent](x-source-tag://ContactCenterEvent)
+    /// for the current session that came from the server or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
     /// - Tag: DelegateContactCenter
     var delegate: ContactCenterEventsDelegating? { get set }
     // MARK: - Requesting chat availability
