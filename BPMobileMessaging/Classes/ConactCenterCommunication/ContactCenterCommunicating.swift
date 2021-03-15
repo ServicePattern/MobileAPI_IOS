@@ -59,7 +59,10 @@ public protocol ContactCenterCommunicating {
     ///   - completion: Chat sessions with client and server events [ContactCenterChatSession](x-source-tag://ContactCenterEvent) or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
     /// - Tag: getCaseHistory
     func getCaseHistory(chatID: String, with completion: @escaping ((Result<[ContactCenterChatSession], Error>) -> Void))
-    /// Send a chat message. Before message is sent the function generates a `messageID` which is returned in a completion. This `messageID` should be later used to match the `chatSessionMessageDelivered` and `chatSessionMessageRead` server events which notify the application that the message has been delivered to or read by an agent.
+    /// Send a chat message. Before message is sent the function generates a `messageID` which is
+    /// returned in a completion. This `messageID` should be later used to match
+    /// the `chatSessionMessageDelivered` and `chatSessionMessageRead` server events
+    /// which notify the application that the message has been delivered to or read by an agent.
     /// - Parameters:
     ///   - chatID: The current chat ID
     ///   - message: Text of the message
