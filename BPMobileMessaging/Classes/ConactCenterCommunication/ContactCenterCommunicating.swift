@@ -108,7 +108,7 @@ public protocol ContactCenterCommunicating {
     ///   - completion: Returns `.success` or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
     /// - Tag: disconnectChat
     func disconnectChat(chatID: String, with completion: @escaping (Result<Void, Error>) -> Void)
-    /// Request to disconnect chat conversation and complete the session. Server will not continue communicating with the client once request is sent.
+    /// Request to disconnect from a chat conversation and complete the session. Server will not continue communicating with the client once request is sent.
     /// - Parameters:
     ///   - chatID: The current chat ID
     ///   - completion: Returns `.success` or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
