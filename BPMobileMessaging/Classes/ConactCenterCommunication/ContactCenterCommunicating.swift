@@ -48,7 +48,12 @@ public protocol ContactCenterCommunicating {
     ///   - completion: Chat client and server events [ContactCenterEvent](x-source-tag://ContactCenterEvent) or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
     /// - Tag: getChatHistory
     func getChatHistory(chatID: String, with completion: @escaping ((Result<[ContactCenterEvent], Error>) -> Void))
-    /// Returns all client events and all server events for all sessions related to the CRM case defined by the scenario which handles a current chat session. For each session, multiple event objects can be returned; each event's timestamp attribute can be used to restore the correct message order. Can be called after receiving `chatSessionCaseSet`; will return `chatSessionCaseNotSpecified` if server scenario did not specify the case. Note that the case could be specified later during the scenario execution; not necessarily immediately after session start.
+    /// Returns all client events and all server events for all sessions related to the CRM case defined by the scenario
+    /// which handles a current chat session. For each session, multiple event objects can be returned;
+    /// each event's timestamp attribute can be used to restore the correct message order.
+    /// Can be called after receiving `chatSessionCaseSet`; will return `chatSessionCaseNotSpecified` if
+    /// server scenario did not specify the case.
+    /// Note that the case could be specified later during the scenario execution; not necessarily immediately after session start.
     /// - Parameters:
     ///   - chatID: The current chat ID
     ///   - completion: Chat sessions with client and server events [ContactCenterChatSession](x-source-tag://ContactCenterEvent) or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
