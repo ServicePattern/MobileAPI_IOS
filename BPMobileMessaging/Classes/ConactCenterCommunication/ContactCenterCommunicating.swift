@@ -28,7 +28,10 @@ public protocol ContactCenterCommunicating {
     /// - Tag: checkAvailability
     func checkAvailability(with completion: @escaping ((Result<ContactCenterServiceAvailability, Error>) -> Void))
     // MARK: - Requesting a new chat session
-    /// Request Chat initiates a chat session. It provides values of all or some of the expected parameters, and it may also contain the phone number of the mobile device. Note that if the mobile scenario entry is not configured for automatic callback, the agent can still use this number to call the mobile user manually, either upon the agent's own initiative or when asked to do this via a chat message from the mobile user.
+    /// Request Chat initiates a chat session. It provides values of all or some of the expected parameters, and
+    /// it may also contain the phone number of the mobile device. Note that if the mobile scenario entry is
+    /// not configured for automatic callback, the agent can still use this number to call the mobile user
+    /// manually, either upon the agent's own initiative or when asked to do this via a chat message from the mobile user.
     /// - Parameters:
     ///   - phoneNumber: phone number for callback, if necessary
     ///   - from: Propagated into scenario variable $(item.from). May be used to specify either the device owner’s name or phone number.
