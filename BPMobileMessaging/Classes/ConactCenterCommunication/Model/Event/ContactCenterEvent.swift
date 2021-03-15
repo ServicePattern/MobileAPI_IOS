@@ -109,7 +109,8 @@ public enum ContactCenterEvent {
     ///   - message: a text message to display
     ///   - timestamp: Timestamp of the event
     case chatSessionInactivityTimeout(message: String, timestamp: Date)
-    /// Indicates a normal termination of the chat session (e.g., when the chat session is closed by the agent). The client application shall assume that the chat session no longer exists.
+    /// Indicates a normal termination of the chat session (e.g., when the chat session is closed by the agent).
+    /// The client application shall assume that the chat session no longer exists.
     /// Direction: S->C
     case chatSessionEnded
     /// Client sends the message to end current chat conversation but keep the session open.
