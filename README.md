@@ -44,7 +44,7 @@ var contactCenterService: ContactCenterCommunicating = {
 }()
 ```
 
-* Register for push notifications. The SDK supports both native APNs and Firebase push notifications frameworks. Only one framework should be used. First, define a variable to store the device token
+* Register for push notifications. The SDK supports both native APNs and Firebase push notifications frameworks. Only one framework should be used. Define a variable to store the device token:
 
 ```swift
 var deviceToken: String?
