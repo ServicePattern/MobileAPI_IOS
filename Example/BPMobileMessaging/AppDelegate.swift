@@ -14,12 +14,47 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     var service: ServiceManager?
+    var baseURL: URL? {
+        guard let urlString: String = value(for: \AppDelegate.baseURL),
+              let url = URL(string: urlString) else {
+            return nil
+        }
+        return url
+    }
+    var tenantURL: URL? {
+        guard let urlString: String = value(for: \AppDelegate.tenantURL),
+              let url = URL(string: urlString) else {
+            return nil
+        }
+        return url
+    }
+    var appID: String? {
+        value(for: \AppDelegate.appID)
+    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 
-        setup()
-
         self.window = UIWindow(frame: UIScreen.main.bounds)
+        registerDefaultsFromSettingsBundle()
+
+        guard let baseURL = baseURL, let tenantURL = tenantURL, let appID = appID else {
+
+            let alert = UIAlertController(title: "Error",
+                                          message:"You need to provide baseURL, tenantURL and appID to start the app. After pressing OK button you will be switched to Settings.",
+                                          preferredStyle: UIAlertController.Style.alert)
+            // When pressed the user is switched to the Settings
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: openSettings))
+            // Show the alert suggesting to provide required settings
+            self.window?.rootViewController = UIViewController()
+            DispatchQueue.main.async {
+                self.window?.rootViewController?.present(alert, animated: true, completion: nil)
+            }
+            self.window?.makeKeyAndVisible()
+
+            return true
+        }
+
+        self.service = ServiceManager(baseURL: baseURL, tenantURL: tenantURL, appID: appID)
 
         let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
         guard let helpRequestViewController = storyboard.instantiateViewController(withIdentifier: "HelpRequestViewController") as? HelpRequestViewController else {
@@ -31,14 +66,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         helpRequestViewController.service = service
         let navigationController = UINavigationController.init(rootViewController: helpRequestViewController)
+
         self.window?.rootViewController = navigationController
 
         self.window?.makeKeyAndVisible()
+
         return true
     }
 
-    private func setup() {
-        self.service = ServiceManager()
+    func openSettings(alert: UIAlertAction!) {
+        if let url = URL.init(string: UIApplicationOpenSettingsURLString) {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        }
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
@@ -73,5 +112,41 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 didFailToRegisterForRemoteNotificationsWithError
                     error: Error) {
        // Try again later.
+    }
+}
+
+extension AppDelegate {
+    func value<T>(for keyPath: PartialKeyPath<AppDelegate>) -> T? {
+        let defaults = UserDefaults.standard
+        guard let value = defaults.value(forKey: keyPath.stringValue) as? T else {
+            return nil
+        }
+        return value
+    }
+
+    func registerDefaultsFromSettingsBundle() {
+        guard let settingsBundle = Bundle.main.path(forResource: "Settings", ofType: "bundle") else {
+            print("Failed to locate Settings.bundle")
+            return
+        }
+
+        guard let settings = NSDictionary(contentsOfFile: settingsBundle+"/Root.plist") else {
+            print("Failed to read Root.plist")
+            return
+        }
+
+        let preferences = settings["PreferenceSpecifiers"] as! NSArray
+        var defaultsToRegister = [String: AnyObject]()
+        for prefSpecification in preferences {
+            if let post = prefSpecification as? [String: AnyObject] {
+                guard let key = post["Key"] as? String,
+                    let defaultValue = post["DefaultValue"] else {
+                        continue
+                }
+                defaultsToRegister[key] = defaultValue
+            }
+        }
+        UserDefaults.standard.register(defaults: defaultsToRegister)
+        UserDefaults.standard.synchronize()
     }
 }

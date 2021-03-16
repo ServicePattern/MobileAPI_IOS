@@ -11,7 +11,6 @@ protocol PollRequestServiceable {
 
 // MARK: - Poll action
 class PollRequestService: PollRequestServiceable {
-    internal let pollInterval: Double
     private var chatIDsValue = Set<String>()
     private var chatIDs: Set<String> {
         get {
@@ -45,9 +44,8 @@ class PollRequestService: PollRequestServiceable {
     private let reachability: Reachability
     private let pollActionHttpRequestLock = NSLock()
 
-    init(networkService: NetworkServiceable, pollInterval: Double) {
+    init(networkService: NetworkServiceable) {
         self.networkService = networkService
-        self.pollInterval = pollInterval
         do {
             self.reachability = try Reachability()
         } catch {

@@ -6,39 +6,21 @@ import Foundation
 import BPMobileMessaging
 import Firebase
 
-extension PartialKeyPath where Root == ServiceManager {
-    var stringValue: String {
-        switch self {
-        case \ServiceManager.clientID: return "clientID"
-        default: fatalError("Unexpected keyPath")
-        }
-    }
-}
-
 @objc
 final class ServiceManager: NSObject, ServiceDependencyProtocol {
-    var useFirebase = true
-    let baseURL = URL(string: "http://alvm.bugfocus.com")!
-    let tenantURL = URL(string: "devs.alvm.bugfocus.com")!
-    var appID: String {
-        useFirebase ? "FirebaseApple": "apns"
-    }
-    var clientID: String {
-        let defaults = UserDefaults.standard
-        let key = \ServiceManager.clientID
-        guard let id = defaults.string(forKey: key.stringValue) else {
-            let id = UUID().uuidString
-            defaults.set(id, forKey: key.stringValue)
-            return id
-        }
-        return id
-    }
     var deviceToken: String?
+    let baseURL: URL
+    let tenantURL: URL
+    let appID: String
     lazy var contactCenterService: ContactCenterCommunicating = {
         ContactCenterCommunicator(baseURL: baseURL, tenantURL: tenantURL, appID: appID, clientID: clientID)
     }()
 
-    override init() {
+    init(baseURL: URL, tenantURL: URL, appID: String) {
+        self.baseURL = baseURL
+        self.tenantURL = tenantURL
+        self.appID = appID
+
         super.init()
 
         if useFirebase {
@@ -114,5 +96,32 @@ extension ServiceManager: MessagingDelegate {
         }
         print("Received fcm token from Firebase: \(fcmToken)")
         self.deviceToken = fcmToken
+    }
+}
+
+// MARK:- Server settings
+extension ServiceManager {
+    func value<T>(for keyPath: PartialKeyPath<ServiceManager>) -> T? {
+        let defaults = UserDefaults.standard
+        guard let value = defaults.value(forKey: keyPath.stringValue) as? T else {
+            return nil
+        }
+        return value
+    }
+
+    var clientID: String {
+        value(for: \ServiceManager.clientID) ??  UUID().uuidString
+    }
+    var firstName: String {
+        value(for: \ServiceManager.firstName) ?? ""
+    }
+    var lastName: String {
+        value(for: \ServiceManager.lastName) ?? ""
+    }
+    var phoneNumber: String {
+        value(for: \ServiceManager.phoneNumber) ?? ""
+    }
+    var useFirebase: Bool {
+        value(for: \ServiceManager.useFirebase) ?? true
     }
 }
