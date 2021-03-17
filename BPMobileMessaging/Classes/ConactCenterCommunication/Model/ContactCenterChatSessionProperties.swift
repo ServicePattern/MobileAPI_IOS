@@ -29,9 +29,9 @@ public struct ContactCenterChatSessionProperties {
     /// Chat session state
     public let state: ContactCenterChatSessionState
     /// Estimated time the session will stay in the queue before an agent is available (seconds)
-    public let estimatedWaitTime: Int
+    public let estimatedWaitTime: Int?
     /// Specifies if this is a new session. The `requestChat` method may return an existing session if the application was closed during active session and then reopened again
     public let isNewChat: Bool
     /// Client phone number specified in the `requestChat` method
-    public let phoneNumber: String
+    public let phoneNumber: String?
 }

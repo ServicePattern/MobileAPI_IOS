@@ -94,7 +94,14 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
     // MARK: - Requesting chat availability
     public func checkAvailability(with completion: @escaping ((Result<ContactCenterServiceAvailability, Error>) -> Void)) {
         do {
-            networkService.dataTask(using: try httpGetRequest(with: .checkAvailability), with: completion)
+            networkService.dataTask(using: try httpGetRequest(with: .checkAvailability)) { [weak self] (result: Result<ContactCenterServiceAvailabilityDto, Error>) -> Void in
+                switch result {
+                case .success(let chatAvailability):
+                    completion(.success(chatAvailability.toModel()))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
         } catch {
             log.error("Failed to checkAvailability: \(error)")
             completion(.failure(error))

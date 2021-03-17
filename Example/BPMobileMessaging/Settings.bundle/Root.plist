@@ -79,6 +79,10 @@
 		<dict>
 			<key>Type</key>
 			<string>PSTextFieldSpecifier</string>
+			<key>AutocorrectionType</key>
+			<string>No</string>
+			<key>AutocapitalizationType</key>
+			<string>None</string>
 			<key>Title</key>
 			<string>Server Address</string>
 			<key>Key</key>
@@ -89,6 +93,10 @@
 		<dict>
 			<key>Type</key>
 			<string>PSTextFieldSpecifier</string>
+			<key>AutocorrectionType</key>
+			<string>No</string>
+			<key>AutocapitalizationType</key>
+			<string>None</string>
 			<key>Title</key>
 			<string>Tenant</string>
 			<key>Key</key>
