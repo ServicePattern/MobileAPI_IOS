@@ -37,7 +37,7 @@ extension ChatSessionStateDto {
 struct ChatSessionPropertiesDto: Decodable {
     let chatID: String
     let state: ChatSessionStateDto
-    let ewt: String
+    let ewt: String?
     let isNewChat: Bool
     let phoneNumber: String
 
@@ -52,6 +52,6 @@ struct ChatSessionPropertiesDto: Decodable {
 
 extension ChatSessionPropertiesDto {
     func toModel() -> ContactCenterChatSessionProperties {
-        ContactCenterChatSessionProperties(chatID: chatID, state: state.toModel(), estimatedWaitTime: Int(ewt) ?? 0, isNewChat: isNewChat, phoneNumber: phoneNumber)
+        ContactCenterChatSessionProperties(chatID: chatID, state: state.toModel(), estimatedWaitTime: Int(ewt ?? ""), isNewChat: isNewChat, phoneNumber: phoneNumber)
     }
 }

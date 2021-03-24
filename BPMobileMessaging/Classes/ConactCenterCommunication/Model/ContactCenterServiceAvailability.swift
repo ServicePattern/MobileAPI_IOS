@@ -15,7 +15,9 @@ public enum ContactCenterServiceChatAvailability: String, Decodable {
 
 /// Describes chat service status.
 /// - Tag: ContactCenterServiceAvailability
-public struct ContactCenterServiceAvailability: Decodable {
+public struct ContactCenterServiceAvailability {
     /// Current chat service availability state.
     public let chat: ContactCenterServiceChatAvailability
+    /// Estimated time the session will stay in the queue before an agent is available (seconds)
+    public let estimatedWaitTime: Int?
 }
