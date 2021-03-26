@@ -35,16 +35,8 @@ class HelpRequestViewModel {
     deinit {
     }
 
-    func helpMePressed(problemDescription: String) {
-        requestChat(problemDescription: problemDescription)
-    }
-
-    func pastConversationsPressed() {
-        guard let chatID = currentChatID else {
-            print("chatID is empty")
-            return
-        }
-//        getChatHistory(chatID: chatID)
+    func helpMePressed(problemDescription: String, caseNumber: String) {
+        requestChat(problemDescription: problemDescription, caseNumber: caseNumber)
     }
 }
 
@@ -64,7 +56,7 @@ extension HelpRequestViewModel {
             }
         }
     }
-    private func requestChat(problemDescription: String) {
+    private func requestChat(problemDescription: String, caseNumber: String) {
         isRequestInProgress = true
         let phoneNumber = service.phoneNumber
         let firstName = service.firstName
@@ -75,6 +67,7 @@ extension HelpRequestViewModel {
                                                     ["email": "mobilecustomer@example.com",
                                                      "first_name": firstName,
                                                      "last_name": lastName,
+                                                     "caseNumber": caseNumber,
                                                      "problem_description": problemDescription]) { [weak self] chatPropertiesResult in
             DispatchQueue.main.async {
                 self?.isRequestInProgress = false

@@ -12,9 +12,10 @@ class HelpRequestViewController: ViewController, ServiceDependencyProviding {
     var service: ServiceDependencyProtocol?
     var bundleIdentifier: String = Bundle.main.bundleIdentifier ?? ""
     @IBOutlet weak var pastConversationsBottomConstraint: NSLayoutConstraint!
-    @IBOutlet weak var textView: UITextView!
+    @IBOutlet weak var problemDescription: UITextView!
     @IBOutlet weak var helpMeButton: UIButton!
-
+    @IBOutlet weak var caseNumber: UITextField!
+    
     private lazy var viewModel: HelpRequestViewModel = {
         guard let service = service else {
             fatalError("Contact center service is not set")
@@ -48,7 +49,7 @@ class HelpRequestViewController: ViewController, ServiceDependencyProviding {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleImageTap))
         backgroundImage.isUserInteractionEnabled = true
         backgroundImage.addGestureRecognizer(tapGesture)
-        textView.backgroundColor = .white
+        problemDescription.backgroundColor = .white
 //        textView.attributedPlaceholder = NSAttributedString(string: "Type your message here",
 //                                                            attributes: [NSAttributedStringKey.font: textView.font,
 //                                                                         NSAttributedStringKey.foregroundColor: UIColor.lightGray])
@@ -66,15 +67,12 @@ class HelpRequestViewController: ViewController, ServiceDependencyProviding {
     }
 
     @IBAction func helpMePressed(_ sender: UIButton) {
-        viewModel.helpMePressed(problemDescription: textView.text)
-    }
-    @IBAction func pastConversationsPressed(_ sender: UIButton) {
-        viewModel.pastConversationsPressed()
+        viewModel.helpMePressed(problemDescription: problemDescription.text, caseNumber: caseNumber.text ?? "")
     }
 
     @objc
     private func handleImageTap(_ sender: UITapGestureRecognizer) {
-        textView.resignFirstResponder()
+        problemDescription.resignFirstResponder()
     }
 
     @objc
@@ -89,7 +87,7 @@ class HelpRequestViewController: ViewController, ServiceDependencyProviding {
         // Need to translate the bounds to account for rotation.
         let keyboardBounds = view.convert(keyboardBoundsGlobal, to: nil)
         // get a rect for the textView frame
-        let containerFrame = textView.frame
+        let containerFrame = problemDescription.frame
         let diff = keyboardBounds.origin.y - containerFrame.maxY
         if diff < 10 {
             self.pastConversationsBottomConstraint.constant += 10 - diff
@@ -103,7 +101,7 @@ class HelpRequestViewController: ViewController, ServiceDependencyProviding {
     }
 
     private func resetBottomSpace() {
-        pastConversationsBottomConstraint.constant = viewModel.bottomSpace
+//        pastConversationsBottomConstraint.constant = viewModel.bottomSpace
     }
 
     @objc
