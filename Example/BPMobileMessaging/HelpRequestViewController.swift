@@ -39,7 +39,7 @@ class HelpRequestViewController: ViewController, ServiceDependencyProviding {
         let backgroundImage = appDelegate.window?.frame.size.height ?? 0 > 568 ? UIImageView(image: #imageLiteral(resourceName: "splash-screen-tall")) : UIImageView(image: #imageLiteral(resourceName: "splash-screen-short"))
         backgroundImage.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(backgroundImage)
-        view.sendSubview(toBack: backgroundImage)
+        view.sendSubviewToBack(backgroundImage)
         NSLayoutConstraint.activate([
             backgroundImage.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             backgroundImage.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -56,8 +56,8 @@ class HelpRequestViewController: ViewController, ServiceDependencyProviding {
     }
 
     private func setupSubscriptions() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -78,10 +78,10 @@ class HelpRequestViewController: ViewController, ServiceDependencyProviding {
     @objc
     private func keyboardWillShow(notification: Notification) {
         // Get keyboard size and location
-        guard let keyboardBoundsGlobal = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? CGRect,
-              let duration = notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber,
-              let curveValue = notification.userInfo?[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber,
-              let curve = UIViewAnimationCurve(rawValue: curveValue.intValue) else {
+        guard let keyboardBoundsGlobal = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
+              let duration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber,
+              let curveValue = notification.userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? NSNumber,
+              let curve = UIView.AnimationCurve(rawValue: curveValue.intValue) else {
             return
         }
         // Need to translate the bounds to account for rotation.
@@ -106,9 +106,9 @@ class HelpRequestViewController: ViewController, ServiceDependencyProviding {
 
     @objc
     private func keyboardWillHide(notification: Notification) {
-        guard let duration = notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber,
-              let curveValue = notification.userInfo?[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber,
-              let curve = UIViewAnimationCurve(rawValue: curveValue.intValue) else {
+        guard let duration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber,
+              let curveValue = notification.userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? NSNumber,
+              let curve = UIView.AnimationCurve(rawValue: curveValue.intValue) else {
             return
         }
 

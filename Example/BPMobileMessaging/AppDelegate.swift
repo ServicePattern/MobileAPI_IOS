@@ -32,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         value(for: \AppDelegate.appID)
     }
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         self.window = UIWindow(frame: UIScreen.main.bounds)
         registerDefaultsFromSettingsBundle()
@@ -75,7 +75,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func openSettings(alert: UIAlertAction!) {
-        if let url = URL.init(string: UIApplicationOpenSettingsURLString) {
+        if let url = URL.init(string: UIApplication.openSettingsURLString) {
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
     }
