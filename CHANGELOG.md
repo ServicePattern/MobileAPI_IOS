@@ -6,14 +6,14 @@ The changelog for `BPMobileMessaging`. Also see the [releases](https://github.co
 
 ### Fixed
 
-- Can't compile library with swift 5 [22](https://github.com/ServicePattern/MobileAPI_IOS/issues/22)
+- [Issue 22](https://github.com/ServicePattern/MobileAPI_IOS/issues/22): Can't compile library with swift 5
 - Fixed JSON deserialization of optional 'ewt' attribute in 'ContactCenterChatSessionProperties' and 'ContactCenterServiceAvailability'
 
 ### Added
 
 ### Changed
 
-- **Breaking Change** Updated to Swift 5.0 [#23](https://github.com/ServicePattern/MobileAPI_IOS/pull/23)
+- **Breaking Change** Updated to Swift 5.0
 
 ### Removed
 
