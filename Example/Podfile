@@ -5,7 +5,7 @@ platform :ios, '11.0'
 target 'BPMobileMessaging_Example' do
   pod 'BPMobileMessaging', :path => '../'
   pod 'Firebase/Messaging'
-  pod 'MessageKit', '~> 3.0.0'
+  pod 'MessageKit', '~> 3.3.0'
 
   target 'BPMobileMessaging_Tests' do
     inherit! :search_paths
