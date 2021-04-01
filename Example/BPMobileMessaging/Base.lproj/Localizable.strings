@@ -1,0 +1,13 @@
+/* 
+  Localizable.strings
+  BPMobileMessaging
+
+  Created by Alexander Lobastov on 3/31/21.
+  Copyright © 2021 BrightPattern. All rights reserved.
+*/
+
+"keyChatNewMessageTitle"="New chat message";
+"keyChatNewMessageSubtitle"="From %@ %@";
+
+"keyChatNewFileTitle"="New chat file";
+"keyChatNewFileSubtitle"="From %@ %@";

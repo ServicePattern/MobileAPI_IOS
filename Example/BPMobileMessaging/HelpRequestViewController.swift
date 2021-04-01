@@ -11,7 +11,6 @@ import UIKit
 class HelpRequestViewController: ViewController, ServiceDependencyProviding {
     var service: ServiceDependencyProtocol?
     var bundleIdentifier: String = Bundle.main.bundleIdentifier ?? ""
-    @IBOutlet weak var pastConversationsBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var problemDescription: UITextView!
     @IBOutlet weak var helpMeButton: UIButton!
     @IBOutlet weak var caseNumber: UITextField!
@@ -50,9 +49,6 @@ class HelpRequestViewController: ViewController, ServiceDependencyProviding {
         backgroundImage.isUserInteractionEnabled = true
         backgroundImage.addGestureRecognizer(tapGesture)
         problemDescription.backgroundColor = .white
-//        textView.attributedPlaceholder = NSAttributedString(string: "Type your message here",
-//                                                            attributes: [NSAttributedStringKey.font: textView.font,
-//                                                                         NSAttributedStringKey.foregroundColor: UIColor.lightGray])
     }
 
     private func setupSubscriptions() {
@@ -89,9 +85,7 @@ class HelpRequestViewController: ViewController, ServiceDependencyProviding {
         // get a rect for the textView frame
         let containerFrame = problemDescription.frame
         let diff = keyboardBounds.origin.y - containerFrame.maxY
-        if diff < 10 {
-            self.pastConversationsBottomConstraint.constant += 10 - diff
-        }
+
         UIView.beginAnimations(nil, context: nil)
         UIView.setAnimationBeginsFromCurrentState(true)
         UIView.setAnimationDuration(duration.doubleValue)
@@ -101,7 +95,6 @@ class HelpRequestViewController: ViewController, ServiceDependencyProviding {
     }
 
     private func resetBottomSpace() {
-//        pastConversationsBottomConstraint.constant = viewModel.bottomSpace
     }
 
     @objc

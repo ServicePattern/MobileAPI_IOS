@@ -1,0 +1,9 @@
+
+/* Class = "UIButton"; normalTitle = "Help me"; ObjectID = "Abn-8Y-zcD"; */
+"Abn-8Y-zcD.normalTitle" = "Help me";
+
+/* Class = "UILabel"; text = "Case number:"; ObjectID = "fHQ-wP-YDm"; */
+"fHQ-wP-YDm.text" = "Case number:";
+
+/* Class = "UILabel"; text = "Problem description:"; ObjectID = "qQC-ra-Swn"; */
+"qQC-ra-Swn.text" = "Problem description:";
