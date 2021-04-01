@@ -14,6 +14,8 @@ class HelpRequestViewController: ViewController, ServiceDependencyProviding {
     @IBOutlet weak var problemDescription: UITextView!
     @IBOutlet weak var helpMeButton: UIButton!
     @IBOutlet weak var caseNumber: UITextField!
+    @IBOutlet weak var textFieldsBottomConstraint: NSLayoutConstraint!
+    @IBOutlet weak var lastTextFieldView: UIView!
     
     private lazy var viewModel: HelpRequestViewModel = {
         guard let service = service else {
@@ -48,7 +50,21 @@ class HelpRequestViewController: ViewController, ServiceDependencyProviding {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleImageTap))
         backgroundImage.isUserInteractionEnabled = true
         backgroundImage.addGestureRecognizer(tapGesture)
+        caseNumber.attributedPlaceholder = NSAttributedString(string: "Type case number here",
+                                                              attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
         problemDescription.backgroundColor = .white
+
+        // Setup keyboard dismiss accessory view
+        let toolbar = UIToolbar()
+        let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
+                                        target: nil, action: nil)
+        let doneButton = UIBarButtonItem(title: "Done", style: .done,
+                                         target: self, action: #selector(endEditing))
+
+        toolbar.setItems([flexSpace, doneButton], animated: true)
+        toolbar.sizeToFit()
+        problemDescription.inputAccessoryView = toolbar
+        caseNumber.inputAccessoryView = toolbar
     }
 
     private func setupSubscriptions() {
@@ -63,56 +79,19 @@ class HelpRequestViewController: ViewController, ServiceDependencyProviding {
     }
 
     @IBAction func helpMePressed(_ sender: UIButton) {
-        viewModel.helpMePressed(problemDescription: problemDescription.text, caseNumber: caseNumber.text ?? "")
+        viewModel.helpMePressed(problemDescription: problemDescription.text,
+                                caseNumber: caseNumber.text?.trimmingCharacters(in: .whitespaces) ?? "")
     }
 
     @objc
     private func handleImageTap(_ sender: UITapGestureRecognizer) {
+        endEditing()
+    }
+
+    @objc
+    private func endEditing() {
         problemDescription.resignFirstResponder()
-    }
-
-    @objc
-    private func keyboardWillShow(notification: Notification) {
-        // Get keyboard size and location
-        guard let keyboardBoundsGlobal = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
-              let duration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber,
-              let curveValue = notification.userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? NSNumber,
-              let curve = UIView.AnimationCurve(rawValue: curveValue.intValue) else {
-            return
-        }
-        // Need to translate the bounds to account for rotation.
-        let keyboardBounds = view.convert(keyboardBoundsGlobal, to: nil)
-        // get a rect for the textView frame
-        let containerFrame = problemDescription.frame
-        let diff = keyboardBounds.origin.y - containerFrame.maxY
-
-        UIView.beginAnimations(nil, context: nil)
-        UIView.setAnimationBeginsFromCurrentState(true)
-        UIView.setAnimationDuration(duration.doubleValue)
-        UIView.setAnimationCurve(curve)
-        view.layoutIfNeeded()
-        UIView.commitAnimations()
-    }
-
-    private func resetBottomSpace() {
-    }
-
-    @objc
-    private func keyboardWillHide(notification: Notification) {
-        guard let duration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber,
-              let curveValue = notification.userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? NSNumber,
-              let curve = UIView.AnimationCurve(rawValue: curveValue.intValue) else {
-            return
-        }
-
-        resetBottomSpace()
-
-        UIView.beginAnimations(nil, context: nil)
-        UIView.setAnimationBeginsFromCurrentState(true)
-        UIView.setAnimationDuration(duration.doubleValue)
-        UIView.setAnimationCurve(curve)
-        view.layoutIfNeeded()
-        UIView.commitAnimations()
+        caseNumber.resignFirstResponder()
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -133,5 +112,62 @@ extension HelpRequestViewController: HelpRequestUpdatable {
 
     func showChat() {
         performSegue(withIdentifier: "\(ChatViewController.self)", sender: self)
+    }
+}
+
+
+// MARK: Keyboard and text fields overlapping handling
+extension HelpRequestViewController {
+    private func addBottomSpace(space: CGFloat) {
+        textFieldsBottomConstraint.constant += space
+    }
+
+    private func resetBottomSpace() {
+        textFieldsBottomConstraint.constant = viewModel.bottomSpace
+    }
+
+    @objc
+    private func keyboardWillShow(notification: Notification) {
+        // Get keyboard size and location
+        guard let keyboardBoundsGlobal = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
+              let duration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber,
+              let curveValue = notification.userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? NSNumber,
+              let curve = UIView.AnimationCurve(rawValue: curveValue.intValue) else {
+            return
+        }
+        // Need to translate the bounds to account for rotation.
+        let keyboardBounds = view.convert(keyboardBoundsGlobal, to: nil)
+        // get a rect for the textView frame
+        let containerFrame = lastTextFieldView.frame
+        let diff = keyboardBounds.origin.y - containerFrame.maxY
+
+        if diff < 10 {
+            addBottomSpace(space: 10 - diff)
+
+            UIView.beginAnimations(nil, context: nil)
+            UIView.setAnimationBeginsFromCurrentState(true)
+            UIView.setAnimationDuration(duration.doubleValue)
+            UIView.setAnimationCurve(curve)
+            view.layoutIfNeeded()
+            UIView.commitAnimations()
+        }
+    }
+
+    @objc
+    private func keyboardWillHide(notification: Notification) {
+        guard let duration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber,
+              let curveValue = notification.userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? NSNumber,
+              let curve = UIView.AnimationCurve(rawValue: curveValue.intValue) else {
+            return
+        }
+
+        resetBottomSpace()
+
+        UIView.beginAnimations(nil, context: nil)
+        UIView.setAnimationBeginsFromCurrentState(true)
+        UIView.setAnimationDuration(duration.doubleValue)
+        UIView.setAnimationCurve(curve)
+        view.layoutIfNeeded()
+        UIView.commitAnimations()
     }
 }

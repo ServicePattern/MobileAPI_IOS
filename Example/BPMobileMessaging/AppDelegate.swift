@@ -40,7 +40,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = UIWindow(frame: UIScreen.main.bounds)
         registerDefaultsFromSettingsBundle()
 
-        guard let baseURL = baseURL, let tenantURL = tenantURL, let appID = appID, let useFirebase = useFirebase else {
+        guard let baseURL = baseURL,
+              let tenantURL = tenantURL,
+              let appID = appID,
+              let useFirebase = useFirebase else {
 
             let alert = UIAlertController(title: "Error",
                                           message:"You need to provide baseURL, tenantURL and appID to start the app. After pressing OK button you will be switched to Settings.",
@@ -146,12 +149,7 @@ extension AppDelegate {
                     let defaultValue = spec["DefaultValue"] else {
                         continue
                 }
-                if let type = spec["Type"] as? String,
-                   type == "PSToggleSwitchSpecifier" {
-                    defaultsToRegister[key] = (defaultValue as? String) == "YES" ? true: false
-                } else {
-                    defaultsToRegister[key] = defaultValue
-                }
+                defaultsToRegister[key] = defaultValue
             }
         }
         UserDefaults.standard.register(defaults: defaultsToRegister)

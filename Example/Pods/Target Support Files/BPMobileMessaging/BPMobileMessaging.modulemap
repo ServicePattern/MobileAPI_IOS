@@ -1,6 +1,0 @@
-framework module BPMobileMessaging {
-  umbrella header "BPMobileMessaging-umbrella.h"
-
-  export *
-  module * { export * }
-}
