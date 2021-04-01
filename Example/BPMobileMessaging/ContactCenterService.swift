@@ -12,14 +12,16 @@ final class ServiceManager: NSObject, ServiceDependencyProtocol {
     let baseURL: URL
     let tenantURL: URL
     let appID: String
+    let useFirebase: Bool
     lazy var contactCenterService: ContactCenterCommunicating = {
         ContactCenterCommunicator(baseURL: baseURL, tenantURL: tenantURL, appID: appID, clientID: clientID)
     }()
-
-    init(baseURL: URL, tenantURL: URL, appID: String) {
+    
+    init(baseURL: URL, tenantURL: URL, appID: String, useFirebase: Bool) {
         self.baseURL = baseURL
         self.tenantURL = tenantURL
         self.appID = appID
+        self.useFirebase = useFirebase
 
         super.init()
 
@@ -120,8 +122,5 @@ extension ServiceManager {
     }
     var phoneNumber: String {
         value(for: \ServiceManager.phoneNumber) ?? ""
-    }
-    var useFirebase: Bool {
-        value(for: \ServiceManager.useFirebase) ?? true
     }
 }

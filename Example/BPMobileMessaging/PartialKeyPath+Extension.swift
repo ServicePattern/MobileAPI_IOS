@@ -8,7 +8,6 @@ extension PartialKeyPath where Root == ServiceManager {
     var stringValue: String {
         switch self {
         case \ServiceManager.clientID: return "clientID"
-        case \ServiceManager.useFirebase: return "useFirebase"
         case \ServiceManager.firstName: return "firstName"
         case \ServiceManager.lastName: return "lastName"
         case \ServiceManager.phoneNumber: return "phoneNumber"
@@ -23,6 +22,7 @@ extension PartialKeyPath where Root == AppDelegate {
         case \AppDelegate.baseURL: return "baseURL"
         case \AppDelegate.tenantURL: return "tenantURL"
         case \AppDelegate.appID: return "appID"
+        case \AppDelegate.useFirebase: return "useFirebase"
         default: fatalError("Unexpected keyPath")
         }
     }

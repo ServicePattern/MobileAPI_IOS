@@ -31,13 +31,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var appID: String? {
         value(for: \AppDelegate.appID)
     }
+    var useFirebase: Bool? {
+        value(for: \AppDelegate.useFirebase)
+    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         self.window = UIWindow(frame: UIScreen.main.bounds)
         registerDefaultsFromSettingsBundle()
 
-        guard let baseURL = baseURL, let tenantURL = tenantURL, let appID = appID else {
+        guard let baseURL = baseURL, let tenantURL = tenantURL, let appID = appID, let useFirebase = useFirebase else {
 
             let alert = UIAlertController(title: "Error",
                                           message:"You need to provide baseURL, tenantURL and appID to start the app. After pressing OK button you will be switched to Settings.",
@@ -54,7 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return true
         }
 
-        self.service = ServiceManager(baseURL: baseURL, tenantURL: tenantURL, appID: appID)
+        self.service = ServiceManager(baseURL: baseURL, tenantURL: tenantURL, appID: appID, useFirebase: useFirebase)
 
         let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
         guard let helpRequestViewController = storyboard.instantiateViewController(withIdentifier: "HelpRequestViewController") as? HelpRequestViewController else {
