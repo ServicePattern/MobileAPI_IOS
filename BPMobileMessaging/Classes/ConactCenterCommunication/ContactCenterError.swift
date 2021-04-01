@@ -21,8 +21,50 @@ public enum ContactCenterError: Error {
     case dataEmpty
     /// An unknown event received from the server.
     case failedToCast(String)
+    /// Missing or invalid tenantUrl.
+    case chatSessionBadTenantUrl
+    /// Authorization header is missing
+    case chatSessionNoAuthHeader
+    /// Authorization parameter format is incorrect
+    case chatSessionAuthHeaderWrongFormat
+    /// Authorization scheme is incorrect
+    case chatSessionAuthHeaderBadScheme
+    /// Authorization parameter is missing: appId
+    case chatSessionAuthHeaderMissingAppId
+    /// Authorization parameter is missing: clientId
+    case chatSessionAuthHeaderMissingClientId
+    /// Missing or invalid application unique id
+    case chatSessionAuthHeaderBadAppId
+    /// Chat server takes too long to respond
+    case chatSessionServerTimeout
+    /// No server is available to accept chat session
+    case chatSessionServerNotAvailable
+    /// Error decoding JSON request body
+    case chatSessionInvalidJson
+    /// Chat server disconnected
+    case chatSessionServerDisconnected
+    /// Launch Point (application) is not found
+    case chatSessionEntryNotFound
+    /// Internal server error
+    case chatSessionInternalServerError
+    /// Upload size limit exceeded
+    case chatSessionUploadSizeLimitExceeded
+    /// File not found
+    case chatSessionFileNotFound
+    /// Too many concurrent poll requests for the same session
+    case chatSessionTooManyPollRequests
+    /// No events
+    case chatSessionNoEvents
+    /// File I/O error
+    case chatSessionFileError
+    /// Unspecified server error
+    case chatSessionUnspecifiedServerError
     /// Chat session has already been ended.
     case chatSessionNotFound
     /// Application attempted to call `getCaseHistory` or `closeCase` API requests before server specified a CRM case for the session (before `chatSessionCaseSet` event is received).
     case chatSessionCaseNotSpecified
+    /// CRM server error
+    case chatSessionCrmServerError
+    /// Too many concurrent parameters (i.e. both APNs and Firebase device tokens)
+    case chatSessionTooManyParameters
 }
