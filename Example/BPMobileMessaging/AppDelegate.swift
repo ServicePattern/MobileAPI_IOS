@@ -139,14 +139,19 @@ extension AppDelegate {
         }
 
         let preferences = settings["PreferenceSpecifiers"] as! NSArray
-        var defaultsToRegister = [String: AnyObject]()
+        var defaultsToRegister = [String: Any]()
         for prefSpecification in preferences {
-            if let post = prefSpecification as? [String: AnyObject] {
-                guard let key = post["Key"] as? String,
-                    let defaultValue = post["DefaultValue"] else {
+            if let spec = prefSpecification as? [String: Any] {
+                guard let key = spec["Key"] as? String,
+                    let defaultValue = spec["DefaultValue"] else {
                         continue
                 }
-                defaultsToRegister[key] = defaultValue
+                if let type = spec["Type"] as? String,
+                   type == "PSToggleSwitchSpecifier" {
+                    defaultsToRegister[key] = (defaultValue as? String) == "YES" ? true: false
+                } else {
+                    defaultsToRegister[key] = defaultValue
+                }
             }
         }
         UserDefaults.standard.register(defaults: defaultsToRegister)

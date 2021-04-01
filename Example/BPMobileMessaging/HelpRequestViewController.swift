@@ -49,9 +49,6 @@ class HelpRequestViewController: ViewController, ServiceDependencyProviding {
         backgroundImage.isUserInteractionEnabled = true
         backgroundImage.addGestureRecognizer(tapGesture)
         problemDescription.backgroundColor = .white
-//        textView.attributedPlaceholder = NSAttributedString(string: "Type your message here",
-//                                                            attributes: [NSAttributedStringKey.font: textView.font,
-//                                                                         NSAttributedStringKey.foregroundColor: UIColor.lightGray])
     }
 
     private func setupSubscriptions() {
