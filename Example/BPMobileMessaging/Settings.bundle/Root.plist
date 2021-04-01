@@ -112,7 +112,7 @@
 			<key>Key</key>
 			<string>useFirebase</string>
 			<key>DefaultValue</key>
-			<string>YES</string>
+			<true/>
 		</dict>
 	</array>
 	<key>StringsTable</key>
