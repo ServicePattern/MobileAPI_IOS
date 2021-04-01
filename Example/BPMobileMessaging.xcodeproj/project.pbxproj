@@ -48,7 +48,6 @@
 
 /* Begin PBXFileReference section */
 		15627A2FBF2AC38505C0B61B /* Pods-BPMobileMessaging_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BPMobileMessaging_Tests.debug.xcconfig"; path = "Target Support Files/Pods-BPMobileMessaging_Tests/Pods-BPMobileMessaging_Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		1F338F3D692BC8A6CACD4A3C /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		2503487E031042FAD3599AA2 /* Pods-BPMobileMessaging_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BPMobileMessaging_Example.release.xcconfig"; path = "Target Support Files/Pods-BPMobileMessaging_Example/Pods-BPMobileMessaging_Example.release.xcconfig"; sourceTree = "<group>"; };
 		4BFB77F350367830558C3DA9 /* Pods_BPMobileMessaging_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BPMobileMessaging_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5CB28ADA3D4CD07E44C11A63 /* BPMobileMessaging.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = BPMobileMessaging.podspec; path = ../BPMobileMessaging.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -63,7 +62,6 @@
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* ContactCenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactCenterTests.swift; sourceTree = "<group>"; };
 		715D3021182EAF5BBF64ABEB /* Pods-BPMobileMessaging_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BPMobileMessaging_Tests.release.xcconfig"; path = "Target Support Files/Pods-BPMobileMessaging_Tests/Pods-BPMobileMessaging_Tests.release.xcconfig"; sourceTree = "<group>"; };
-		81D2A75A9B91F57A53F2E4AF /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		8E72CCF2261563EA00A44587 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8E72CCF6261563FF00A44587 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A3AD6BBEF622A29C4CFDE65D /* Pods_BPMobileMessaging_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BPMobileMessaging_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -76,6 +74,10 @@
 		F101270E25E8313300AC0B5D /* HelpRequestViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpRequestViewModel.swift; sourceTree = "<group>"; };
 		F101271225E83A5900AC0B5D /* ContactCenterService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactCenterService.swift; sourceTree = "<group>"; };
 		F101272625E863ED00AC0B5D /* NotificationNamesKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationNamesKeys.swift; sourceTree = "<group>"; };
+		F13FD507261617F0002735B1 /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = CHANGELOG.md; path = ../CHANGELOG.md; sourceTree = "<group>"; };
+		F13FD508261617FF002735B1 /* HOWTO-RELEASE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = "HOWTO-RELEASE.md"; path = "../HOWTO-RELEASE.md"; sourceTree = "<group>"; };
+		F13FD54D26161B05002735B1 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		F13FD54E26161B05002735B1 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		F151455E25DBB78400D4AF7E /* eventsFixture.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = eventsFixture.txt; sourceTree = "<group>"; };
 		F18861462600073100B17B59 /* PartialKeyPath+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PartialKeyPath+Extension.swift"; sourceTree = "<group>"; };
 		F19B0C4225FE6E9200799CAA /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
@@ -132,6 +134,10 @@
 		607FACC71AFB9204008FA782 = {
 			isa = PBXGroup;
 			children = (
+				F13FD54E26161B05002735B1 /* README.md */,
+				F13FD54D26161B05002735B1 /* LICENSE */,
+				F13FD507261617F0002735B1 /* CHANGELOG.md */,
+				F13FD508261617FF002735B1 /* HOWTO-RELEASE.md */,
 				F101258325E464FD00AC0B5D /* BPMobileMessaging_Example.entitlements */,
 				607FACF51AFB993E008FA782 /* Podspec Metadata */,
 				607FACD21AFB9204008FA782 /* Example for BPMobileMessaging */,
@@ -206,8 +212,6 @@
 			isa = PBXGroup;
 			children = (
 				5CB28ADA3D4CD07E44C11A63 /* BPMobileMessaging.podspec */,
-				81D2A75A9B91F57A53F2E4AF /* README.md */,
-				1F338F3D692BC8A6CACD4A3C /* LICENSE */,
 			);
 			name = "Podspec Metadata";
 			sourceTree = "<group>";
