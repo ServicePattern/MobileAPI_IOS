@@ -8,3 +8,6 @@
 
 "keyChatNewMessageTitle"="New chat message";
 "keyChatNewMessageSubtitle"="From %@ %@";
+
+"keyChatNewFileTitle"="New chat file";
+"keyChatNewFileSubtitle"="From %@ %@";
