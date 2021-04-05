@@ -3,32 +3,34 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>313184665395-i1b89u9gj0bosisclvbcnkqqpgh6502p.apps.googleusercontent.com</string>
+	<string>241329601132-1inkh63g4lvcpvmiv89gevhlchqvtq81.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.313184665395-i1b89u9gj0bosisclvbcnkqqpgh6502p</string>
+	<string>com.googleusercontent.apps.241329601132-1inkh63g4lvcpvmiv89gevhlchqvtq81</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>241329601132-7b62prir451i6eitcafj5uqgm1t8obk1.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDmN6vd9uuYJghGyBkCIWIl3BFFauzSBzQ</string>
+	<string>AIzaSyDLQTR7dXqe4zvBLi2nKkjloPL6zmurCbA</string>
 	<key>GCM_SENDER_ID</key>
-	<string>313184665395</string>
+	<string>241329601132</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.BP.contactcenter.BPMobileMessaging-Example</string>
 	<key>PROJECT_ID</key>
-	<string>ios-firebase-example-2f229</string>
+	<string>mobile-chat-api-v2</string>
 	<key>STORAGE_BUCKET</key>
-	<string>ios-firebase-example-2f229.appspot.com</string>
+	<string>mobile-chat-api-v2.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<false/>
+	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false/>
+	<false></false>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true/>
+	<true></true>
 	<key>IS_GCM_ENABLED</key>
-	<true/>
+	<true></true>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true/>
+	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:313184665395:ios:f63e52213773933bbbc846</string>
+	<string>1:241329601132:ios:d12242ea5c0ddefd2bb649</string>
 </dict>
 </plist>
