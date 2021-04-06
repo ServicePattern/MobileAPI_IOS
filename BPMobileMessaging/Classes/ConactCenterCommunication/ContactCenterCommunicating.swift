@@ -40,7 +40,7 @@ public protocol ContactCenterCommunicating {
     ///   - parameters: Additional parameters.
     ///   - completion: Returns chat session properties that includes `chatID` in [ContactCenterChatSessionProperties](x-source-tag://ContactCenterChatSessionProperties) or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
     /// - Tag: requestChat
-    func requestChat(phoneNumber: String, from: String, parameters: [String: String], with completion: @escaping ((Result<ContactCenterChatSessionProperties, Error>) -> Void))
+    func requestChat(phoneNumber: String?, from: String, parameters: [String: String], with completion: @escaping ((Result<ContactCenterChatSessionProperties, Error>) -> Void))
     // MARK: - Chat session related methods
     /// Returns all client events and all server events for the current session. Multiple event objects can be returned; each event's timestamp attribute can be used to restore the correct message order.
     /// - Parameters:

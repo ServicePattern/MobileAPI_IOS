@@ -39,7 +39,7 @@ struct ChatSessionPropertiesDto: Decodable {
     let state: ChatSessionStateDto
     let ewt: String?
     let isNewChat: Bool
-    let phoneNumber: String
+    let phoneNumber: String?
 
     enum CodingKeys: String, CodingKey {
         case chatID = "chat_id"

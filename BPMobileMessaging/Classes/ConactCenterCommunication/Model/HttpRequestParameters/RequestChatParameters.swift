@@ -6,7 +6,7 @@ import Foundation
 
 /// - Tag: RequestChatParameters
 struct RequestChatParameters: Encodable {
-    let phoneNumber: String
+    let phoneNumber: String?
     let from: String
     let parameters: [String: String]
 

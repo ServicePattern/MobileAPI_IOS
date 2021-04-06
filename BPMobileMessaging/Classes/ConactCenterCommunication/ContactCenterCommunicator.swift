@@ -109,7 +109,7 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
     }
 
     // MARK: - Requesting a new chat session
-    public func requestChat(phoneNumber: String, from: String, parameters: [String: String], with completion: @escaping ((Result<ContactCenterChatSessionProperties, Error>) -> Void)) {
+    public func requestChat(phoneNumber: String?, from: String, parameters: [String: String], with completion: @escaping ((Result<ContactCenterChatSessionProperties, Error>) -> Void)) {
         do {
             let requestChatBodyParameters = RequestChatParameters(phoneNumber: phoneNumber, from: from, parameters: parameters)
             let urlRequest = try httpPostRequest(with: .requestChat, body: requestChatBodyParameters)
