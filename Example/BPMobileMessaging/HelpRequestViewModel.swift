@@ -61,8 +61,7 @@ extension HelpRequestViewModel {
         let phoneNumber = service.phoneNumber
         let firstName = service.firstName
         let lastName = service.lastName
-        service.contactCenterService.requestChat(phoneNumber: phoneNumber,
-                                                 from: phoneNumber,
+        service.contactCenterService.requestChat(from: phoneNumber,
                                                  parameters:
                                                     ["email": "mobilecustomer@example.com",
                                                      "first_name": firstName,

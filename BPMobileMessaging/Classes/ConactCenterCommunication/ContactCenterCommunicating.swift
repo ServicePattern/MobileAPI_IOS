@@ -40,7 +40,7 @@ public protocol ContactCenterCommunicating {
     ///   - parameters: Additional parameters.
     ///   - completion: Returns chat session properties that includes `chatID` in [ContactCenterChatSessionProperties](x-source-tag://ContactCenterChatSessionProperties) or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
     /// - Tag: requestChat
-    func requestChat(phoneNumber: String, from: String, parameters: [String: String], with completion: @escaping ((Result<ContactCenterChatSessionProperties, Error>) -> Void))
+    func requestChat(phoneNumber: String?, from: String, parameters: [String: String], with completion: @escaping ((Result<ContactCenterChatSessionProperties, Error>) -> Void))
     // MARK: - Chat session related methods
     /// Returns all client events and all server events for the current session. Multiple event objects can be returned; each event's timestamp attribute can be used to restore the correct message order.
     /// - Parameters:
@@ -135,4 +135,20 @@ public protocol ContactCenterCommunicating {
     ///   - userInfo: Contains a payload with a new event from a backend which is received in `didReceiveRemoteNotification` or `userNotificationCenter`
     /// - Tag: appDidReceiveMessage
     func appDidReceiveMessage(_ userInfo: [AnyHashable : Any])
+}
+
+extension ContactCenterCommunicating {
+    // MARK: - Requesting a new chat session
+    /// Request Chat initiates a chat session. It provides values of all or some of the expected parameters, and
+    /// it may also contain the phone number of the mobile device. Note that if the mobile scenario entry is
+    /// not configured for automatic callback, the agent can still use this number to call the mobile user
+    /// manually, either upon the agent's own initiative or when asked to do this via a chat message from the mobile user.
+    /// - Parameters:
+    ///   - from: Propagated into scenario variable $(item.from). May be used to specify either the device owner’s name or phone number.
+    ///   - parameters: Additional parameters.
+    ///   - completion: Returns chat session properties that includes `chatID` in [ContactCenterChatSessionProperties](x-source-tag://ContactCenterChatSessionProperties) or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    /// - Tag: requestChat2
+    public func requestChat(from: String, parameters: [String: String], with completion: @escaping ((Result<ContactCenterChatSessionProperties, Error>) -> Void)) {
+        requestChat(phoneNumber: nil, from: from, parameters: parameters, with: completion)
+    }
 }
