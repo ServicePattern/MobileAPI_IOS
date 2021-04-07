@@ -5,6 +5,7 @@ The changelog for `BPMobileMessaging`. Also see the [releases](https://github.co
 ## [X.X.X](https://github.com/ServicePattern/MobileAPI_IOS/releases/tag/X.X.X)
 
 ### Fixed
+- [Issue 27](https://github.com/ServicePattern/MobileAPI_IOS/issues/27): Phone number should not be mandatory
 
 ### Added
 
