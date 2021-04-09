@@ -7,7 +7,7 @@
 */
 
 "keyChatNewMessageTitle"="Новое сообщение";
-"keyChatNewMessageSubtitle"="От %@ %@";
+"keyChatNewMessageSubtitle"="От %@";
 
 "keyChatNewFileTitle"="Новый файл";
-"keyChatNewFileSubtitle"="От %@ %@";
+"keyChatNewFileSubtitle"="От %@";
