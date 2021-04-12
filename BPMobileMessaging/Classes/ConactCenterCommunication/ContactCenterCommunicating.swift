@@ -23,6 +23,12 @@ public protocol ContactCenterCommunicating {
     /// for the current session that came from the server or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
     /// - Tag: DelegateContactCenter
     var delegate: ContactCenterEventsDelegating? { get set }
+    // MARK: - Requesting server version
+    /// Returns the server version number.
+    /// - Parameters:
+    ///   - completion: Server version [ContactCenterVersion](x-source-tag://ContactCenterVersion) if successful or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    /// - Tag: getVersion
+    func getVersion(with completion: @escaping ((Result<ContactCenterVersion, Error>) -> Void))
     // MARK: - Requesting chat availability
     /// Checks the current status of configured services.
     /// - Parameters:

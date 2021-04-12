@@ -27,6 +27,7 @@ class URLProvider {
     }
 
     enum Endpoint {
+        case getVersion
         case checkAvailability
         case getChatHistory(chatID: String)
         case getCaseHistory(chatID: String)
@@ -38,6 +39,8 @@ class URLProvider {
 
         var endpointPathString: String {
             switch self {
+            case .getVersion:
+                return "version"
             case .checkAvailability:
                 return "availability"
             case .getChatHistory(let chatID):

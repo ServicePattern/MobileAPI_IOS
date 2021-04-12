@@ -10,6 +10,7 @@ The changelog for `BPMobileMessaging`. Also see the [releases](https://github.co
 ### Added
 
  - Missing error codes added to the `ContactCenterError` enumeration
+ - `getVersion()` method and corresponding `ContactCenterVersion` structure
  
 ### Changed
 
