@@ -101,6 +101,7 @@ class PollRequestService: PollRequestServiceable {
         do {
             guard chatIDs.count > 0 else {
                 log.debug("Skip poll request because there are no chatIDs")
+                self.pollActionHttpRequestLock.unlock()
                 return
             }
             let urlRequestsWithChatIDs = try chatIDs.map { chatID in
