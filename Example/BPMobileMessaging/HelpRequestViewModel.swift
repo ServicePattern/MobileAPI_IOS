@@ -19,6 +19,11 @@ class HelpRequestViewModel {
             delegate?.update()
         }
     }
+    var serverVersion: String = "" {
+        didSet {
+//            delegate?.update()
+        }
+    }
     var isRequestInProgress: Bool = false {
         didSet {
             delegate?.update()
@@ -29,6 +34,7 @@ class HelpRequestViewModel {
     init(service: ServiceDependencyProtocol) {
         self.service = service
 
+        getServerVersion()
         checkChatAvailability()
     }
 
@@ -41,6 +47,19 @@ class HelpRequestViewModel {
 }
 
 extension HelpRequestViewModel {
+    private func getServerVersion() {
+        service.contactCenterService.getVersion { [weak self] serviceVersion in
+            DispatchQueue.main.async {
+                switch serviceVersion {
+                case .success(let version):
+                    print("Server version is \(version.serverVersion)")
+                    self?.serverVersion = version.serverVersion
+                case .failure(let error):
+                    print("Failed to obtain server version: \(error)")
+                }
+            }
+        }
+    }
     private func checkChatAvailability() {
         isRequestInProgress = true
         service.contactCenterService.checkAvailability { [weak self] serviceAvailabilityResult in

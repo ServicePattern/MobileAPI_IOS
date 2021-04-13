@@ -90,6 +90,23 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
 
         pollRequestService.httpRequestBuilder = self
     }
+    
+    // MARK: - Requesting server version
+    public func getVersion(with completion: @escaping ((Result<ContactCenterVersion, Error>) -> Void)) {
+        do {
+            networkService.dataTask(using: try httpGetRequest(with: .getVersion)) { (result: Result<ContactCenterVersionDto, Error>) -> Void in
+                switch result {
+                case .success(let version):
+                    completion(.success(version.toModel()))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        } catch {
+            log.error("Failed to getVersion: \(error)")
+            completion(.failure(error))
+        }
+    }
 
     // MARK: - Requesting chat availability
     public func checkAvailability(with completion: @escaping ((Result<ContactCenterServiceAvailability, Error>) -> Void)) {
