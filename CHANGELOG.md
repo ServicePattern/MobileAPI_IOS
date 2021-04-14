@@ -2,10 +2,12 @@
 
 The changelog for `BPMobileMessaging`. Also see the [releases](https://github.com/ServicePattern/MobileAPI_IOS/releases) on GitHub.
 
-## [X.X.X](https://github.com/ServicePattern/MobileAPI_IOS/releases/tag/X.X.X)
+## [0.1.5](https://github.com/ServicePattern/MobileAPI_IOS/releases/tag/0.1.5)
 
 ### Fixed
+- Sample application improvements and fixes
 - [Issue 27](https://github.com/ServicePattern/MobileAPI_IOS/issues/27): Phone number should not be mandatory
+- [Issue 29](https://github.com/ServicePattern/MobileAPI_IOS/issues/29): Second chat session would not poll for events if application has been moved to background and then restored
 
 ### Added
 

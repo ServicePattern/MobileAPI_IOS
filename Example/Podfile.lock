@@ -1,5 +1,5 @@
 PODS:
-  - BPMobileMessaging (0.1.4)
+  - BPMobileMessaging (0.1.5)
   - Firebase/CoreOnly (7.9.0):
     - FirebaseCore (= 7.9.0)
   - Firebase/Messaging (7.9.0):
@@ -89,7 +89,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  BPMobileMessaging: 80518d6378e586e9f9288d92669f9e1e84afe292
+  BPMobileMessaging: 039b6d55174988980f73dd5a6b1899d4943dc8dd
   Firebase: d8bd6bd34b4c7ed57bfdd056c66ff5adcdde53ab
   FirebaseCore: 0798738ad1ae0fda67e17c7b9081241c431c6859
   FirebaseCoreDiagnostics: 3d36e05da74cb8b7ce30e6594a8f201b982c725c
