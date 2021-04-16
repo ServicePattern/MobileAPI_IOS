@@ -11,3 +11,6 @@
 
 "keyChatNewFileTitle"="New chat file";
 "keyChatNewFileSubtitle"="From %@";
+
+"keyChatTimeoutWarningTitle"="Timeout warning";
+"keyChatInactivityTimeoutTitle"="We have not heard from you";

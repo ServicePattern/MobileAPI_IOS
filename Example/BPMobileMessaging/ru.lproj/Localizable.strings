@@ -11,3 +11,6 @@
 
 "keyChatNewFileTitle"="Новый файл";
 "keyChatNewFileSubtitle"="От %@";
+
+"keyChatTimeoutWarningTitle"="Нет ответа, сессия завершена";
+"keyChatInactivityTimeoutTitle"="Нет ответа, сессия скоро будет завершена";
