@@ -7,6 +7,10 @@ The changelog for `BPMobileMessaging`. Also see the [releases](https://github.co
 ### Fixed
 - Cache control header added to avoid caching of the poll requests by the HTTP proxy
 
+### Added
+
+ - Debug logging of the HTTP traffic, including HTTP headers
+
 
 ## [0.1.5](https://github.com/ServicePattern/MobileAPI_IOS/releases/tag/0.1.5)
 
