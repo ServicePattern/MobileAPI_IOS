@@ -23,8 +23,6 @@ class NetworkService: NetworkServiceable {
         request.set(headerFields: headerFields?.stringDictionary)
         request.httpBody = try body?.encode(using: encoder)
 
-        log.debug("\(request.cURL)")
-
         return request
     }
 
@@ -74,7 +72,6 @@ extension NetworkService: NetworkSessionServiceable {
                 }
                 var decodedString = String(decoding: data, as: UTF8.self)
                 decodedString = decodedString.isEmpty ? "\(data)": decodedString
-                log.debug("Received data: \(decodedString)")
                 do {
                     let decodedObject: T = try decoder.decode(T.self, from: data)
                     completion(.success(decodedObject))
