@@ -9,6 +9,7 @@ enum HttpHeaderType: String {
     case contentType = "Content-Type"
     case authorization = "Authorization"
     case userAgent = "UserAgent"
+    case cacheControl = "Cache-Control"
 }
 
 /// The value of the header-type (i.e. "application/json")
@@ -16,6 +17,7 @@ enum HttpHeaderValue: CustomStringConvertible {
     case json
     case authorization(appID: String, clientID: String)
     case mobileClient
+    case noCache
 
     var description: String {
         switch self {
@@ -23,9 +25,10 @@ enum HttpHeaderValue: CustomStringConvertible {
             return "application/json; charset=utf-8"
         case .authorization(let appID, let clientID):
             return "MOBILE-API-140-327-PLAIN appId=\(appID), clientId=\(clientID)"
-
         case .mobileClient:
             return "MobileClient"
+        case .noCache:
+            return "no-cache"
         }
     }
 }
@@ -39,7 +42,8 @@ struct HttpHeaderFields {
         HttpHeaderFields(fields:
                             [.authorization: .authorization(appID: appID, clientID: clientID),
                              .contentType: .json,
-                             .userAgent: .mobileClient]
+                             .userAgent: .mobileClient,
+                             .cacheControl: .noCache]
         )
     }
 
