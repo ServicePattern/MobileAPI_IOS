@@ -10,6 +10,7 @@ The changelog for `BPMobileMessaging`. Also see the [releases](https://github.co
 ### Added
 
  - Debug logging of the HTTP traffic, including HTTP headers
+ - Client device information in requestChat()
 
 
 ## [0.1.5](https://github.com/ServicePattern/MobileAPI_IOS/releases/tag/0.1.5)
