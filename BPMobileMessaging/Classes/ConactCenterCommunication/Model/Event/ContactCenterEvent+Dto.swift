@@ -40,6 +40,18 @@ extension ContactCenterEvent {
             return ChatSessionMessageReadDto(messageID: messageID,
                                              partyID: partyID,
                                              timestamp: timestamp)
+        case .chatSessionFile(messageID: let messageID,
+                                 partyID: let partyID,
+                                 fileID: let fileID,
+                                 fileName: let fileName,
+                                 fileType: let fileType,
+                                 timestamp: let timestamp):
+            return ChatSessionFileDto(messageID: messageID,
+                                         partyID: partyID,
+                                         fileID: fileID,
+                                         fileName: fileName,
+                                         fileType: fileType,
+                                         timestamp: timestamp)
         case .chatSessionStatus(state: let state,
                                 estimatedWaitTime: let estimatedWaitTime):
             return ChatSessionStatusDto(state: state.toDto(),

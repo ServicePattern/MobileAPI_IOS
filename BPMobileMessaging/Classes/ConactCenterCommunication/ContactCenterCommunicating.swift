@@ -29,6 +29,13 @@ public protocol ContactCenterCommunicating {
     ///   - completion: Server version [ContactCenterVersion](x-source-tag://ContactCenterVersion) if successful or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
     /// - Tag: getVersion
     func getVersion(with completion: @escaping ((Result<ContactCenterVersion, Error>) -> Void))
+    // MARK: - Requesting ful URL to the chat file
+    /// Returns the full URL to the chat file.
+    /// - Parameters:
+    ///   - fileID: file ID from the chatSessionFile event
+    ///   - completion: Full URL if successful or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    /// - Tag: getFileUrl
+    func getFileUrl(fileID: String) throws -> URL
     // MARK: - Requesting chat availability
     /// Checks the current status of configured services.
     /// - Parameters:

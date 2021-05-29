@@ -6,6 +6,7 @@ target 'BPMobileMessaging_Example' do
   pod 'BPMobileMessaging', :path => '../'
   pod 'Firebase/Messaging'
   pod 'MessageKit', '~> 3.3.0'
+  pod 'Kingfisher'
 
   target 'BPMobileMessaging_Tests' do
     inherit! :search_paths

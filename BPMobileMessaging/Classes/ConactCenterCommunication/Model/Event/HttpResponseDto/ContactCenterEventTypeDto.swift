@@ -21,6 +21,7 @@ enum ContactCenterEventTypeDto: String, Codable, CaseIterable {
     case chatSessionEnded = "chat_session_ended"
     case chatSessionDisconnect = "chat_session_disconnect"
     case chatSessionEnd = "chat_session_end"
+    case chatSessionFile = "chat_session_file"
     case unknown
 
     /// Makes a correspondence between an even type and a particular event Dto JSON codable object
@@ -56,6 +57,8 @@ enum ContactCenterEventTypeDto: String, Codable, CaseIterable {
             return ChatSessionDisconnectDto.self
         case .chatSessionEnd:
             return ChatSessionEndDto.self
+        case .chatSessionFile:
+            return ChatSessionFileDto.self
         case .unknown:
             return UnknownEventDto.self
         }

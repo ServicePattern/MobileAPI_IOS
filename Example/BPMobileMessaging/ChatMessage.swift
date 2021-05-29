@@ -20,7 +20,7 @@ internal struct ChatMessage: MessageType {
 
     var user: ChatUser
     var read: Bool = false
-
+    
     private init(kind: MessageKind, user: ChatUser, messageId: String, date: Date) {
         self.kind = kind
         self.user = user
@@ -38,5 +38,9 @@ internal struct ChatMessage: MessageType {
 
     init(attributedText: NSAttributedString, user: ChatUser, messageId: String, date: Date) {
         self.init(kind: .attributedText(attributedText), user: user, messageId: messageId, date: date)
+    }
+
+    init(photo: MediaItem, user: ChatUser, messageId: String, date: Date) {
+        self.init(kind: .photo(photo), user: user, messageId: messageId, date: date)
     }
 }
