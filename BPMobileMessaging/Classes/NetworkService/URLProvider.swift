@@ -7,6 +7,7 @@ import Foundation
 class URLProvider {
     static let apiVersion = "v2"
     static let basePath = "clientweb/api"
+    static let filePath = "clientweb/file"
 
     struct HTTPRequestDefaultParameters: Codable {
         let tenantURL: String
@@ -19,6 +20,19 @@ class URLProvider {
         urlComponents?.port = 443
 
         guard let completeBaseURL = URL(string: baseAndVersionPath, relativeTo:  urlComponents?.url) else {
+
+            throw ContactCenterError.failedToBuildBaseURL
+        }
+
+        return completeBaseURL
+    }
+
+    static func baseFileURL(basedOn baseURL: URL) throws -> URL {
+        var urlComponents = URLComponents(string: baseURL.absoluteString)
+        urlComponents?.scheme = "https"
+        urlComponents?.port = 443
+
+        guard let completeBaseURL = URL(string: filePath, relativeTo:  urlComponents?.url) else {
 
             throw ContactCenterError.failedToBuildBaseURL
         }

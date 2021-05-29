@@ -10,6 +10,7 @@ protocol HttpRequestBuilding: class {
 /// Impementation of the `ContactCenterCommunicating` protocol.
 public final class ContactCenterCommunicator: ContactCenterCommunicating {
     internal let baseURL: URL
+    internal let baseFileURL: URL
     internal let tenantURL: URL
     internal let appID: String
     internal let clientID: String
@@ -46,6 +47,11 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
             self.baseURL = try URLProvider.baseURL(basedOn: baseURL)
         } catch {
             fatalError("Failed to construct Base URL based on: \(baseURL)")
+        }
+        do {
+            self.baseFileURL = try URLProvider.baseFileURL(basedOn: baseURL)
+        } catch {
+            fatalError("Failed to construct Base File URL based on: \(baseURL)")
         }
         self.tenantURL = tenantURL
         self.appID = appID
@@ -106,6 +112,18 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
             log.error("Failed to getVersion: \(error)")
             completion(.failure(error))
         }
+    }
+    
+    // MARK: - Full URL to the chat file
+    public func getFileUrl(fileID: String) throws -> URL {
+        var urlComponents = URLComponents(url: self.baseFileURL, resolvingAgainstBaseURL: true)
+        let basePath = urlComponents?.path ?? ""
+        urlComponents?.path = basePath.appendingPathComponents(fileID)
+
+        guard let completeURL = urlComponents?.url else {
+            throw ContactCenterError.failedToBuildBaseURL
+        }
+        return completeURL
     }
 
     // MARK: - Requesting chat availability

@@ -48,6 +48,16 @@ public enum ContactCenterEvent {
     ///   - partyID: a unique ID of the party the message who has read the message
     ///   - timestamp: Timestamp of the event
     case chatSessionMessageRead(messageID: String?, partyID: String?, timestamp: Date?)
+    /// A new chat file is received from the server or being sent to the server.
+    /// Direction: S<->C
+    /// - Parameters:
+    ///   - messageID: a unique ID of the message within the session
+    ///   - partyID: a unique ID of the party who sent the message. Agent parties are reported by `chatSessionPartyJoined` event. Client party ID always matches the chat ID.
+    ///   - fileID: file ID
+    ///   - fileName: file name
+    ///   - fileType: file type
+    ///   - timestamp: Timestamp of the event
+    case chatSessionFile(messageID: String?, partyID: String?, fileID: String, fileName: String, fileType: String, timestamp: Date?)
     /// Updates the current state of the chat session. If the state is failed, the client application shall assume that the chat session no longer exists.
     /// Direction: S->C
     /// - Parameters:

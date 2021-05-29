@@ -175,6 +175,18 @@ class ChatViewModel {
 }
 
 extension ChatViewModel {
+    private struct ImageMediaItem: MediaItem {
+        var url: URL?
+        var image: UIImage?
+        var placeholderImage: UIImage
+        var size: CGSize
+        
+        init(url: URL) {
+            self.url = url
+//            self.size = CGSize(width: 240, height: 240)
+            self.placeholderImage = UIImage()
+        }
+    }
     @objc
     private func receivedEvents(notification: Notification) {
         guard let events = notification.userInfo?[NotificationUserInfoKey.contactCenterEvents] as? [ContactCenterEvent] else {
@@ -255,6 +267,22 @@ extension ChatViewModel {
                                             date: timestamp))
                 chatMessageDelivered(chatID: chatID, messageID: messageID)
                 chatMessageRead(chatID: chatID, messageID: messageID)
+            case .chatSessionFile(let messageID, let partyID, let fileID, let fileName, let fileType, let timestamp):
+                print("\(timestamp): party: \(partyID) sent \(fileType) file \(fileName)")
+                
+                do {
+                    let url = try service.contactCenterService.getFileUrl(fileID: fileID)
+                    
+                    switch fileType {
+                    case "image":
+                        messages.append(ChatMessage(photo: ImageMediaItem(url: url),
+                                                    user: self.getParty(partyID: partyID!),
+                                                    messageId: messageID!,
+                                                    date: timestamp!))
+                    default: ()
+                    }
+                } catch {
+                }
             case .chatSessionStatus(let state, let estimatedWaitTime):
                 if state == .connected {
                     print("Connected to a chat: \(chatID)")

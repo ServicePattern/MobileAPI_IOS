@@ -114,7 +114,7 @@ class PollRequestService: PollRequestServiceable {
                     guard let self = self else { return }
                     switch result {
                     case .success(let eventsContainer):
-                        //  Report received server events to the application
+                        //  Report received server events to the application                        
                         self.delegate?.chatSessionEvents(result: .success(eventsContainer.events))
                         //  Reset currentChatID to stop polling timer if session has ended
                         for e in eventsContainer.events {
