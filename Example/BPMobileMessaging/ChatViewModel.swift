@@ -175,18 +175,6 @@ class ChatViewModel {
 }
 
 extension ChatViewModel {
-    private struct ImageMediaItem: MediaItem {
-        var url: URL?
-        var image: UIImage?
-        var placeholderImage: UIImage
-        var size: CGSize
-        
-        init(url: URL) {
-            self.url = url
-            self.size = CGSize(width: 240, height: 240)
-            self.placeholderImage = UIImage()
-        }
-    }
     @objc
     private func receivedEvents(notification: Notification) {
         guard let events = notification.userInfo?[NotificationUserInfoKey.contactCenterEvents] as? [ContactCenterEvent] else {

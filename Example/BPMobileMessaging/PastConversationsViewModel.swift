@@ -11,6 +11,7 @@ protocol PastConversationsViewModelUpdatable: class {
 
 class PastConversationsViewModel {
     weak var delegate: PastConversationsViewModelUpdatable?
+    private let service: ServiceDependencyProtocol
     private var systemParty = ChatUser(senderId: "", displayName: "")
     private var myParty = ChatUser(senderId: "me", displayName: "Me")
     private var parties: [String: ChatUser] = [:]
@@ -37,7 +38,8 @@ class PastConversationsViewModel {
         return IndexPath(item: 0, section: messages.count - 1)
     }
 
-    init(sessions: [ContactCenterChatSession]) {
+    init(service: ServiceDependencyProtocol, sessions: [ContactCenterChatSession]) {
+        self.service = service
         var messages = [ChatMessage]()
         sessions.forEach { session in
             if session.events.count > 0 {
@@ -73,6 +75,21 @@ class PastConversationsViewModel {
                                                 user: user,
                                                 messageId: messageID,
                                                 date: timestamp ?? Date()))
+                case .chatSessionFile(let messageID, let partyID, let fileID, let fileName, let fileType, let timestamp):
+                    do {
+                        let url = try service.contactCenterService.getFileUrl(fileID: fileID)
+                        print("Rendering file \(url)")
+
+                        switch fileType {
+                        case "image":
+                            messages.append(ChatMessage(photo: ImageMediaItem(url: url),
+                                                        user: self.getParty(partyID: partyID!),
+                                                        messageId: messageID ?? "",
+                                                        date: timestamp!))
+                        default: ()
+                        }
+                    } catch {
+                    }
                 case .chatSessionStatus:()
                 case .chatSessionCaseSet: ()
                 case .chatSessionTimeoutWarning(let message, let timestamp):

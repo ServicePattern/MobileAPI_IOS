@@ -46,6 +46,11 @@ class ChatViewController: MessagesViewController, MessagesDataSource, ServiceDep
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
 
+        if let sourceVC = segue.source as? ServiceDependencyProviding,
+           let destinationVC = segue.destination as? ServiceDependencyProviding {
+            destinationVC.service = sourceVC.service
+        }
+
         if let vc = segue.destination as? PastConversationsViewController {
             vc.chatSessions = viewModel.chatSessions
         }
