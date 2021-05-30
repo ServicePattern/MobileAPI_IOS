@@ -183,7 +183,7 @@ extension ChatViewModel {
         
         init(url: URL) {
             self.url = url
-//            self.size = CGSize(width: 240, height: 240)
+            self.size = CGSize(width: 240, height: 240)
             self.placeholderImage = UIImage()
         }
     }
