@@ -4,13 +4,17 @@
 import UIKit
 import MessageKit
 import BPMobileMessaging
+import Kingfisher
 
 class PastConversationsViewController: MessagesViewController, ServiceDependencyProviding {
 
     var service: ServiceDependencyProtocol?
     var chatSessions = [ContactCenterChatSession]()
     lazy var viewModel: PastConversationsViewModel = {
-        PastConversationsViewModel(sessions: chatSessions)
+        guard let service = service else {
+            fatalError("PastConversationsViewController parameters empty")
+        }
+        return PastConversationsViewModel(service: service, sessions: chatSessions)
     }()
 
     private let formatter: DateFormatter = {
@@ -149,6 +153,14 @@ extension PastConversationsViewController: MessagesDisplayDelegate {
 
         let tail: MessageStyle.TailCorner = isFromCurrentSender(message: messageType) ? .bottomRight : .bottomLeft
         return .bubbleTail(tail, .curved)
+    }
+
+    func configureMediaMessageImageView(_ imageView: UIImageView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
+        if case MessageKind.photo(let media) = message.kind, let imageURL = media.url {
+            imageView.kf.setImage(with: imageURL)
+        } else {
+            imageView.kf.cancelDownloadTask()
+        }
     }
 }
 

@@ -15,6 +15,7 @@
 		607FACEC1AFB9204008FA782 /* ContactCenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* ContactCenterTests.swift */; };
 		8729710E0FD0DD6FBE468D0A /* Pods_BPMobileMessaging_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3AD6BBEF622A29C4CFDE65D /* Pods_BPMobileMessaging_Tests.framework */; };
 		8E72CCF3261563EA00A44587 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8E72CCF1261563EA00A44587 /* Localizable.strings */; };
+		8EA592EB2663558B00B1E3D3 /* ImageMediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA592EA2663558B00B1E3D3 /* ImageMediaItem.swift */; };
 		A81B471DE62BDFC3937D2F4C /* Pods_BPMobileMessaging_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BFB77F350367830558C3DA9 /* Pods_BPMobileMessaging_Example.framework */; };
 		F10126A025E6F74500AC0B5D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F101268E25E6EEE100AC0B5D /* GoogleService-Info.plist */; };
 		F10126F925E82F3600AC0B5D /* ViewController+ServiceDependency.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10126F825E82F3600AC0B5D /* ViewController+ServiceDependency.swift */; };
@@ -64,6 +65,7 @@
 		715D3021182EAF5BBF64ABEB /* Pods-BPMobileMessaging_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BPMobileMessaging_Tests.release.xcconfig"; path = "Target Support Files/Pods-BPMobileMessaging_Tests/Pods-BPMobileMessaging_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		8E72CCF2261563EA00A44587 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8E72CCF6261563FF00A44587 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8EA592EA2663558B00B1E3D3 /* ImageMediaItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageMediaItem.swift; sourceTree = "<group>"; };
 		A3AD6BBEF622A29C4CFDE65D /* Pods_BPMobileMessaging_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BPMobileMessaging_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F101258325E464FD00AC0B5D /* BPMobileMessaging_Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BPMobileMessaging_Example.entitlements; sourceTree = "<group>"; };
 		F101268E25E6EEE100AC0B5D /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -176,6 +178,7 @@
 				607FACD31AFB9204008FA782 /* Supporting Files */,
 				F19B0C4625FE6EBA00799CAA /* Settings */,
 				F18861462600073100B17B59 /* PartialKeyPath+Extension.swift */,
+				8EA592EA2663558B00B1E3D3 /* ImageMediaItem.swift */,
 			);
 			name = "Example for BPMobileMessaging";
 			path = BPMobileMessaging;
@@ -479,6 +482,7 @@
 				F1CADBA125F55C3F00CA074E /* PastConversationsViewModel.swift in Sources */,
 				F101270F25E8313300AC0B5D /* HelpRequestViewModel.swift in Sources */,
 				F1A15A2B25E9B3A100191AAB /* ChatViewController.swift in Sources */,
+				8EA592EB2663558B00B1E3D3 /* ImageMediaItem.swift in Sources */,
 				F1A15BAE25ED22E700191AAB /* LinkLabel.swift in Sources */,
 				F18861472600073100B17B59 /* PartialKeyPath+Extension.swift in Sources */,
 				F1A15A2F25E9B3C800191AAB /* ChatViewModel.swift in Sources */,
