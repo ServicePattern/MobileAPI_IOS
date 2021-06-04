@@ -143,6 +143,52 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
         }
     }
 
+    private func uploadData(fileName: String, contentType: String, body: Data, with completion: @escaping (Result<ContactCenterUploadedFileInfo, Error>) -> Void) {
+        do {
+            let boundary = UUID().uuidString
+            
+            let headers = defaultHttpHeaderFields.merging(HttpHeaderFields(fields: [.contentType : .multipart(boundary: boundary)]), true)
+            
+            var data = Data()
+            // Add the image data to the raw http request data
+            data.append("\r\n--\(boundary)\r\n".data(using: .utf8)!)
+            data.append("Content-Disposition: form-data; name=\"file-upload-input\"; filename=\"\(fileName)\"\r\n".data(using: .utf8)!)
+            data.append("Content-Type: \(contentType)\r\n\r\n".data(using: .utf8)!)
+            data.append(body)
+
+            data.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
+
+            
+            guard let urlRequest = try networkService.createRequest(method: .post,
+                                                                    baseURL: baseURL,
+                                                                    endpoint: .uploadFile,
+                                                                    headerFields: headers,
+                                                                    parameters: defaultHttpRequestParameters,
+                                                                    data: data) else {
+                log.error("Failed to create URL request")
+
+                throw ContactCenterError.failedToCreateURLRequest
+            }
+
+            networkService.dataTask(using: urlRequest) { (result: Result<UploadFileResultDto, Error>) -> Void in
+                switch result {
+                case .success(let fileInfo):
+                    completion(.success(fileInfo.toModel()))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        } catch {
+            log.error("Failed to uploadFile: \(error)")
+            completion(.failure(error))
+        }
+    }
+    
+    // MARK: - Uploading an image
+    public func uploadFile(fileName: String, image: UIImage, with completion: @escaping (Result<ContactCenterUploadedFileInfo, Error>) -> Void) {
+        uploadData(fileName: fileName, contentType: "image/jpeg", body: image.jpegData(compressionQuality: 1.0)!, with:completion)
+    }
+
     // MARK: - Requesting a new chat session
     public func requestChat(phoneNumber: String?, from: String, parameters: [String: String], with completion: @escaping ((Result<ContactCenterChatSessionProperties, Error>) -> Void)) {
         do {
@@ -228,7 +274,28 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
             completion(.failure(error))
         }
     }
-
+    
+    public func sendChatFile(chatID: String, fileID: String, fileName: String, fileType: String, with completion: @escaping (Result<String, Error>) -> Void) {
+        let messageID = messageIdentifier()
+        do {
+            let urlRequest = try httpSendEventsPostRequest(chatID: chatID,
+                                                           events: [.chatSessionFile(messageID: messageID, partyID: nil, fileID: fileID, fileName: fileName, fileType: fileType, timestamp: nil)])
+            networkService.dataTask(using: urlRequest) { [weak self] (response: NetworkDataResponse) in
+                switch response {
+                case .success(_):
+                    // Change the internal state on the main thread which used at other places
+                    self?.messageNumber += 1
+                    completion(.success(messageID))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        } catch {
+            log.error("Failed to sendChatMessage: \(error)")
+            completion(.failure(error))
+        }
+    }
+    
     public func chatMessageDelivered(chatID: String, messageID: String, with completion: @escaping (Result<Void, Error>) -> Void) {
         do {
             let urlRequest = try httpSendEventsPostRequest(chatID: chatID,

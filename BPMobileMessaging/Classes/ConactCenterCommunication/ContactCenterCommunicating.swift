@@ -143,6 +143,23 @@ public protocol ContactCenterCommunicating {
    ///   - completion: Returns `.success` or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
     /// - Tag: subscribeForRemoteNotificationsFirebase
     func subscribeForRemoteNotificationsFirebase(chatID: String, deviceToken: String, with completion: @escaping (Result<Void, Error>) -> Void)
+    /// Send a file to the chat session. The file should be uploaded to the server first using `uploadFile` method.
+    /// - Parameters:
+    ///   - chatID: The current chat ID
+    ///   - fileID: The file ID. Returned by `uploadFile` method.
+    ///   - fileName: The file name.
+    ///   - fileType: The file type.
+    ///   - completion: Returns  `messageID` in the format chatId:messageNumber where messageNumber is
+    /// ordinal number of the given message in the chat exchange or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    /// - Tag: sendChatFile
+    func sendChatFile(chatID: String, fileID: String, fileName: String, fileType: String, with completion: @escaping (Result<String, Error>) -> Void)
+    /// Uploads an image to the server.
+    /// - Parameters:
+    ///   - fileName: The file name.
+    ///   - image: image to upload
+    ///   - completion: Returns `fileID` or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    /// - Tag: uploadFile
+    func uploadFile(fileName: String, image: UIImage, with completion: @escaping (Result<ContactCenterUploadedFileInfo, Error>) -> Void)
     /// Notify contact center library about new remote notification.
     /// - Parameters:
     ///   - userInfo: Contains a payload with a new event from a backend which is received in `didReceiveRemoteNotification` or `userNotificationCenter`

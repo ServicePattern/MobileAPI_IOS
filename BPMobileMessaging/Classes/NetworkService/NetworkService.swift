@@ -26,6 +26,16 @@ class NetworkService: NetworkServiceable {
         return request
     }
 
+    func createRequest(method: HttpMethod, url: URL, headerFields: HttpHeaderFields? = nil, data: Data? = nil) throws -> URLRequest {
+
+        var request = URLRequest(url: url)
+        request.httpMethod = method.rawValue
+        request.set(headerFields: headerFields?.stringDictionary)
+        request.httpBody = data
+
+        return request
+    }
+
     func createRequest(method: HttpMethod, baseURL: URL, endpoint: URLProvider.Endpoint, headerFields: HttpHeaderFields, parameters: Encodable? = nil, body: Encodable? = nil) throws -> URLRequest? {
 
         var urlComponents = URLComponents(url: baseURL, resolvingAgainstBaseURL: true)
@@ -41,6 +51,23 @@ class NetworkService: NetworkServiceable {
                              url: url,
                              headerFields: headerFields,
                              body: body)
+    }
+
+    func createRequest(method: HttpMethod, baseURL: URL, endpoint: URLProvider.Endpoint, headerFields: HttpHeaderFields, parameters: Encodable? = nil, data: Data? = nil) throws -> URLRequest? {
+
+        var urlComponents = URLComponents(url: baseURL, resolvingAgainstBaseURL: true)
+        let basePath = urlComponents?.path ?? ""
+        urlComponents?.path = basePath.appendingPathComponents(endpoint.endpointPathString)
+        urlComponents?.queryItems = parameters?.queryItems
+
+        guard let url = urlComponents?.url else {
+            fatalError("Failed to build URL: method \(method) baseURL \(baseURL) endpoint \(endpoint)")
+        }
+
+        return try createRequest(method: method,
+                             url: url,
+                             headerFields: headerFields,
+                             data: data)
     }
 
     func decode<T: Decodable>(to type: T.Type, data: Data) throws -> T {

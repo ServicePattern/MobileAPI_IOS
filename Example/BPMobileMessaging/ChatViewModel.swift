@@ -5,6 +5,7 @@
 import Foundation
 import BPMobileMessaging
 import MessageKit
+import InputBarAccessoryView
 
 protocol ChatViewModelUpdatable: class {
     func update(appendedCount: Int, updatedCount: Int, _ completion: (() -> Void)?)
@@ -71,14 +72,28 @@ class ChatViewModel {
                 }
             }
         }
+        
+        service.contactCenterService.getChatHistory(chatID: currentChatID) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let events):
+                    self.processSessionEvents(events: events)
+                case .failure(let error): ()
+                }
+            }
+        }
    }
 
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
     
-    func getParty(partyID: String) -> ChatUser {
-       parties[partyID] ?? systemParty
+    func getParty(partyID: String?) -> ChatUser {
+        guard let partyID = partyID else {
+            return self.myParty
+        }
+        
+        return parties[partyID] ?? systemParty
     }
 
     func chatMessagesCount() -> Int {
@@ -89,10 +104,11 @@ class ChatViewModel {
         messages[index]
     }
 
-    func userEnteredData(_ data: [Any], with completion : (() -> Void)?) {
+    func userEnteredTextWithAttachments(_ data: [Any], _ attachments: [AttachmentManager.Attachment], with completion : (() -> Void)?) {
         guard let chatID = currentChatID else {
             return
         }
+
         var messageTexts = [String]()
         data.forEach { component in
             if let text = component as? String {
@@ -101,8 +117,54 @@ class ChatViewModel {
         }
 
         let dipatchGroup = DispatchGroup()
+
         DispatchQueue.global(qos: .default).async { [myParty, weak self] in
+
+            //  First, upload all files
+            var files = [ContactCenterUploadedFileInfo]()
+            for item in attachments {
+                if  case .image(let image) = item {
+                  
+                    dipatchGroup.enter()
+                    self?.service.contactCenterService.uploadFile(fileName: "ddd", image: image) { resultUpload in
+                        switch resultUpload {
+                        case .success(let fileInfo):
+                            files.append(fileInfo)
+                        case .failure:()
+                        }
+                        dipatchGroup.leave()
+                    }
+                }
+            }
+
+            dipatchGroup.wait()
+            
+            //  Then send message for each uploaded file
             var messages = [ChatMessage]()
+            for file in files {
+                dipatchGroup.enter()
+
+                self?.service.contactCenterService.sendChatFile(chatID: chatID, fileID: file.fileID, fileName: file.fileName, fileType: "image") { resultSend in
+                    do {
+                        switch resultSend {
+                        case .success(let messageID):
+                            let url = try self?.service.contactCenterService.getFileUrl(fileID: file.fileID)
+
+                            messages.append(ChatMessage(photo: ImageMediaItem(url: url!),
+                                                        user: myParty,
+                                                        messageId: messageID,
+                                                        date: Date()))
+                        case .failure:()
+                        }
+                    } catch {
+                    }
+                    
+                    dipatchGroup.leave()
+                }
+            }
+
+            dipatchGroup.wait()
+            
             for text in messageTexts {
                 dipatchGroup.enter()
                 self?.service.contactCenterService.sendChatMessage(chatID: chatID,
@@ -118,8 +180,10 @@ class ChatViewModel {
                     dipatchGroup.leave()
                 }
             }
+
             dipatchGroup.wait()
 
+            //  And rende all send files
             DispatchQueue.main.async { [weak self] in
                 completion?()
                 self?.messages.append(contentsOf: messages)
@@ -255,6 +319,7 @@ extension ChatViewModel {
                                             date: timestamp))
                 chatMessageDelivered(chatID: chatID, messageID: messageID)
                 chatMessageRead(chatID: chatID, messageID: messageID)
+            
             case .chatSessionFile(let messageID, let partyID, let fileID, let fileName, let fileType, let timestamp):
                 print("\(timestamp): party: \(partyID) sent \(fileType) file \(fileName)")
                 
@@ -264,13 +329,14 @@ extension ChatViewModel {
                     switch fileType {
                     case "image":
                         messages.append(ChatMessage(photo: ImageMediaItem(url: url),
-                                                    user: self.getParty(partyID: partyID!),
+                                                    user: self.getParty(partyID: partyID),
                                                     messageId: messageID!,
                                                     date: timestamp!))
                     default: ()
                     }
                 } catch {
                 }
+            
             case .chatSessionStatus(let state, let estimatedWaitTime):
                 if state == .connected {
                     print("Connected to a chat: \(chatID)")

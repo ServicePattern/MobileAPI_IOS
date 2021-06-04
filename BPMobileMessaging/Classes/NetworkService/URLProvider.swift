@@ -50,6 +50,8 @@ class URLProvider {
         case sendEvents(chatID: String)
         case subscribeForNotifications(chatID: String)
         case closeCase(chatID: String)
+        case getFile(chatID: String, fileID: String)
+        case uploadFile
 
         var endpointPathString: String {
             switch self {
@@ -71,6 +73,10 @@ class URLProvider {
                 return "chats/\(chatID)/notifications"
             case .closeCase(let chatID):
                 return "chats/\(chatID)/closecase"
+            case .getFile(let chatID, let fileID):
+                return "chats/\(chatID)/files/\(fileID)"
+            case .uploadFile:
+                return "files"
             }
         }
     }
