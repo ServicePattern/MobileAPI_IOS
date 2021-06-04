@@ -95,6 +95,7 @@ class ChatViewController: MessagesViewController, MessagesDataSource, ServiceDep
     }
 
     func configureMessageInputBar() {
+        messageInputBar = CameraInputBarAccessoryView()
         messageInputBar.delegate = self
         messageInputBar.sendButton.setTitleColor(.primaryColor, for: .normal)
         messageInputBar.sendButton.setTitleColor(
@@ -227,19 +228,12 @@ extension ChatViewController: MessagesLayoutDelegate {
     func messageBottomLabelHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
         return 16
     }
-
 }
 
-// MARK: - MessageInputBarDelegate
+// MARK: - CameraInputBarAccessoryViewDelegate
 
-extension ChatViewController: InputBarAccessoryViewDelegate {
-
-    @objc
-    func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
-        processInputBar(messageInputBar)
-    }
-
-    func processInputBar(_ inputBar: InputBarAccessoryView) {
+extension ChatViewController: CameraInputBarAccessoryViewDelegate {
+    func inputBar(_ inputBar: InputBarAccessoryView, withText text: String, andAttachments attachments: [AttachmentManager.Attachment]) {
         // Here we can parse for which substrings were autocompleted
         let attributedText = inputBar.inputTextView.attributedText!
         let range = NSRange(location: 0, length: attributedText.length)
@@ -251,17 +245,19 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
         }
 
         let components = inputBar.inputTextView.components
+        
         inputBar.inputTextView.text = String()
         inputBar.invalidatePlugins()
-        // Send button activity animation
+
         inputBar.sendButton.startAnimating()
-        inputBar.inputTextView.placeholder = "Sending..."
+        inputBar.inputTextView.placeholder = "Uploading files..."
+
         // Resign first responder for iPad split view
         inputBar.inputTextView.resignFirstResponder()
-        viewModel.userEnteredData(components) {
+        viewModel.userEnteredTextWithAttachments(components, attachments) {
             inputBar.sendButton.stopAnimating()
             inputBar.inputTextView.placeholder = "Aa"
-        }
+        }        
     }
 }
 

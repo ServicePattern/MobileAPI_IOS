@@ -18,6 +18,7 @@ enum HttpHeaderValue: CustomStringConvertible {
     case authorization(appID: String, clientID: String)
     case mobileClient
     case noCache
+    case multipart(boundary: String)
 
     var description: String {
         switch self {
@@ -29,6 +30,8 @@ enum HttpHeaderValue: CustomStringConvertible {
             return "MobileClient"
         case .noCache:
             return "no-cache"
+        case .multipart(let boundary):
+            return "multipart/form-data; boundary=\(boundary)"
         }
     }
 }
@@ -63,9 +66,14 @@ struct HttpHeaderFields {
     ///                                                                  clientID: "2")
     ///                                                     .merging(specialHttpHeaderFields)
     /// ```
-    func merging(_ headerFieldsToMerge: HttpHeaderFields) -> HttpHeaderFields {
-        let mergedFields = fields.merging(headerFieldsToMerge.fields)  { (current, _) in current }
-
-        return HttpHeaderFields(fields: mergedFields)
+    func merging(_ headerFieldsToMerge: HttpHeaderFields, _ replace: Bool = false) -> HttpHeaderFields {
+        
+        if (replace) {
+            let mergedFields = fields.merging(headerFieldsToMerge.fields)  { (_, new) in new }
+            return HttpHeaderFields(fields: mergedFields)
+        } else {
+            let mergedFields = fields.merging(headerFieldsToMerge.fields)  { (current, _) in current }
+            return HttpHeaderFields(fields: mergedFields)
+        }
     }
 }

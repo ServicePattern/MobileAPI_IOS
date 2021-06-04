@@ -16,6 +16,8 @@
 		8729710E0FD0DD6FBE468D0A /* Pods_BPMobileMessaging_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3AD6BBEF622A29C4CFDE65D /* Pods_BPMobileMessaging_Tests.framework */; };
 		8E72CCF3261563EA00A44587 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8E72CCF1261563EA00A44587 /* Localizable.strings */; };
 		8EA592EB2663558B00B1E3D3 /* ImageMediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA592EA2663558B00B1E3D3 /* ImageMediaItem.swift */; };
+		8EDCBF4C266860300014C775 /* CameraInputBarAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDCBF4B266860300014C775 /* CameraInputBarAccessoryView.swift */; };
+		8EDCBF502668606C0014C775 /* AlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDCBF4F2668606C0014C775 /* AlertService.swift */; };
 		A81B471DE62BDFC3937D2F4C /* Pods_BPMobileMessaging_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BFB77F350367830558C3DA9 /* Pods_BPMobileMessaging_Example.framework */; };
 		F10126A025E6F74500AC0B5D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F101268E25E6EEE100AC0B5D /* GoogleService-Info.plist */; };
 		F10126F925E82F3600AC0B5D /* ViewController+ServiceDependency.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10126F825E82F3600AC0B5D /* ViewController+ServiceDependency.swift */; };
@@ -66,6 +68,8 @@
 		8E72CCF2261563EA00A44587 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8E72CCF6261563FF00A44587 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8EA592EA2663558B00B1E3D3 /* ImageMediaItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageMediaItem.swift; sourceTree = "<group>"; };
+		8EDCBF4B266860300014C775 /* CameraInputBarAccessoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraInputBarAccessoryView.swift; sourceTree = "<group>"; };
+		8EDCBF4F2668606C0014C775 /* AlertService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertService.swift; sourceTree = "<group>"; };
 		A3AD6BBEF622A29C4CFDE65D /* Pods_BPMobileMessaging_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BPMobileMessaging_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F101258325E464FD00AC0B5D /* BPMobileMessaging_Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BPMobileMessaging_Example.entitlements; sourceTree = "<group>"; };
 		F101268E25E6EEE100AC0B5D /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -162,23 +166,18 @@
 		607FACD21AFB9204008FA782 /* Example for BPMobileMessaging */ = {
 			isa = PBXGroup;
 			children = (
+				8EDCBF54266860910014C775 /* Misc */,
 				8E72CCF1261563EA00A44587 /* Localizable.strings */,
-				F101272625E863ED00AC0B5D /* NotificationNamesKeys.swift */,
 				F10126FC25E82FA900AC0B5D /* Extensions */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
-				F10126F825E82F3600AC0B5D /* ViewController+ServiceDependency.swift */,
-				F101271225E83A5900AC0B5D /* ContactCenterService.swift */,
 				F101270B25E830DC00AC0B5D /* HelpRequest */,
 				F1A15A3225E9B3DB00191AAB /* ChatView */,
 				F1CADB9F25F55C2900CA074E /* PastConversations */,
-				F101270725E8308900AC0B5D /* ExampleAppError.swift */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
 				F19B0C4625FE6EBA00799CAA /* Settings */,
-				F18861462600073100B17B59 /* PartialKeyPath+Extension.swift */,
-				8EA592EA2663558B00B1E3D3 /* ImageMediaItem.swift */,
 			);
 			name = "Example for BPMobileMessaging";
 			path = BPMobileMessaging;
@@ -219,9 +218,25 @@
 			name = "Podspec Metadata";
 			sourceTree = "<group>";
 		};
+		8EDCBF54266860910014C775 /* Misc */ = {
+			isa = PBXGroup;
+			children = (
+				8EDCBF4F2668606C0014C775 /* AlertService.swift */,
+				8EDCBF4B266860300014C775 /* CameraInputBarAccessoryView.swift */,
+				F1A15C3225EE2AA000191AAB /* ChatMessage.swift */,
+				F101270725E8308900AC0B5D /* ExampleAppError.swift */,
+				8EA592EA2663558B00B1E3D3 /* ImageMediaItem.swift */,
+				F101272625E863ED00AC0B5D /* NotificationNamesKeys.swift */,
+				F10126F825E82F3600AC0B5D /* ViewController+ServiceDependency.swift */,
+			);
+			name = Misc;
+			sourceTree = "<group>";
+		};
 		F10126FC25E82FA900AC0B5D /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				F101271225E83A5900AC0B5D /* ContactCenterService.swift */,
+				F18861462600073100B17B59 /* PartialKeyPath+Extension.swift */,
 				F10126FF25E8301B00AC0B5D /* UIViewController+Extension.swift */,
 				F101270325E8305600AC0B5D /* DefaultStringInterpolation+Extension.swift */,
 			);
@@ -252,7 +267,6 @@
 				F1A15A2E25E9B3C800191AAB /* ChatViewModel.swift */,
 				F1A15BAD25ED22E700191AAB /* LinkLabel.swift */,
 				F1A15C1D25ED85A700191AAB /* LinkDetectorTextStorage.swift */,
-				F1A15C3225EE2AA000191AAB /* ChatMessage.swift */,
 			);
 			name = ChatView;
 			sourceTree = "<group>";
@@ -482,6 +496,8 @@
 				F1CADBA125F55C3F00CA074E /* PastConversationsViewModel.swift in Sources */,
 				F101270F25E8313300AC0B5D /* HelpRequestViewModel.swift in Sources */,
 				F1A15A2B25E9B3A100191AAB /* ChatViewController.swift in Sources */,
+				8EDCBF4C266860300014C775 /* CameraInputBarAccessoryView.swift in Sources */,
+				8EDCBF502668606C0014C775 /* AlertService.swift in Sources */,
 				8EA592EB2663558B00B1E3D3 /* ImageMediaItem.swift in Sources */,
 				F1A15BAE25ED22E700191AAB /* LinkLabel.swift in Sources */,
 				F18861472600073100B17B59 /* PartialKeyPath+Extension.swift in Sources */,
