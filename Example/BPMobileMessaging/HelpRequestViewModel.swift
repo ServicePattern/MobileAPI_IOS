@@ -5,7 +5,7 @@
 import Foundation
 import BPMobileMessaging
 
-protocol HelpRequestUpdatable: class {
+protocol HelpRequestUpdatable: AnyObject {
     func update()
     func showChat()
 }

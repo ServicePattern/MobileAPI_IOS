@@ -118,7 +118,7 @@ extension CameraInputBarAccessoryView : UIImagePickerControllerDelegate , UINavi
                 self.inputPlugins.forEach { _ = $0.handleInput(of: originImage)}
             }
         } else if (mediaType == "public.movie") {   // Not supported yet
-            if let mediaUrl = info[UIImagePickerController.InfoKey.mediaURL] as? URL {
+            if (info[UIImagePickerController.InfoKey.mediaURL] as? URL) != nil {
 //                self.inputPlugins.forEach { _ = $0.handleInput(of: CUrl(mediaUrl))}
             }
         }
