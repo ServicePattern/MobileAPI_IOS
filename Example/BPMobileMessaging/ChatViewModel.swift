@@ -13,6 +13,10 @@ protocol ChatViewModelUpdatable: AnyObject {
     func showPastConversations()
 }
 
+enum ChatSessionFileType: String {
+    case image
+}
+
 class ChatViewModel {
     private let service: ServiceDependencyProtocol
     var sectionsCount: Int = 1
@@ -144,7 +148,7 @@ class ChatViewModel {
             for file in files {
                 dipatchGroup.enter()
 
-                self?.service.contactCenterService.sendChatFile(chatID: chatID, fileID: file.fileID, fileName: file.fileName, fileType: .image) { resultSend in
+                self?.service.contactCenterService.sendChatFile(chatID: chatID, fileID: file.fileID, fileName: file.fileName, fileType: ChatSessionFileType.image.rawValue) { resultSend in
                     do {
                         switch resultSend {
                         case .success(let messageID):
@@ -327,7 +331,7 @@ extension ChatViewModel {
                     let url = try service.contactCenterService.getFileUrl(fileID: fileID)
                     
                     switch fileType {
-                    case .image:
+                    case ChatSessionFileType.image.rawValue:
                         messages.append(ChatMessage(photo: ImageMediaItem(url: url),
                                                     user: self.getParty(partyID: partyID),
                                                     messageId: messageID!,
