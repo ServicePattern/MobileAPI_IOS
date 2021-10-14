@@ -152,7 +152,7 @@ public protocol ContactCenterCommunicating {
     ///   - completion: Returns  `messageID` in the format chatId:messageNumber where messageNumber is
     /// ordinal number of the given message in the chat exchange or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
     /// - Tag: sendChatFile
-    func sendChatFile(chatID: String, fileID: String, fileName: String, fileType: ChatSessionFileType, with completion: @escaping (Result<String, Error>) -> Void)
+    func sendChatFile(chatID: String, fileID: String, fileName: String, fileType: String, with completion: @escaping (Result<String, Error>) -> Void)
     /// Uploads an image to the server.
     /// - Parameters:
     ///   - fileName: The file name.
