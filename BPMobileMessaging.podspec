@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'BPMobileMessaging'
-  s.version          = '0.1.5'
+  s.version          = '2.0.0'
   s.summary          = 'Mobile Messaging API Library for iOS RESTful API for chat and voice interactions'
 
   s.description      = <<-DESC
