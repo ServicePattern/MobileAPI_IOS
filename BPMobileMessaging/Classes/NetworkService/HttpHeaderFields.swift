@@ -4,7 +4,7 @@
 
 import Foundation
 
-// String representation of mime types
+/// Text representation of mime types
 enum HttpHeaderContentType: String {
     case json = "application/json"
     case multipart = "multipart/form-data"

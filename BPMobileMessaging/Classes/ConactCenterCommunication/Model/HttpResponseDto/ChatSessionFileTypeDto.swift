@@ -3,6 +3,8 @@
 
 import Foundation
 
+/// Represents chat file type
+/// - Tag: ChatSessionFileTypeDto
 enum ChatSessionFileTypeDto: String, Codable {
     case image
     case attachment
@@ -19,6 +21,8 @@ extension ChatSessionFileTypeDto {
     }
 }
 
+/// Represents chat file type
+/// - Tag: ChatSessionFileType
 extension ChatSessionFileType {
     func toDto() -> ChatSessionFileTypeDto {
         switch self {
