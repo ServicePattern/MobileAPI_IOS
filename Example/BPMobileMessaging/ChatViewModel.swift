@@ -7,7 +7,7 @@ import BPMobileMessaging
 import MessageKit
 import InputBarAccessoryView
 
-protocol ChatViewModelUpdatable: class {
+protocol ChatViewModelUpdatable: AnyObject {
     func update(appendedCount: Int, updatedCount: Int, _ completion: (() -> Void)?)
     func goBack()
     func showPastConversations()
@@ -78,7 +78,7 @@ class ChatViewModel {
                 switch result {
                 case .success(let events):
                     self.processSessionEvents(events: events)
-                case .failure(let error): ()
+                case .failure(_): ()
                 }
             }
         }
