@@ -67,4 +67,6 @@ public enum ContactCenterError: Error {
     case chatSessionCrmServerError
     /// Too many concurrent parameters (i.e. both APNs and Firebase device tokens)
     case chatSessionTooManyParameters
+    /// Failed to translate image to data
+    case failedToEncodeImage
 }

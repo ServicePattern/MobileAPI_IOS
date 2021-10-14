@@ -15,7 +15,7 @@ struct ChatSessionFileDto: Codable {
     let partyID: String?
     let fileID: String
     let fileName: String
-    let fileType: String
+    let fileType: ChatSessionFileTypeDto
     let timestamp: Date?
 
     enum CodingKeys: String, CodingKey {
@@ -28,19 +28,19 @@ struct ChatSessionFileDto: Codable {
         case timestamp
     }
 
-    init(messageID: String?, partyID: String?, fileID: String, fileName: String, fileType: String, timestamp: Date?) {
+    init(messageID: String?, partyID: String?, fileID: String, fileName: String, fileType: ChatSessionFileType, timestamp: Date?) {
         self.event = .chatSessionFile
         self.messageID = messageID
         self.partyID = partyID
         self.fileID = fileID
         self.fileName = fileName
-        self.fileType = fileType
+        self.fileType = fileType.toDto()
         self.timestamp = timestamp
     }
 }
 
 extension ChatSessionFileDto: ContactCenterEventModelConvertible {
     func toModel() -> ContactCenterEvent {
-        ContactCenterEvent.chatSessionFile(messageID: messageID, partyID: partyID, fileID: fileID, fileName: fileName, fileType: fileType, timestamp: timestamp)
+        ContactCenterEvent.chatSessionFile(messageID: messageID, partyID: partyID, fileID: fileID, fileName: fileName, fileType: fileType.toModel(), timestamp: timestamp)
     }
 }

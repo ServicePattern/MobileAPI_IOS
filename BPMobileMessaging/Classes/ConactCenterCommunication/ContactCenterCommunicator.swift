@@ -143,30 +143,20 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
         }
     }
 
-    private func uploadData(fileName: String, contentType: String, body: Data, with completion: @escaping (Result<ContactCenterUploadedFileInfo, Error>) -> Void) {
+    private func uploadData(fileName: String, contentType: HttpHeaderContentType, body: Data, with completion: @escaping (Result<ContactCenterUploadedFileInfo, Error>) -> Void) {
         do {
             let boundary = UUID().uuidString
             
             let headers = defaultHttpHeaderFields.merging(HttpHeaderFields(fields: [.contentType : .multipart(boundary: boundary)]), true)
-            
-            var data = Data()
-            // Add the image data to the raw http request data
-            data.append("\r\n--\(boundary)\r\n".data(using: .utf8)!)
-            data.append("Content-Disposition: form-data; name=\"file-upload-input\"; filename=\"\(fileName)\"\r\n".data(using: .utf8)!)
-            data.append("Content-Type: \(contentType)\r\n\r\n".data(using: .utf8)!)
-            data.append(body)
-
-            data.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
-
-            
+            let httpBodyEncoded = body.httpBodyEncoded(boundary: boundary,
+                                                       fileName: fileName,
+                                                       contentType: contentType)
             guard let urlRequest = try networkService.createRequest(method: .post,
                                                                     baseURL: baseURL,
                                                                     endpoint: .uploadFile,
                                                                     headerFields: headers,
                                                                     parameters: defaultHttpRequestParameters,
-                                                                    data: data) else {
-                log.error("Failed to create URL request")
-
+                                                                    data: httpBodyEncoded) else {
                 throw ContactCenterError.failedToCreateURLRequest
             }
 
@@ -186,7 +176,14 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
     
     // MARK: - Uploading an image
     public func uploadFile(fileName: String, image: UIImage, with completion: @escaping (Result<ContactCenterUploadedFileInfo, Error>) -> Void) {
-        uploadData(fileName: fileName, contentType: "image/jpeg", body: image.jpegData(compressionQuality: 1.0)!, with:completion)
+        guard let encodedImage = image.jpegData(compressionQuality: 1.0) else {
+            completion(.failure(ContactCenterError.failedToEncodeImage))
+            return
+        }
+        uploadData(fileName: fileName,
+                   contentType: .image,
+                   body: encodedImage,
+                   with:completion)
     }
 
     // MARK: - Requesting a new chat session
@@ -275,7 +272,7 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
         }
     }
     
-    public func sendChatFile(chatID: String, fileID: String, fileName: String, fileType: String, with completion: @escaping (Result<String, Error>) -> Void) {
+    public func sendChatFile(chatID: String, fileID: String, fileName: String, fileType: ChatSessionFileType, with completion: @escaping (Result<String, Error>) -> Void) {
         let messageID = messageIdentifier()
         do {
             let urlRequest = try httpSendEventsPostRequest(chatID: chatID,
