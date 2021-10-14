@@ -6,7 +6,7 @@ import Foundation
 import UIKit
 import BPMobileMessaging
 
-protocol ServiceDependencyProtocol: class {
+protocol ServiceDependencyProtocol: AnyObject {
     var contactCenterService: ContactCenterCommunicating { get set }
     var useFirebase: Bool { get }
     var deviceToken: String? { get set }
@@ -15,7 +15,7 @@ protocol ServiceDependencyProtocol: class {
     var phoneNumber: String { get }
 }
 
-protocol ServiceDependencyProviding: class {
+protocol ServiceDependencyProviding: AnyObject {
     var service: ServiceDependencyProtocol? { get set }
 }
 

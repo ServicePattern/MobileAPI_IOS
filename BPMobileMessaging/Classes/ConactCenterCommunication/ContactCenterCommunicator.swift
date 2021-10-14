@@ -3,7 +3,7 @@
 
 import Foundation
 
-protocol HttpRequestBuilding: class {
+protocol HttpRequestBuilding: AnyObject {
     func httpGetRequest(with endpoint: URLProvider.Endpoint) throws -> URLRequest
 }
 

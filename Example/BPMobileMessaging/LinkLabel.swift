@@ -5,7 +5,7 @@
 import Foundation
 import UIKit
 
-protocol LinkLabelDelegate: class {
+protocol LinkLabelDelegate: AnyObject {
     func didTapped(at linkLabel: LinkLabel, link: NSTextCheckingResult)
 }
 

@@ -5,7 +5,7 @@ import Foundation
 import MessageKit
 import BPMobileMessaging
 
-protocol PastConversationsViewModelUpdatable: class {
+protocol PastConversationsViewModelUpdatable: AnyObject {
     func update()
 }
 
@@ -75,7 +75,7 @@ class PastConversationsViewModel {
                                                 user: user,
                                                 messageId: messageID,
                                                 date: timestamp ?? Date()))
-                case .chatSessionFile(let messageID, let partyID, let fileID, let fileName, let fileType, let timestamp):
+                case .chatSessionFile(let messageID, let partyID, let fileID, _, let fileType, let timestamp):
                     do {
                         let url = try service.contactCenterService.getFileUrl(fileID: fileID)
                         print("Rendering file \(url)")

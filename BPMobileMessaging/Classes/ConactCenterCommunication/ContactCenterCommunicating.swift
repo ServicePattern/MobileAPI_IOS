@@ -6,7 +6,7 @@ import Foundation
 
 /// Implement this protocol in order to receive events from the server.
 /// - Tag: ContactCenterEventsDelegating
-public protocol ContactCenterEventsDelegating: class {
+public protocol ContactCenterEventsDelegating: AnyObject {
     /// Called when new events received from the server
     /// - Parameter result: Array of `ContactCenterEvent` events
     func chatSessionEvents(result: Result<[ContactCenterEvent], Error>)
