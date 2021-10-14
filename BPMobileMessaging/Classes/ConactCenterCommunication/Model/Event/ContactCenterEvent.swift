@@ -23,6 +23,14 @@ public enum ContactCenterChatSessionPartyType {
     case `internal`
 }
 
+
+/// Enumeration for a chat file type that is sent or received
+/// - Tag: ChatSessionFileType
+public enum ChatSessionFileType {
+    case image
+    case attachment
+}
+
 /// Enumeration of the events which can be received from the server or sent to the server.
 /// - Tag: ContactCenterEvent
 public enum ContactCenterEvent {
@@ -57,7 +65,7 @@ public enum ContactCenterEvent {
     ///   - fileName: file name
     ///   - fileType: file type
     ///   - timestamp: Timestamp of the event
-    case chatSessionFile(messageID: String?, partyID: String?, fileID: String, fileName: String, fileType: String, timestamp: Date?)
+    case chatSessionFile(messageID: String?, partyID: String?, fileID: String, fileName: String, fileType: ChatSessionFileType, timestamp: Date?)
     /// Updates the current state of the chat session. If the state is failed, the client application shall assume that the chat session no longer exists.
     /// Direction: S->C
     /// - Parameters:

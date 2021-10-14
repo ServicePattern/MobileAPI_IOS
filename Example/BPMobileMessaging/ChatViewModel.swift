@@ -144,7 +144,7 @@ class ChatViewModel {
             for file in files {
                 dipatchGroup.enter()
 
-                self?.service.contactCenterService.sendChatFile(chatID: chatID, fileID: file.fileID, fileName: file.fileName, fileType: "image") { resultSend in
+                self?.service.contactCenterService.sendChatFile(chatID: chatID, fileID: file.fileID, fileName: file.fileName, fileType: .image) { resultSend in
                     do {
                         switch resultSend {
                         case .success(let messageID):
@@ -327,7 +327,7 @@ extension ChatViewModel {
                     let url = try service.contactCenterService.getFileUrl(fileID: fileID)
                     
                     switch fileType {
-                    case "image":
+                    case .image:
                         messages.append(ChatMessage(photo: ImageMediaItem(url: url),
                                                     user: self.getParty(partyID: partyID),
                                                     messageId: messageID!,
