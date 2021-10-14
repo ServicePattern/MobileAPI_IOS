@@ -272,7 +272,7 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
         }
     }
     
-    public func sendChatFile(chatID: String, fileID: String, fileName: String, fileType: ChatSessionFileType, with completion: @escaping (Result<String, Error>) -> Void) {
+    public func sendChatFile(chatID: String, fileID: String, fileName: String, fileType: String, with completion: @escaping (Result<String, Error>) -> Void) {
         let messageID = messageIdentifier()
         do {
             let urlRequest = try httpSendEventsPostRequest(chatID: chatID,
