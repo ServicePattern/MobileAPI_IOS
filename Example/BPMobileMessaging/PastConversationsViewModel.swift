@@ -81,7 +81,7 @@ class PastConversationsViewModel {
                         print("Rendering file \(url)")
 
                         switch fileType {
-                        case "image":
+                        case .image:
                             messages.append(ChatMessage(photo: ImageMediaItem(url: url),
                                                         user: self.getParty(partyID: partyID!),
                                                         messageId: messageID ?? "",

@@ -4,9 +4,17 @@
 
 import Foundation
 
+// String representation of mime types
+enum HttpHeaderContentType: String {
+    case json = "application/json"
+    case multipart = "multipart/form-data"
+    case image = "image/jpeg"
+}
+
 /// Used when the endpoint requires a header-type (i.e. "content-type") be specified in the header
 enum HttpHeaderType: String {
     case contentType = "Content-Type"
+    case contentDisposition = "Content-Disposition"
     case authorization = "Authorization"
     case userAgent = "UserAgent"
     case cacheControl = "Cache-Control"
@@ -23,7 +31,7 @@ enum HttpHeaderValue: CustomStringConvertible {
     var description: String {
         switch self {
         case .json:
-            return "application/json; charset=utf-8"
+            return "\(HttpHeaderContentType.json.rawValue); charset=utf-8"
         case .authorization(let appID, let clientID):
             return "MOBILE-API-140-327-PLAIN appId=\(appID), clientId=\(clientID)"
         case .mobileClient:
@@ -31,7 +39,7 @@ enum HttpHeaderValue: CustomStringConvertible {
         case .noCache:
             return "no-cache"
         case .multipart(let boundary):
-            return "multipart/form-data; boundary=\(boundary)"
+            return "\(HttpHeaderContentType.multipart.rawValue); boundary=\(boundary)"
         }
     }
 }
