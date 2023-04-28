@@ -2,6 +2,13 @@
 
 The changelog for `BPMobileMessaging`. Also see the [releases](https://github.com/ServicePattern/MobileAPI_IOS/releases) on GitHub.
 
+## []
+
+### Added
+ - WebRTC service message
+ - Video call example implementation 
+
+
 ## [0.1.6](https://github.com/ServicePattern/MobileAPI_IOS/releases/tag/0.1.6)
 
 ### Fixed

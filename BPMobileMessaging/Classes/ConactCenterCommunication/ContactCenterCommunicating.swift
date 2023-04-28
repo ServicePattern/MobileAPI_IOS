@@ -165,6 +165,16 @@ public protocol ContactCenterCommunicating {
     ///   - userInfo: Contains a payload with a new event from a backend which is received in `didReceiveRemoteNotification` or `userNotificationCenter`
     /// - Tag: appDidReceiveMessage
     func appDidReceiveMessage(_ userInfo: [AnyHashable : Any])
+    
+    /// Send a WebRTC signaling message toh the server
+    ///  - Parameters:
+    ///    - chatID: The current chat ID
+    ///    - partyID: User's party ID
+    ///    - messageID: current message ID
+    ///    - data: [SignalingData](x-source-tag://SignalingData) object
+    ///    - completion: Returns `.success` or [ContactCenterError](x-source-tag://ContactCenterError) otherwise
+    func sendSignalingData(chatID: String, partyID: String, messageID: Int, data: SignalingData, with completion: @escaping (Result<Void, Error>) -> Void)
+
 }
 
 extension ContactCenterCommunicating {

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="vXZ-lx-hvc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="vXZ-lx-hvc">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -123,12 +123,32 @@
                     <connections>
                         <segue destination="SEi-fy-3co" kind="unwind" identifier="unwidnToHelpRequest" unwindAction="unwind:" id="nCp-bs-hOB"/>
                         <segue destination="1Td-pa-skt" kind="show" identifier="PastConversationsViewController" id="ifd-kP-v3L"/>
+                        <segue destination="33H-2u-hRl" kind="show" identifier="WebRTCViewController" id="0QL-SC-cTa"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xu7-7x-XcY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <exit id="SEi-fy-3co" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="790" y="98"/>
+        </scene>
+        <!--WebRTC View Controller-->
+        <scene sceneID="4Lk-Ue-Q3c">
+            <objects>
+                <viewController id="33H-2u-hRl" customClass="WebRTCViewController" customModule="BPMobileMessaging_Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="iVM-hQ-1Xb"/>
+                        <viewControllerLayoutGuide type="bottom" id="YKv-3x-Ler"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8ae-zK-mhs">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="qKG-UT-4C5"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Na9-aX-FCV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1870" y="-561"/>
         </scene>
         <!--Past Conversations View Controller-->
         <scene sceneID="Xx5-oU-BsJ">

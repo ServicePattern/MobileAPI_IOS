@@ -11,6 +11,7 @@ protocol ChatViewModelUpdatable: AnyObject {
     func update(appendedCount: Int, updatedCount: Int, _ completion: (() -> Void)?)
     func goBack()
     func showPastConversations()
+    func showWebRTCController()
 }
 
 enum ChatSessionFileType: String {
@@ -21,6 +22,8 @@ class ChatViewModel {
     private let service: ServiceDependencyProtocol
     var sectionsCount: Int = 1
     let currentChatID: String?
+    var offerSDP: String? = nil
+    var partyID: String? = nil
     private var systemParty = ChatUser(senderId: "", displayName: "")
     private var myParty = ChatUser(senderId: "", displayName: "Me")
     private var parties: [String: ChatUser] = [:]
@@ -64,6 +67,13 @@ class ChatViewModel {
         self.parties[myParty.senderId] = myParty
         self.messagesValue = []
         
+   }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    func setupAPI(){
         NotificationCenter.default.addObserver(self, selector: #selector(receivedEvents), name: NotificationName.contactCenterEventsReceived.name, object: nil)
 
         self.subscribeForNotifications() { subscribeResult in
@@ -77,6 +87,7 @@ class ChatViewModel {
             }
         }
         
+        guard let currentChatID = self.currentChatID else { return }
         service.contactCenterService.getChatHistory(chatID: currentChatID) { result in
             DispatchQueue.main.async {
                 switch result {
@@ -86,9 +97,9 @@ class ChatViewModel {
                 }
             }
         }
-   }
-
-    deinit {
+    }
+    
+    func releaseAPI(){
         NotificationCenter.default.removeObserver(self)
     }
     
@@ -367,6 +378,29 @@ extension ChatViewModel {
                                             messageId: "",
                                             date: Date()))
 //                self.closeCase(chatID: chatID)
+            case .chatSessionSignaling(partyID: let partyID, data: let data, let messageID, timestamp: let timestamp):
+                // Open the video controller in case the Session Signaling event was alone
+                // otherwise add a technical message (call began) into the chat feed
+                if (data?.type == .OFFER_CALL){
+                    if events.count == 1 {
+                        offerSDP = data?.sdp
+                        self.partyID = partyID
+                        print("events count >>>>", events.count)
+                        self.delegate?.showWebRTCController()
+                    } else {
+                        messages.append(ChatMessage(text: "The VoIP call initiated",
+                                                    user: self.systemParty,
+                                                    messageId: messageID,
+                                                    date: timestamp))
+                    }
+                }
+                // add a technical message "Call ended" into the chat feed
+                if (data?.type == .OFFER_CALL){
+                    messages.append(ChatMessage(text: "The VoIP call ended",
+                                                user: self.systemParty,
+                                                messageId: messageID,
+                                                date: timestamp))
+                }
             case let .chatSessionMessageRead(messageID, _, _):
                 if let index = messages.firstIndex(where: { $0.messageId == messageID }) {
                     messages[index].read = true

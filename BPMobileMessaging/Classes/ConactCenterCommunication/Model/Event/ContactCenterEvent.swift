@@ -119,6 +119,14 @@ public enum ContactCenterEvent {
     ///   - message: a text message to display
     ///   - timestamp: Timestamp of the event
     case chatSessionInactivityTimeout(message: String, timestamp: Date)
+    /// Client receive a WebRTC message
+    ///  Directuin: S->C
+    ///  - Parameters:
+    ///     - partyID: participant ID
+    ///     - data: Signaling data object
+    ///     - messageID: message idnetificator
+    ///     - timestamp: Timestamp of the event
+    case chatSessionSignaling(partyID: String?, data: SignalingData?, messageID: String = "0", timestamp: Date)
     /// Indicates a normal termination of the chat session (e.g., when the chat session is closed by the agent).
     /// The client application shall assume that the chat session no longer exists.
     /// Direction: S->C

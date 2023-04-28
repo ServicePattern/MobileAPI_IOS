@@ -41,23 +41,23 @@ extension ContactCenterEvent {
                                              partyID: partyID,
                                              timestamp: timestamp)
         case .chatSessionFile(messageID: let messageID,
-                                 partyID: let partyID,
-                                 fileID: let fileID,
-                                 fileName: let fileName,
-                                 fileType: let fileType,
-                                 timestamp: let timestamp):
+                              partyID: let partyID,
+                              fileID: let fileID,
+                              fileName: let fileName,
+                              fileType: let fileType,
+                              timestamp: let timestamp):
             return ChatSessionFileDto(messageID: messageID,
-                                         partyID: partyID,
-                                         fileID: fileID,
-                                         fileName: fileName,
-                                         fileType: fileType,
-                                         timestamp: timestamp)
+                                      partyID: partyID,
+                                      fileID: fileID,
+                                      fileName: fileName,
+                                      fileType: fileType,
+                                      timestamp: timestamp)
         case .chatSessionStatus(state: let state,
                                 estimatedWaitTime: let estimatedWaitTime):
             return ChatSessionStatusDto(state: state.toDto(),
                                         ewt: "\(estimatedWaitTime)")
         case .chatSessionCaseSet(caseID: let caseID,
-                                timestamp: let timestamp):
+                                 timestamp: let timestamp):
             return ChatSessionCaseSetDto(caseID: caseID, timestamp: timestamp)
         case .chatSessionPartyJoined(partyID: let partyID,
                                      firstName: let firstName,
@@ -76,13 +76,13 @@ extension ContactCenterEvent {
             return ChatSessionPartyLeftDto(partyID: partyID,
                                            timestamp: timestamp)
         case .chatSessionTyping(partyID: let partyID,
-                                     timestamp: let timestamp):
+                                timestamp: let timestamp):
             return ChatSessionTypingDto(partyID: partyID,
-                                         timestamp: timestamp)
+                                        timestamp: timestamp)
         case .chatSessionNotTyping(partyID: let partyID,
-                                        timestamp: let timestamp):
+                                   timestamp: let timestamp):
             return ChatSessionNotTypingDto(partyID: partyID,
-                                         timestamp: timestamp)
+                                           timestamp: timestamp)
         case .chatSessionLocation(partyID: let partyID,
                                   url: let url,
                                   latitude: let latitude,
@@ -92,7 +92,7 @@ extension ContactCenterEvent {
                                           url: url,
                                           latitude: latitude,
                                           longitude: longitude,
-                                         timestamp: timestamp)
+                                          timestamp: timestamp)
         case .chatSessionTimeoutWarning(message: let message,
                                         timestamp: let timestamp):
             return ChatSessionTimeoutWarningDto(message: message,
@@ -101,6 +101,8 @@ extension ContactCenterEvent {
                                            timestamp: let timestamp):
             return ChatSessionInactivityTimeoutDto(message: message,
                                                    timestamp: timestamp)
+        case .chatSessionSignaling(partyID: let partyID, data: let data, let messgaeID, timestamp: let timestamp):
+            return ChatSessionSignalingDto(partyID: partyID, data: data, msgID: messgaeID, timestamp: timestamp)
         case .chatSessionEnded:
             return ChatSessionEndedDto()
         case .chatSessionDisconnect:

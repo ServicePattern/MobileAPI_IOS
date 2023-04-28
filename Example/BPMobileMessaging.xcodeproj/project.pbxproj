@@ -3,10 +3,21 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		380DF99529F71F2F00EC2022 /* WebRTCClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380DF99429F71F2F00EC2022 /* WebRTCClient.swift */; };
+		380DF99829F71FCC00EC2022 /* RTCCustomFrameCapturer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380DF99729F71FCC00EC2022 /* RTCCustomFrameCapturer.swift */; };
+		380DF99A29F7200B00EC2022 /* RTCSimulatorVideoDecoderFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380DF99929F7200B00EC2022 /* RTCSimulatorVideoDecoderFactory.swift */; };
+		380DF99C29F7202600EC2022 /* RTCSimluatorVideoEncoderFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380DF99B29F7202600EC2022 /* RTCSimluatorVideoEncoderFactory.swift */; };
+		380DF99E29F72BA600EC2022 /* WebRTCViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380DF99D29F72BA600EC2022 /* WebRTCViewController.swift */; };
+		380DF9A429F733F200EC2022 /* ScreenSizeUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380DF9A329F733F200EC2022 /* ScreenSizeUtil.swift */; };
+		380DF9A629F7344F00EC2022 /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380DF9A529F7344F00EC2022 /* UIViewExtension.swift */; };
+		380DF9AA29F7348700EC2022 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380DF9A929F7348700EC2022 /* UIColorExtension.swift */; };
+		380DF9AC29F87B0700EC2022 /* WeRTCViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380DF9AB29F87B0700EC2022 /* WeRTCViewModel.swift */; };
+		380DF9B029FB4B7900EC2022 /* WebRTC.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 380DF9AF29FB4B7900EC2022 /* WebRTC.xcframework */; };
+		380DF9B129FB4B7900EC2022 /* WebRTC.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 380DF9AF29FB4B7900EC2022 /* WebRTC.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* HelpRequestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* HelpRequestViewController.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
@@ -49,9 +60,34 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		380DF9B229FB4B7900EC2022 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				380DF9B129FB4B7900EC2022 /* WebRTC.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		15627A2FBF2AC38505C0B61B /* Pods-BPMobileMessaging_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BPMobileMessaging_Tests.debug.xcconfig"; path = "Target Support Files/Pods-BPMobileMessaging_Tests/Pods-BPMobileMessaging_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		2503487E031042FAD3599AA2 /* Pods-BPMobileMessaging_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BPMobileMessaging_Example.release.xcconfig"; path = "Target Support Files/Pods-BPMobileMessaging_Example/Pods-BPMobileMessaging_Example.release.xcconfig"; sourceTree = "<group>"; };
+		380DF99029F5FAAC00EC2022 /* WebRTC.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = WebRTC.xcframework; path = ../../../../WebRTC/webrtc_ios/src/out_ios_libs/WebRTC.xcframework; sourceTree = "<group>"; };
+		380DF99429F71F2F00EC2022 /* WebRTCClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCClient.swift; sourceTree = "<group>"; };
+		380DF99729F71FCC00EC2022 /* RTCCustomFrameCapturer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTCCustomFrameCapturer.swift; sourceTree = "<group>"; };
+		380DF99929F7200B00EC2022 /* RTCSimulatorVideoDecoderFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTCSimulatorVideoDecoderFactory.swift; sourceTree = "<group>"; };
+		380DF99B29F7202600EC2022 /* RTCSimluatorVideoEncoderFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTCSimluatorVideoEncoderFactory.swift; sourceTree = "<group>"; };
+		380DF99D29F72BA600EC2022 /* WebRTCViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCViewController.swift; sourceTree = "<group>"; };
+		380DF9A329F733F200EC2022 /* ScreenSizeUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenSizeUtil.swift; sourceTree = "<group>"; };
+		380DF9A529F7344F00EC2022 /* UIViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
+		380DF9A929F7348700EC2022 /* UIColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
+		380DF9AB29F87B0700EC2022 /* WeRTCViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeRTCViewModel.swift; sourceTree = "<group>"; };
+		380DF9AF29FB4B7900EC2022 /* WebRTC.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = WebRTC.xcframework; path = libs/WebRTC.xcframework; sourceTree = "<group>"; };
 		4BFB77F350367830558C3DA9 /* Pods_BPMobileMessaging_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BPMobileMessaging_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5CB28ADA3D4CD07E44C11A63 /* BPMobileMessaging.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = BPMobileMessaging.podspec; path = ../BPMobileMessaging.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		607FACD01AFB9204008FA782 /* BPMobileMessaging_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BPMobileMessaging_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -102,6 +138,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				380DF9B029FB4B7900EC2022 /* WebRTC.xcframework in Frameworks */,
 				A81B471DE62BDFC3937D2F4C /* Pods_BPMobileMessaging_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -120,6 +157,8 @@
 		17130BD9ACA50DF7859CD895 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				380DF99029F5FAAC00EC2022 /* WebRTC.xcframework */,
+				380DF9AF29FB4B7900EC2022 /* WebRTC.xcframework */,
 				4BFB77F350367830558C3DA9 /* Pods_BPMobileMessaging_Example.framework */,
 				A3AD6BBEF622A29C4CFDE65D /* Pods_BPMobileMessaging_Tests.framework */,
 			);
@@ -135,6 +174,22 @@
 				715D3021182EAF5BBF64ABEB /* Pods-BPMobileMessaging_Tests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		380DF99629F71FAB00EC2022 /* WebRTC */ = {
+			isa = PBXGroup;
+			children = (
+				380DF99429F71F2F00EC2022 /* WebRTCClient.swift */,
+				380DF99D29F72BA600EC2022 /* WebRTCViewController.swift */,
+				380DF9AB29F87B0700EC2022 /* WeRTCViewModel.swift */,
+				380DF99729F71FCC00EC2022 /* RTCCustomFrameCapturer.swift */,
+				380DF99929F7200B00EC2022 /* RTCSimulatorVideoDecoderFactory.swift */,
+				380DF99B29F7202600EC2022 /* RTCSimluatorVideoEncoderFactory.swift */,
+				380DF9A329F733F200EC2022 /* ScreenSizeUtil.swift */,
+				380DF9A529F7344F00EC2022 /* UIViewExtension.swift */,
+				380DF9A929F7348700EC2022 /* UIColorExtension.swift */,
+			);
+			path = WebRTC;
 			sourceTree = "<group>";
 		};
 		607FACC71AFB9204008FA782 = {
@@ -170,6 +225,7 @@
 				8E72CCF1261563EA00A44587 /* Localizable.strings */,
 				F10126FC25E82FA900AC0B5D /* Extensions */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
+				380DF99629F71FAB00EC2022 /* WebRTC */,
 				F101270B25E830DC00AC0B5D /* HelpRequest */,
 				F1A15A3225E9B3DB00191AAB /* ChatView */,
 				F1CADB9F25F55C2900CA074E /* PastConversations */,
@@ -292,6 +348,7 @@
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
 				500E3A8BC1BE38EC92724645 /* [CP] Embed Pods Frameworks */,
+				380DF9B229FB4B7900EC2022 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -483,9 +540,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				380DF9AC29F87B0700EC2022 /* WeRTCViewModel.swift in Sources */,
 				F101270025E8301B00AC0B5D /* UIViewController+Extension.swift in Sources */,
 				F101272725E863ED00AC0B5D /* NotificationNamesKeys.swift in Sources */,
 				F1CADB9A25F55BE100CA074E /* PastConversationsViewController.swift in Sources */,
+				380DF99E29F72BA600EC2022 /* WebRTCViewController.swift in Sources */,
+				380DF99C29F7202600EC2022 /* RTCSimluatorVideoEncoderFactory.swift in Sources */,
 				F10126F925E82F3600AC0B5D /* ViewController+ServiceDependency.swift in Sources */,
 				F1A15C3325EE2AA000191AAB /* ChatMessage.swift in Sources */,
 				607FACD81AFB9204008FA782 /* HelpRequestViewController.swift in Sources */,
@@ -494,15 +554,21 @@
 				F101270425E8305600AC0B5D /* DefaultStringInterpolation+Extension.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 				F1CADBA125F55C3F00CA074E /* PastConversationsViewModel.swift in Sources */,
+				380DF99829F71FCC00EC2022 /* RTCCustomFrameCapturer.swift in Sources */,
+				380DF9AA29F7348700EC2022 /* UIColorExtension.swift in Sources */,
 				F101270F25E8313300AC0B5D /* HelpRequestViewModel.swift in Sources */,
 				F1A15A2B25E9B3A100191AAB /* ChatViewController.swift in Sources */,
+				380DF9A429F733F200EC2022 /* ScreenSizeUtil.swift in Sources */,
 				8EDCBF4C266860300014C775 /* CameraInputBarAccessoryView.swift in Sources */,
 				8EDCBF502668606C0014C775 /* AlertService.swift in Sources */,
 				8EA592EB2663558B00B1E3D3 /* ImageMediaItem.swift in Sources */,
 				F1A15BAE25ED22E700191AAB /* LinkLabel.swift in Sources */,
+				380DF99A29F7200B00EC2022 /* RTCSimulatorVideoDecoderFactory.swift in Sources */,
+				380DF9A629F7344F00EC2022 /* UIViewExtension.swift in Sources */,
 				F18861472600073100B17B59 /* PartialKeyPath+Extension.swift in Sources */,
 				F1A15A2F25E9B3C800191AAB /* ChatViewModel.swift in Sources */,
 				F101270825E8308900AC0B5D /* ExampleAppError.swift in Sources */,
+				380DF99529F71F2F00EC2022 /* WebRTCClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -656,7 +722,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -673,7 +740,10 @@
 				DEVELOPMENT_TEAM = 3V7465795F;
 				INFOPLIST_FILE = BPMobileMessaging/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.BP.contactcenter.BPMobileMessaging-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -694,7 +764,10 @@
 				DEVELOPMENT_TEAM = 3V7465795F;
 				INFOPLIST_FILE = BPMobileMessaging/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.BP.contactcenter.BPMobileMessaging-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -719,7 +792,11 @@
 				);
 				INFOPLIST_FILE = Tests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
@@ -739,7 +816,11 @@
 				);
 				INFOPLIST_FILE = Tests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;

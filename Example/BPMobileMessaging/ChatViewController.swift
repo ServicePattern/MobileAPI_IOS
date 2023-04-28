@@ -43,6 +43,16 @@ class ChatViewController: MessagesViewController, MessagesDataSource, ServiceDep
         viewModel.delegate = self
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.setupAPI()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        viewModel.releaseAPI()
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
 
@@ -51,6 +61,12 @@ class ChatViewController: MessagesViewController, MessagesDataSource, ServiceDep
             destinationVC.service = sourceVC.service
         }
 
+        if let vc = segue.destination as? WebRTCViewController {
+            vc.offerSDP = viewModel.offerSDP
+            vc.currentChatID = currentChatID
+            vc.partyID = viewModel.partyID
+        }
+        
         if let vc = segue.destination as? PastConversationsViewController {
             vc.chatSessions = viewModel.chatSessions
         }
@@ -299,5 +315,9 @@ extension ChatViewController: ChatViewModelUpdatable {
 
     func showPastConversations() {
         performSegue(withIdentifier: "\(PastConversationsViewController.self)", sender: self)
+    }
+    
+    func showWebRTCController(){
+        performSegue(withIdentifier: "\(WebRTCViewController.self)", sender: self)
     }
 }

@@ -406,6 +406,29 @@ public final class ContactCenterCommunicator: ContactCenterCommunicating {
         }
         pollRequestService.addChatID(chatID)
     }
+    
+    // MARK: - WebRTC
+    public func sendSignalingData(chatID: String, partyID: String, messageID: Int, data: SignalingData, with completion: @escaping (Result<Void, Error>) -> Void) {
+        do {
+            let urlRequest = try httpSendEventsPostRequest(chatID: chatID, events: [.chatSessionSignaling(partyID: partyID, data: data, messageID: "\(messageID)", timestamp: Date())])
+            networkService.dataTask(using: urlRequest, with: completion)
+        } catch {
+            log.error("Failed to sendSignalingData: \(error)")
+            completion(.failure(error))
+        }
+
+        /*
+         data class ChatSessionSignaling(
+                 @SerialName("data") val data: SignalingData,
+                 @SerialName(FieldName.PARTY_ID)
+                 val party_id: String? =  null,
+                 val msg_id: String = "-1" ,
+                 val destination_party_id: String? = null,
+                 @SerialName(FieldName.TIMESTAMP)
+                 val timestamp: Long = System.currentTimeMillis() / 1000
+             ) :ContactCenterEvent()
+         */
+    }
 }
 
 // MARK: - HTTP request helper factory functions
