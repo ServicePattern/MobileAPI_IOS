@@ -226,8 +226,7 @@ class WebRTCClient: NSObject, RTCPeerConnectionDelegate, RTCVideoViewDelegate, R
     // MARK: - Setup
     private func setupPeerConnection() -> RTCPeerConnection{
         let rtcConf = RTCConfiguration()
-        //        rtcConf.iceServers = [RTCIceServer(urlStrings: ["stun:185.14.28.222:34782"]), RTCIceServer(urlStrings: ["turn:185.14.28.222:3478"], username: "alan", credential: "simplePassword")]
-        rtcConf.iceServers = [RTCIceServer(urlStrings: ["stun:stun.l.google.com:19302"])] //, RTCIceServer(urlStrings: ["turn:oceanturn1.brightpattern.com:443"], username: "turnserver", credential: "turnserverturnserver")]
+        rtcConf.iceServers = [RTCIceServer(urlStrings: ["stun:stun.l.google.com:19302"])]
         let mediaConstraints = RTCMediaConstraints.init(mandatoryConstraints: nil, optionalConstraints: nil)
         let pc = self.peerConnectionFactory.peerConnection(with: rtcConf, constraints: mediaConstraints, delegate: nil)
         return pc!
