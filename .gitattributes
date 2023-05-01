@@ -1,7 +1,5 @@
-Example/libs/WebRTC.xcframework/Info.plist filter=lfs diff=lfs merge=lfs -text
-Example/libs/WebRTC.xcframework/LICENSE.md filter=lfs diff=lfs merge=lfs -text
-Example/libs/WebRTC.xcframework/ios-arm64 filter=lfs diff=lfs merge=lfs -text
-Example/libs/WebRTC.xcframework/ios-arm64_x86_64-simulator filter=lfs diff=lfs merge=lfs -text
+Example/libs/WebRTC.xcframework/ios-arm64/dSYMs/WebRTC.dSYM/Contents/Resources/DWARF/WebRTC filter=lfs diff=lfs merge=lfs -text
+Example/libs/WebRTC.xcframework/ios-arm64_x86_64-simulator/dSYMs/WebRTC.dSYM/Contents/Resources/DWARF/WebRTC filter=lfs diff=lfs merge=lfs -text
 /Example/Pods/Pods.xcodeproj/project.pbxproj filter=lfs diff=lfs merge=lfs -text
 /Example/Pods/Target[[:space:]]Support[[:space:]]Files/Pods-BPContactCenter_Example/Pods-BPContactCenter_Example-acknowledgements.markdown filter=lfs diff=lfs merge=lfs -text
 /Example/Pods/Target[[:space:]]Support[[:space:]]Files/Pods-BPContactCenter_Example/Pods-BPContactCenter_Example-acknowledgements.plist filter=lfs diff=lfs merge=lfs -text
