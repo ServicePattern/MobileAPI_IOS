@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -77,7 +77,6 @@
 /* Begin PBXFileReference section */
 		15627A2FBF2AC38505C0B61B /* Pods-BPMobileMessaging_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BPMobileMessaging_Tests.debug.xcconfig"; path = "Target Support Files/Pods-BPMobileMessaging_Tests/Pods-BPMobileMessaging_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		2503487E031042FAD3599AA2 /* Pods-BPMobileMessaging_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BPMobileMessaging_Example.release.xcconfig"; path = "Target Support Files/Pods-BPMobileMessaging_Example/Pods-BPMobileMessaging_Example.release.xcconfig"; sourceTree = "<group>"; };
-		380DF99029F5FAAC00EC2022 /* WebRTC.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = WebRTC.xcframework; path = ../../../../WebRTC/webrtc_ios/src/out_ios_libs/WebRTC.xcframework; sourceTree = "<group>"; };
 		380DF99429F71F2F00EC2022 /* WebRTCClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCClient.swift; sourceTree = "<group>"; };
 		380DF99729F71FCC00EC2022 /* RTCCustomFrameCapturer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTCCustomFrameCapturer.swift; sourceTree = "<group>"; };
 		380DF99929F7200B00EC2022 /* RTCSimulatorVideoDecoderFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTCSimulatorVideoDecoderFactory.swift; sourceTree = "<group>"; };
@@ -157,7 +156,6 @@
 		17130BD9ACA50DF7859CD895 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				380DF99029F5FAAC00EC2022 /* WebRTC.xcframework */,
 				380DF9AF29FB4B7900EC2022 /* WebRTC.xcframework */,
 				4BFB77F350367830558C3DA9 /* Pods_BPMobileMessaging_Example.framework */,
 				A3AD6BBEF622A29C4CFDE65D /* Pods_BPMobileMessaging_Tests.framework */,
@@ -456,9 +454,8 @@
 				"${PODS_ROOT}/Target Support Files/Pods-BPMobileMessaging_Example/Pods-BPMobileMessaging_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/BPMobileMessaging/BPMobileMessaging.framework",
 				"${BUILT_PRODUCTS_DIR}/FirebaseCore/FirebaseCore.framework",
-				"${BUILT_PRODUCTS_DIR}/FirebaseCoreDiagnostics/FirebaseCoreDiagnostics.framework",
+				"${BUILT_PRODUCTS_DIR}/FirebaseCoreInternal/FirebaseCoreInternal.framework",
 				"${BUILT_PRODUCTS_DIR}/FirebaseInstallations/FirebaseInstallations.framework",
-				"${BUILT_PRODUCTS_DIR}/FirebaseInstanceID/FirebaseInstanceID.framework",
 				"${BUILT_PRODUCTS_DIR}/FirebaseMessaging/FirebaseMessaging.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleDataTransport/GoogleDataTransport.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
@@ -472,9 +469,8 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BPMobileMessaging.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseCore.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseCoreDiagnostics.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseCoreInternal.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseInstallations.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseInstanceID.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseMessaging.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleDataTransport.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
@@ -737,9 +733,11 @@
 				CODE_SIGN_ENTITLEMENTS = BPMobileMessaging_Example.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 3V7465795F;
+				EXCLUDED_ARCHS = "";
 				INFOPLIST_FILE = BPMobileMessaging/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -761,9 +759,11 @@
 				CODE_SIGN_ENTITLEMENTS = BPMobileMessaging_Example.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 3V7465795F;
+				EXCLUDED_ARCHS = "";
 				INFOPLIST_FILE = BPMobileMessaging/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

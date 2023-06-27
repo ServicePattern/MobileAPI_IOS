@@ -40,7 +40,7 @@ class WebRTCViewController: UIViewController, ServiceDependencyProviding, WebRTC
         super.viewDidLoad()
         #if targetEnvironment(simulator)
         // simulator does not have camera
-        self.useCustomCapturer = false
+//        self.useCustomCapturer = false
         #endif
         
         viewModel.setupAPI()
